@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+MX:wght@100..400&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --primary: #21e4dd;
+        --secondary: #0b4f4e;
+        --ternary: #37a9a4;
+    }
+
+    body {
+        font-family: "Roboto";
+        @apply relative p-4 overflow-x-hidden;
+
+    }
+
+    header a,
+    footer a {
+        @apply w-full;
+    }
+
+}
+
+@layer components {
+    .primary {
+        background: var(--primary);
+    }
+
+    .Productcard {
+        width: 300px;
+        @apply p-4 rounded-md relative bg-slate-100 shadow-md;
+    }
+
+    .Productcard button {
+        @apply p-2 absolute bottom-2 right-10 bg-slate-500/30 rounded-md;
+    }
+
+    .secondary {
+        background-color: var(--secondary);
+    }
+
+    .ternary {
+        background-color: var(--ternary);
+    }
+
+    .general {
+        color: var(--primary)
+    }
+
+    .champs {
+        @apply text-start;
+
+    }
+
+    .info {
+        @apply w-full;
+    }
+
+    .sub-form input {
+        @apply w-3/6 p-1 border;
+    }
+
+    .champs input {
+        @apply w-full h-9 mt-2 bg-gray-400/25 p-2 mb-2;
+    }
+
+    .dropdown {
+        @apply relative;
+    }
+
+    .dropdown .drop-2 {
+        @apply text-center;
+    }
+
+    .drop-items,
+    .drop-items-2 {
+        @apply hidden
+    }
+
+    .elem {
+        list-style: none;
+
+        @apply p-1;
+    }
+
+    .elem a {
+        @apply p-2 w-full;
+    }
+
+    .elem:hover {
+        background-color: rgba(0, 0, 0, 0.363);
+    }
+
+    .dropdown:hover>.drop-items {
+        background-color: var(--primary);
+        @apply block md:absolute z-20 rounded-md text-black w-56
+    }
+
+    .drop-2:hover>.drop-items-2 {
+        background-color: var(--primary);
+        @apply block absolute -right-48 text-start top-0 w-full rounded-md
+    }
+
+    .modals-active {
+        @apply w-full bg-black/25 fixed z-50 h-full top-0 left-0 flex justify-center;
+    }
+
+    .modal,
+    .modals {
+        @apply hidden;
+    }
+
+    .size-2 {
+        width: 500px !important;
+        background-color: white !important;
+    }
+
+    .fa-download,
+    .fa-trash,
+    .fa-pen-to-square {
+        @apply text-2xl;
+    }
+
+    .size-2 form {
+        background-color: white;
+    }
+
+    .size-2 form textarea {
+        height: 250px;
+    }
+
+    .modal-active {
+        width: 350px;
+        height: auto;
+        z-index: 1000;
+        @apply mt-20 bg-white text-center rounded-lg border border-gray-400;
+
+    }
+
+    .modal-head {
+        @apply p-2 flex gap-4 text-center bg-gray-700 text-white justify-between font-bold
+    }
+
+    .modal-active form {
+        @apply p-3
+    }
+
+    .modal-champs {
+        @apply text-start mb-3
+    }
+
+    .modal-champs input {
+        @apply w-full h-8 border border-gray-300 p-2
+    }
+
+    .modal-champs div {
+        @apply flex justify-between mx-6
+    }
+
+    .modal-champs input[type="radio"] {
+        @apply w-5
+    }
+
+    .modal-champs select {
+        @apply w-full h-8
+    }
+
+    .modal-validation {
+        @apply w-full flex justify-around mt-3
+    }
+
+    .modal-validation button {
+        background-color: var(--secondary);
+        @apply p-2 w-24 font-bold text-white
+    }
+
+    .close-modal {
+        @apply cursor-pointer
+    }
+}
