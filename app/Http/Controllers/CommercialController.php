@@ -50,7 +50,7 @@ class CommercialController extends Controller
         } else {
             $ventes = Vente::where("type", $type)->where("region", Auth::user()->region)->get();
             //neo invoices
-            $sales = Invoices::where("region", Auth::user()->region)->with("client")->get();
+            $sales = Invoices::where("region", Auth::user()->region)->where("type",$type)->with("client")->get();
             $articles = Article::where("type", "bouteille-gaz")->where("state", 1)->get();
             $articlesAll = Article::where("state", 1)->orWhere("type", "accessoire")->get();
             $clients = Client::all();
@@ -311,6 +311,7 @@ class CommercialController extends Controller
             "commentaire" => "string | nullable",
             "bordereau" => "string | required",
             "bank" => "string | required",
+            "montant_com"=>"string| nullable"
         ]);
         $versement = new Versement();
         $versement->montant_gpl = $request->montant_gpl;
@@ -319,7 +320,9 @@ class CommercialController extends Controller
         $versement->bordereau = $request->bordereau;
         $versement->region = Auth::user()->region;
         $versement->service = Auth::user()->role;
+        $versement->montantcom = $request->montant_com;
         $versement->bank = $request->bank;
+        
         $versement->save();
         return response()->json(["success" => "versement enregistre avec succes"]);
     }
@@ -468,7 +471,9 @@ class CommercialController extends Controller
         $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
         $accessories = Article::where("type", "=", "accessoire")->get("title");
         $versement = Versement::findOrFail($idVers);
-        return view("commercial.ModifVersement", ["stocks" => $stocks, "accessories" => $accessories, "versement" => $versement]);
+        $clients = Client::where("region",Auth::user()->region)->get();
+        $articles  = Article::where("state", 1)->orWhere("type", "accessoire")->get();
+        return view("commercial.ModifVersement", ["clientsList"=>$clients,"articlesList" => $articles, "stocks" => $stocks, "accessories" => $accessories, "versement" => $versement]);
     }
     public function updateVersement(Request $request, $idVers)
     {
@@ -487,5 +492,21 @@ class CommercialController extends Controller
         $versement->bank = $request->bank;
         $versement->save();
         return back()->withSuccess("element modifie avec succes");
+    }
+    //associer une vente a un versement
+    public function vente_versement($id_vente){
+        $versements = Versement::all();
+        $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
+        $accessories = Article::where("type", "=", "accessoire")->get("title");
+        $articles = Article::where("state", 1)->orWhere("type", "accessoire")->get();
+        $clients = Client::all();
+        $sale = Invoices::findOrfail($id_vente);
+        return view("commercial.vente_versement_assoc",["versements"=>$versements,"sale"=>$sale,"clientsList" => $clients, "articlesList" => $articles, "stocks" => $stocks, "accessories" => $accessories]);
+    }
+    public function vente_versement_assoc($id_vente,$id_verse){
+        $invoice = Invoices::findOrFail($id_vente);
+        $invoice->id_versement = $id_verse;
+        $invoice->save();
+        return back()->withSuccess("versement associe avec succes");
     }
 }

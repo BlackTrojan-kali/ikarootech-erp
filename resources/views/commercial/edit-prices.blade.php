@@ -12,9 +12,9 @@
                 <form method="POST" class="p-2" action="{{ route('update-price', ['id' => $price->id]) }}">
                     @csrf
                     <div class="modal-champs">
-                        <label for="">Client:</label>
+                        <label for="">Clientcat:</label>
                         <input type="text" name="nom"
-                            value="{{ $price->client->nom . ' ' . $price->client->prenom }}" disabled>
+                            value="{{ $price->client->name }}" disabled>
                     </div>
                     <div class="modal-champs">
                         <label for="">Article:</label>
@@ -22,7 +22,7 @@
                             <input type="text" name="article" value="{{ $price->article->title }}" disabled>
                         @else
                             <input type="text" name="article"
-                                value="{{ $price->article->type . ' ' . $price->article->wieght . ' kg' }}" disabled>
+                                value="{{ $price->article->type . ' ' . $price->article->weight . ' kg' }}" disabled>
                         @endif
                     </div>
                     <div class="modal-champs">

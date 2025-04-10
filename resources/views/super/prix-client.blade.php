@@ -8,10 +8,11 @@
             <thead class="text-center font-bold py-12">
                 <tr class="">
                     <td>id</td>
-                    <td>Nom Client</td>
+                    <td>Nom Categorie</td>
                     <td>Article</td>
                     <td>Prix GPL</td>
                     <td>Prix Consigne</td>
+                    <td>Region</td>
                     <td>Date</td>
                     <td>Action</td>
                 </tr>
@@ -19,7 +20,7 @@
                 @foreach ($prices as $price)
                     <tr class="mb-5 ">
                         <td>{{ $price->id }}</td>
-                        <td>{{ $price->client->nom . ' ' . $price->client->prenom }}</td>
+                        <td>{{ $price->client->name }}</td>
                         <td>
                             @if ($price->article->type == 'accessoire')
                                 {{ $price->article->title }}
@@ -32,6 +33,9 @@
                         </td>
                         <td>
                             {{ $price->consigne_price }} XAF
+                        </td>
+                        <td>
+                            {{ $price->region }}
                         </td>
                         <td>
                             {{ $price->created_at }}

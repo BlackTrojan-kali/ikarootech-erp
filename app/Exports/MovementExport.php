@@ -17,7 +17,7 @@ class MovementExport implements FromView, WithHeadings
     private $etat;
     private $service;
     private $region;
-    public function __construct(string $depart, string $fin, string $type, bool $etat, string $service, string $region)
+    public function __construct(string $depart, string $fin, string $type, int $etat, string $service, string $region)
     {
         $this->depart = $depart;
         $this->fin = $fin;
@@ -31,7 +31,12 @@ class MovementExport implements FromView, WithHeadings
         $first = new Movement();
         $movesP =  Movement::leftjoin("articles", "movements.article_id", "articles.id")->leftjoin("stocks", "movements.stock_id", "stocks.id")->whereBetween("movements.created_at", [$this->depart, $this->fin])->where("movements.service", $this->service)->where("stocks.region", $this->region)->where("articles.type", "bouteille-gaz")->where("articles.weight", floatval($this->type))->where("articles.state", 1)->with("fromArticle")->select("movements.*")->orderBy("id")->get();
         $movesV = Movement::leftjoin("articles", "movements.article_id", "articles.id")->leftjoin("stocks", "movements.stock_id", "stocks.id")->whereBetween("movements.created_at", [$this->depart, $this->fin])->where("movements.service", $this->service)->where("stocks.region", $this->region)->where("articles.type", "bouteille-gaz")->where("articles.weight", floatval($this->type))->where("articles.state", 0)->with("fromArticle")->select("movements.*")->orderBy("id")->get();
-        return View("ExcelMove", ["bouteille_pleines" => $movesP, "bouteille_vides" => $movesV, "service" => $this->service, "region" => $this->region, "type" => $this->type, "depart" => $this->depart, "fin" => $this->fin]);
+        if($this->etat == 777){
+        return View("ExcelMove", ["etat"=>$this->etat,"bouteille_pleines" => $movesP, "bouteille_vides" => $movesV, "service" => $this->service, "region" => $this->region, "type" => $this->type, "depart" => $this->depart, "fin" => $this->fin]);
+        }else{
+            return View("ExcelMove-single", ["etat"=>$this->etat,"bouteille_pleines" => $movesP, "bouteille_vides" => $movesV, "service" => $this->service, "region" => $this->region, "type" => $this->type, "depart" => $this->depart, "fin" => $this->fin]);
+            
+        }
     }
 
     public function headings(): array

@@ -64,6 +64,10 @@
                                 @if ($days <= 3)
                                     <i class="text-red-500 delete fa-solid fa-trash" title="supprimer"></i>
                                 @endif
+                                
+                                <a href="">
+                                    <i class="fa-solid fa-link" title="lier a des ventes"></i>
+                                </a>
                             </td>
                         </tr>
                     @endforeach

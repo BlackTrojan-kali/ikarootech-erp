@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('articles', function (Blueprint $table) {
+        Schema::table('versements', function (Blueprint $table) {
             //
-            $table->string("unity");
-            $table->string("family")->nullable();
+            $table->float("montantcom")->nullable();
         });
     }
 
@@ -23,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('articles', function (Blueprint $table) {
+        Schema::table('versements', function (Blueprint $table) {
             //
         });
     }

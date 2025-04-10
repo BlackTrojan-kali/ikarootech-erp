@@ -68,9 +68,7 @@
                     <div class="modal-champs">
                         <label for="">Region :</label>
                         <select name="region">
-                            @foreach ($regions as $region)
-                                <option value="{{ $region->region }}">{{ $region->region }}</option>
-                            @endforeach
+                                <option value="{{ Auth::user()->region }}">{{  Auth::user()->region }}</option>
                         </select>
                         @if ($errors->has('region'))
                             <b class="text-red-500">{{ $errors->first('region') }}</b>

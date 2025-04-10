@@ -12,7 +12,6 @@
                     <th>
                         nom Client
                     </th>
-                    <th colspan="4" class="border  border-black">Article</th>
                     <th>
                         total facture
                     </th>
@@ -27,18 +26,7 @@
                     </th>
                     <th>actions</td>
                 </tr>
-                <tr>
-                    <th></th>
-                    <th>des.</th>
-                    <th>Qte</th>
-                    <th>PU</th>
-                    <th>PT</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
+     
             </thead>
             <tbody>
                 @foreach ($sales as $sale)
@@ -46,30 +34,18 @@
                     
                     ?>
                     <tr id="{{ $sale->id }}" class="hover:text-white hover:bg-blue-400 hover:cursor-pointer">
-                        <?php $total_unit = 0; ?>
-                        <td rowspan="{{ count($prods) }}" class="border  border-black">
+                      
+                        <td  class="border  border-black">
                             {{ $sale->client->nom . ' ' . $sale->client->prenom }}</td>
 
-                        @foreach ($prods as $prod)
-                            <td class="border  border-black">
-                                @if ($prod['name'] == 'stargas')
-                                    {{ $prod['weight'] }} KG
-                                @else
-                                    {{ $prod['name'] }}
-                                @endif
-
-                                {{ $prod['qty'] }}
-                                {{ $prod['price'] }}
-                                {{ $prod['subtotal'] }}
-                            </td>
-                        @endforeach
-                        <td rowspan="{{ count($prods) }}"   class="border  border-black">
+                      
+                        <td   class="border  border-black">
                             {{ $sale->total_price }}
                         </td>
-                        <td  rowspan="{{ count($prods) }}"  class="border  border-black">
+                        <td    class="border  border-black">
                             {{ $sale->recieved }}
                         </td>
-                        <td  rowspan="{{ count($prods) }}"  class="border  border-black">
+                        <td    class="border  border-black">
                             <?php $ecart = $sale->recieved - $sale->total_price; ?>
                             @if ($ecart >= 0)
                                 <p class="text-blue-400">{{ $ecart }}</p>
@@ -77,8 +53,8 @@
                                 <p class="text-red-500">{{ $ecart }}</p>
                             @endif
                         </td>
-                        <td rowspan="{{ count($prods) }}"  class="border  border-black">{{ $sale->created_at }}</td>
-                        <td rowspan="{{ count($prods) }}"  class="border  border-black"><a href="{{ route('printNeoInvoice', ['id' => $sale->id]) }}"><i
+                        <td   class="border  border-black">{{ $sale->created_at }}</td>
+                        <td   class="border  border-black"><a href="{{ route('printNeoInvoice', ['id' => $sale->id]) }}"><i
                                     class="text-teal-900 fa-solid fa-download" title="generer pdf"></i></a>
 
                             <a href="{{ route('modifyInvoice', $sale->id) }}"><i
@@ -93,6 +69,9 @@
                             ?>
                             @if ($days <= 1000)
                                 <i class="text-red-500 delete fa-solid fa-trash" title="supprimer"></i>
+                            @endif
+                            @if(!$sale->id_versment)
+                            <a href="{{ route("vente_versement",["id"=>$sale->id]) }}" class="text-green-700">Associer</a>
                             @endif
                         </td>
                     </tr>

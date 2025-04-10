@@ -10,7 +10,7 @@ class Clientprice extends Model
     use HasFactory;
     public function client()
     {
-        return $this->belongsTo(Client::class, "id_client", "id");
+        return $this->belongsTo(Clientcat::class, "id_cat", "id");
     }
     public function article()
     {

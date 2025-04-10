@@ -5,22 +5,32 @@
 
             <div class="w-6/12 border-2 border-gray-300">
                 <div class="modal-head">
-                    <h1>Creer un nouveau prix pour client</h1>
+                    <h1>Creer un nouveau prix pour categorie</h1>
                 </div>
                 <b class="success text-green-500"></b>
                 <b class="errors text-red-500"></b>
                 <form method="POST" class="p-2" action="{{ route('store-client-price') }}">
                     @csrf
                     <div class="modal-champs">
-                        <label for="">Client:</label>
+                        <label for="">Categorie:</label>
                         <select name="client">
                             @foreach ($clients as $client)
-                                <option value="{{ $client->id }}">{{ $client->nom }} {{ $client->prenom }}</option>
+                                <option value="{{ $client->id }}">{{ $client->name }}</option>
                             @endforeach
                         </select>
                         @if ($errors->has('client'))
                             <b class="text-red-500">{{ $errors->first('client') }}</b>
                         @endif
+                    </div>
+                    <div class="modal-champs ">
+                        <label for="">Region:</label>
+                        <select name="region">
+                            @foreach ($regions as $region)
+                                    <option value="{{ $region->region }}">
+                                        {{ $region->region }}
+                                    </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="modal-champs">
                         <label for="">Article:</label>

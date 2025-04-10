@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::table('articles', function (Blueprint $table) {
             //
-            $table->float("price")->nullable();
+            $table->float("price")->nullable()->default(0);
+            $table->string("unity");
+            $table->string("family")->nullable();
         });
     }
 

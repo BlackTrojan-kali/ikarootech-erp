@@ -12,8 +12,4 @@ class Client extends Model
     {
         return $this->belongsTo(Clientcat::class, "id_clientcat", "id");
     }
-    public function price()
-    {
-        return $this->hasMany(Clientprice::class);
-    }
 }

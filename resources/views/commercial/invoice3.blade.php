@@ -137,12 +137,16 @@
         sup {
             font-size: 0.8rem;
         }
+        .info-com{
+            font-size: 14px;
+            text-align: start;
+        }
     </style>
     <header>
         <div class="logo-section">
             <img src="{{ 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('images/logo.png'))) }}"
                 width="150px">
-            <p>
+            <p class="info-com">
                 <b>{{ env('COMPANIE_NAME') }}</b><br>
                 <b>B.P:</b>{{ env('COMPANIE_ADDRESS') }} <br>
                 <b>Tél:</b>{{ env('COMPANIE_CANTACT_1') }} <br>

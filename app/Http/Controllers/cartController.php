@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Client;
+use App\Models\Clientcat;
 use App\Models\Clientprice;
 use App\Models\Invoices;
 use App\Models\Invoicetrace;
@@ -23,6 +24,7 @@ class cartController extends Controller
             "article" => "string | required",
             "qty" => "numeric |required",
         ]);
+
         $article = Article::findOrFail(intval($request->article));
         Cart::add($request->article, $article->title, $request->qty, $article->price, $article->weight);
         return back()->withSuccess("added successfully");
@@ -55,7 +57,10 @@ class cartController extends Controller
             "type" => "string |  required",
         ]);
         $client = Client::findOrFail($request->client);
-        $articles = Clientprice::where("id_client", $request->client)->get();
+        
+        $clientcat = Clientcat::where("id",$client->id_clientcat)->first();
+        $articles = Clientprice::where("id_cat", $clientcat->id)->where("region",Auth::user()->region)->get();
+    
         if (count(Cart::content()) <= 0) {
             return back()->withErrors(["message" => "votre panier est vide"]);
         }
@@ -110,7 +115,7 @@ class cartController extends Controller
 
         $invoice = Invoices::findOrFail($id);
         $client = Client::findOrFail($invoice->id_client);
-        $articles = Clientprice::where("id_client", $client->id)->get();
+        $articles = Clientprice::where("id_cat", $client->id_clientcat)->get();
         $pdf = Pdf::loadView("commercial.invoice3", ["invoice" => $invoice, "articles" => $articles, "client" => $client]);
         return $pdf->download($client->nom . $client->prenom . $invoice->created_at . ".pdf");
     }

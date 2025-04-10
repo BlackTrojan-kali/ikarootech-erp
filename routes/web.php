@@ -127,6 +127,9 @@ Route::group(["middleware" => "auth"], function () {
                   Route::get("/commercial/modifyInvoice/{id}", [Controllers\cartController::class, "modifySales"])->name("modifyInvoice");
                   Route::post("/commercial/modifyInvoice/post/{id}", [Controllers\cartController::class, "updateSales"])->name("updateInvoice");
                   Route::delete("/commercial/deleteInvoice/{id}", [Controllers\cartController::class, "deleteSale"])->name("deleteInvoice");
+                 //assoc vente versement
+                 Route::get("/commercial/assoc-vente-versement/{id}",[Controllers\CommercialController::class,"vente_versement"])->name("vente_versement");
+                 Route::get("/commercial/association/{id_vente}/{id_versement}",[Controllers\CommercialController::class,"vente_versement_assoc"])->name("versement_vente_assoc");
             }
       );
       Route::middleware(isCommercial::class)->group(function () {
@@ -156,6 +159,7 @@ Route::group(["middleware" => "auth"], function () {
             Route::post("/controller/versement/excel", [Controllers\ExcelController::class, "exportVersement"])->name("boss_versementexcel");
             Route::post("/releves-excel", [Controllers\ExcelController::class, "exportReleves"])->name("releves_excel");
             Route::post("/producer/genProdHistConExcel", [Controllers\ExcelController::class, "exportProduction"])->name("genProdHistConExcel");
+       
       });
       //DIRECTOR INTERFACES
       Route::middleware(IsDirector::class)->group(

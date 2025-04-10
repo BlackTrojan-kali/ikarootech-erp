@@ -74,7 +74,7 @@
 
                 <!-- <li class="elem" id="activate-pdf-form">Etats des mouvements</li> -->
                 <li class="elem"><a href="{{ route('list-clients') }}">CLIENTS</a></li>
-                <li class="elem"><a href="{{ route('client-price') }}">PRIX CLIENTS</a></li>
+                <li class="elem"><a href="{{ route('client-price') }}">PRIX CATEGORIES</a></li>
             </ul>
         </div>
         <!--
@@ -103,8 +103,8 @@
     les ventes
     -->
         <a href="{{ route('cartlist') }}"> VENTE</a>
+<!--
 
-        <!--
             <div class="font-bold cursor-pointer dropdown relative">VENTES <i class="fa-solid fa-angle-down"></i>
                 <ul class="drop-items">
 
@@ -112,9 +112,9 @@
                     <li class="elem" id="activate-form-consigne">Consignes</li>
                     <li class="elem" id="activate-acSales-form">Accessoires</li>
                 </ul>
-            </div>
+            </div>-->
             <div class="font-bold cursor-pointer dropdown relative" id="activate-versement-form">BANQUES
-        </div>-->
+        </div>
         <div class="dropdown cursor-pointer font-bold"> ETATS <i class="fa-solid fa-angle-down"></i>
             <div class="drop-items">
                 <!--   <div class="drop-2 elem">
@@ -489,6 +489,10 @@
                         @if ($errors->has('commentaire'))
                             <b class="text-red-500">{{ $errors->first('commentaire') }}</b>
                         @endif
+                    </div>
+                    <div class="modal-champs">
+                        <label for="">Montant Commentaire:</label>
+                        <input type="text" name="montant_com" required>
                     </div>
                     <div class="modal-validation">
                         <button type="reset">annuler</button>

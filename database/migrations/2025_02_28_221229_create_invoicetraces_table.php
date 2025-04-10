@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer("qty");
             $table->float("unit_price");
             $table->string("region");
+            $table->string("type");
             $table->foreign("id_invoice")->references("id")->on("invoices")->onDelete("cascade");
             $table->foreign("id_article")->references("id")->on("articles")->onDelete("cascade");
             $table->timestamps();

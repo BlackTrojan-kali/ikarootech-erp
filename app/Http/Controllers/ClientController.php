@@ -183,7 +183,7 @@ class ClientController extends Controller
     }
     public function modifClient($id)
     {
-        $client = Client::where("id", $id)->with("Clientcat")->first();
+        $client = Clientcat::where("id", $id)->first();
         $categories = Clientcat::all();
         switch (Auth::user()->role) {
             case "super":
@@ -242,10 +242,12 @@ class ClientController extends Controller
                 $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
                 $mobile = Citerne::where("type", "mobile")->get();
                 $fixe  = Citerne::where("type", "fixe")->get();
+                $prices = Clientprice::with("client", "article")->where("region",Auth::user()->region)->get();
                 return view("controller.prix-client", ["prices" => $prices, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             case "commercial":
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
                 $clients = Client::all();
+                $prices = Clientprice::with("client", "article")->where("region",Auth::user()->region)->get();
                 $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
                 $accessories = Article::where("type", "=", "accessoire")->get("title");
                 return view("commercial.prix-client", ["clientsList" => $clients, "articlesList" => $articles, "clientsList" => $clients, "articlesList" => $articles, "prices" => $prices, "stocks" => $stocks, "accessories" => $accessories]);
@@ -255,11 +257,12 @@ class ClientController extends Controller
     }
     public function createPrice()
     {
-        $clients = Client::all();
+        $clients = Clientcat::all();
         $articles = Article::all();
         switch (Auth::user()->role) {
             case "super":
-                return view("super.create-client-price", ["clients" => $clients, "articles" => $articles]);
+                $region = Region::all();
+                return view("super.create-client-price", ["regions"=>$region,"clients" => $clients, "articles" => $articles]);
             case "controller":
                 $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
                 $mobile = Citerne::where("type", "mobile")->get();
@@ -270,7 +273,8 @@ class ClientController extends Controller
                 $accessories = Article::where("type", "=", "accessoire")->get("title");
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
                 $clients = Client::all();
-                return view("commercial.create-client-price", ["clientsList" => $clients, "articlesList" => $articles, "clients" => $clients, "articles" => $articles, "stocks" => $stocks, "accessories" => $accessories]);
+                $cats = Clientcat::all();
+                return view("commercial.create-client-price", ["clientsList" => $clients, "articlesList" => $articles, "clients" => $cats, "articles" => $articles, "stocks" => $stocks, "accessories" => $accessories]);
             default:
                 return back()->withErrors(["error" => "you are not authorized to access this ressource"]);
         }
@@ -281,12 +285,18 @@ class ClientController extends Controller
             "client" => "string | required",
             "article" => "string | required",
             "price" => "numeric | required",
+            "region"=>"string|required",
             "consigne_price" => "numeric | required",
         ]);
+        $exist = ClientPrice::where("id_cat",$request->client)->where("id_article",$request->article)->where("region",$request->region)->first();
+        if($exist){
+            return back()->withErrors(["message"=>"le prix de cet article existe deja "]);
+        }
         $price = new Clientprice();
-        $price->id_client = $request->client;
+        $price->id_cat = $request->client;
         $price->id_article = $request->article;
         $price->unite_price = $request->price;
+        $price->region = $request->region;
         $price->consigne_price = $request->consigne_price;
         $price->save();
         return back()->withSuccess("price created with success");

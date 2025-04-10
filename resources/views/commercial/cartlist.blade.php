@@ -75,7 +75,7 @@
                         @endif
                     </div>
                     <div class="champs">
-                        <label for="">somme percue:</label>
+                        <label for="">Encaissement:</label>
                         <input type="number" name="amount" required>
                         @if ($errors->has('amount'))
                             <p class="text-red-500">{{ $errors->first('amount') }}</p>

@@ -122,7 +122,7 @@
                     <!-- <li class="elem" id="activate-pdf-form">Etats des mouvements</li> -->
                     <li class="elem"><a href="{{ route('client-cats') }}">CATEGORIES CLIENTS</a></li>
                     <li class="elem"><a href="{{ route('list-clients') }}">CLIENTS</a></li>
-                    <li class="elem"><a href="{{ route('client-price') }}">PRIX CLIENTS</a></li>
+                    <li class="elem"><a href="{{ route('client-price') }}">PRIX CATEGORIES</a></li>
                 </ul>
             </div>
         </nav>
@@ -159,7 +159,9 @@
                     <div class="modal-champs">
                         <label for="">etat :</label><br>
 
-                        <input type="radio" value="1" name="state"> GLOBAL
+                        <input type="radio" value="777" name="state"> GLOBAL
+                        <input type="radio" value="0" name="state"> VIDES
+                        <input type="radio" value="1" name="state"> PLEINES
                     </div>
                     @if ($errors->has('state'))
                         <span class="text-red-500">{{ $errors->first('state') }}</span>

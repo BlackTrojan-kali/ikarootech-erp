@@ -12,4 +12,7 @@ class Invoices extends Model
     {
         return $this->belongsTo(Client::class, "id_client", "id");
     }
+    public function versement(){
+        return $this->belongsTo(Versement::class,"id_versement","id");
+    }
 }

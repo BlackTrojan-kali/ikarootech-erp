@@ -19,7 +19,7 @@
                 @foreach ($prices as $price)
                     <tr class="mb-5 ">
                         <td>{{ $price->id }}</td>
-                        <td>{{ $price->client->nom . ' ' . $price->client->prenom }}</td>
+                        <td>{{ $price->client->name}}</td>
                         <td>
                             @if ($price->article->type == 'accessoire')
                                 {{ $price->article->title }}

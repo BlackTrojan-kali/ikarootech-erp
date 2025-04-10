@@ -84,7 +84,7 @@
                         <!-- <li class="elem" id="activate-pdf-form">Etats des mouvements</li> -->
                         <li class="elem"><a href="{{ route('client-cats') }}">CATEGORIES CLIENTS</a></li>
                         <li class="elem"><a href="{{ route('list-clients') }}">CLIENTS</a></li>
-                        <li class="elem"><a href="{{ route('client-price') }}">PRIX CLIENTS</a></li>
+                        <li class="elem"><a href="{{ route('client-price') }}">PRIX CATEGORIES</a></li>
                     </ul>
                 </div>
             </nav>

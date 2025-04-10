@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string("region");
             $table->string("currency");
             $table->string("type");
+            $table->unsignedBigInteger("id_versement")->nullable();
+            $table->foreign("id_versement")->references("id")->on("versements");
             $table->foreign("id_client")->references("id")->on("clients");
             $table->timestamps();
         });

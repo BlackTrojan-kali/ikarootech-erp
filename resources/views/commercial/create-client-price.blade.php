@@ -12,10 +12,10 @@
                 <form method="POST" class="p-2" action="{{ route('store-client-price') }}">
                     @csrf
                     <div class="modal-champs">
-                        <label for="">Client:</label>
+                        <label for="">Categorie:</label>
                         <select name="client">
                             @foreach ($clients as $client)
-                                <option value="{{ $client->id }}">{{ $client->nom }} {{ $client->prenom }}</option>
+                                <option value="{{ $client->id }}">{{ $client->name }} </option>
                             @endforeach
                         </select>
                         @if ($errors->has('client'))
@@ -48,6 +48,13 @@
                     <div class="modal-champs">
                         <label for="">Prix GPL:</label>
                         <input type="number" name="price">
+                        @if ($errors->has('price'))
+                            <b class="text-red-500">{{ $errors->first('price') }}</b>
+                        @endif
+                    </div>
+                    <div class="modal-champs hidden">
+                        <label for="">Prix GPL:</label>
+                        <input type="text" name="region" value="{{ Auth::user()->region }}">
                         @if ($errors->has('price'))
                             <b class="text-red-500">{{ $errors->first('price') }}</b>
                         @endif

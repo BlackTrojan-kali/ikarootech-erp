@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Clientcat extends Model
 {
     use HasFactory;
+    public function price(){
+        return $this->hasMany(Clientprice::class,"id_cat","id");
+    }
 }
