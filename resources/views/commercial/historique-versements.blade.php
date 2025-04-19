@@ -65,9 +65,8 @@
                                     <i class="text-red-500 delete fa-solid fa-trash" title="supprimer"></i>
                                 @endif
                                 
-                                <a href="">
                                     <i class="fa-solid fa-link" title="lier a des ventes"></i>
-                                </a>
+                           
                             </td>
                         </tr>
                     @endforeach
@@ -133,6 +132,8 @@
                                 @if ($days <= 3)
                                     <i class="text-red-500 delete fa-solid fa-trash" title="supprimer"></i>
                                 @endif
+                                
+                                <i class="fa-solid fa-link" title="lier a des ventes"></i>
                             </td>
                         </tr>
                     @endforeach
@@ -199,6 +200,8 @@
                                 @if ($days <= 3)
                                     <i class="text-red-500 delete fa-solid fa-trash" title="supprimer"></i>
                                 @endif
+                                
+                                <i class="fa-solid fa-link" title="lier a des ventes"></i>
                             </td>
                         </tr>
                     @endforeach
@@ -209,8 +212,95 @@
 
         </div>
     </center>
+    <center>
+    <div class=" bg-white top-1/3 left-1/4 p-2 border rounded-md hidden border-black modal-list fixed">
+        <div class="w-full justify-end">
+            <button class="primary text-white p-2 rounded-md" id="associate">associer</button>
+            <button class="secondary text-white p-2 rounded-md" id="close">Fermer</button>
+        </div>
+        <form id="associationForm" action="{{ route("assoc_versement_vente") }}" method="POST">
+        @csrf
+            <table id="ventesTable">
+            <thead>
+                <tr>
+                    <td>Client</td>
+                    <td>Total Facture</td>
+                    <td>Mode de Paiment</td>
+                    <td>type</td>
+                    <td>date</td>
+                    <th><input type="checkbox" id="all"/></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($invoices as $invoice )
+                    <tr>
+
+                    <td>{{ $invoice->client->name." ".$invoice->client->prenom }}</td>
+                    <td>{{ $invoice->total_price  }}</td>
+                    <td>{{ $invoice->currency }}</td>
+                    <td>{{$invoice->type}}</td>
+                    <td>{{$invoice->created_at}}</td>
+                    <td>
+                        <input type="checkbox" class="vente-checkbox" value="{{ $invoice->id }}"></td>
+                   
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </form>
+    </div>
+    </center>
     <script type="module">
         $(function() {
+            let id_versement = 0;
+            $("#table1").on("click",".fa-link",function(){
+                id_versement =$(this).parent().parent().attr("id");
+                
+                $(".modal-list").removeClass("hidden");
+            })
+            $("#table2").on("click",".fa-link",function(){
+                id_versement =$(this).parent().parent().attr("id");
+                
+                $(".modal-list").removeClass("hidden");
+            })
+            $("#table3").on("click",".fa-link",function(){
+                id_versement =$(this).parent().parent().attr("id");
+                
+                $(".modal-list").removeClass("hidden");
+            })
+            let oTable = $('#ventesTable').dataTable();
+            $('#all').click(function (e) {
+            $('#ventesTable tbody :checkbox').prop('checked', $(this).is(':checked'));
+            e.stopImmediatePropagation();
+            });
+
+            $('#associate').click(function() {
+            var selectedVentes = [];
+            $('.vente-checkbox:checked').each(function() {
+                selectedVentes.push($(this).val());
+            });
+            if (selectedVentes.length > 0) {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'ventes',
+                    value: selectedVentes.join(',')
+                }).appendTo('#associationForm');
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'versement',
+                    value: id_versement
+                }).appendTo('#associationForm');
+
+                $('#associationForm').submit();
+            } else {
+                alert('Veuillez sélectionner au moins une vente.');
+            }
+        });
+//modal functions
+$("#close").on("click",function(){
+    $(".modal-list").addClass("hidden");
+})
+//tables functions delete edit
             $("#table1").on("click", ".delete", function() {
                 var id = $(this).parent().parent().attr("id");
                 var token = $("meta[name='csrf-token']").attr("content");

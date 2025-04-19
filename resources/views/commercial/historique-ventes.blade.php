@@ -70,9 +70,9 @@
                             @if ($days <= 1000)
                                 <i class="text-red-500 delete fa-solid fa-trash" title="supprimer"></i>
                             @endif
-                            @if(!$sale->id_versment)
-                            <a href="{{ route("vente_versement",["id"=>$sale->id]) }}" class="text-green-700">Associer</a>
-                            @endif
+                            <a href="{{ route("vente_versement",["id"=>$sale->id]) }}" class="text-green-700"><i class="fa-solid fa-link"></i></a>
+                            <a href="{{ route("vente_versement_detach",["id"=>$sale->id]) }}" class="text-yellow-700">detacher</a>
+                        
                         </td>
                     </tr>
                 @endforeach

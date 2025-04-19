@@ -129,7 +129,10 @@ Route::group(["middleware" => "auth"], function () {
                   Route::delete("/commercial/deleteInvoice/{id}", [Controllers\cartController::class, "deleteSale"])->name("deleteInvoice");
                  //assoc vente versement
                  Route::get("/commercial/assoc-vente-versement/{id}",[Controllers\CommercialController::class,"vente_versement"])->name("vente_versement");
+                 Route::get("/commercial/detach-vente-versement/{id}",[Controllers\CommercialController::class,"vente_versement_detach"])->name("vente_versement_detach");
                  Route::get("/commercial/association/{id_vente}/{id_versement}",[Controllers\CommercialController::class,"vente_versement_assoc"])->name("versement_vente_assoc");
+                 Route::get("/commercial/dissociation/{id_vente}/{id_versement}",[Controllers\CommercialController::class,"vente_versement_dissoc"])->name("versement_vente_dissoc");
+                  Route::post("/commercila/assoc-versement-vent/",[Controllers\CommercialController::class,"versement_vente_assoc"])->name("assoc_versement_vente");
             }
       );
       Route::middleware(isCommercial::class)->group(function () {

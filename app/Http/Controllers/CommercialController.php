@@ -43,10 +43,11 @@ class CommercialController extends Controller
             $versements1 = Versement::where("bank", "AFB")->where("region", "=", Auth::user()->region)->get();
             $versements2 = Versement::where("bank", "CCA")->where("region", "=", Auth::user()->region)->get();
             $versements3 = Versement::where("bank", "CAISSE")->where("region", "=", Auth::user()->region)->get();
+            $invoices = Invoices::sansVersement()->with("client")->get();
             if (Auth::user()->role == 'controller') {
                 return view("controller.historique-versements", ["clientsList" => $clients, "articlesList" => $articles, "ventes" => $versements1, "ventes2" => $versements2, "ventes3" => $versements3, "type" => $type, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             }
-            return view("commercial.historique-versements", ["clientsList" => $clients, "articlesList" => $articles, "stocks" => $stocks, "accessories" => $accessories, "ventes" => $versements1, "ventes3" => $versements3,  "ventes2" => $versements2, "type" => $type]);
+            return view("commercial.historique-versements", ["invoices"=>$invoices,"clientsList" => $clients, "articlesList" => $articles, "stocks" => $stocks, "accessories" => $accessories, "ventes" => $versements1, "ventes3" => $versements3,  "ventes2" => $versements2, "type" => $type]);
         } else {
             $ventes = Vente::where("type", $type)->where("region", Auth::user()->region)->get();
             //neo invoices
@@ -495,7 +496,7 @@ class CommercialController extends Controller
     }
     //associer une vente a un versement
     public function vente_versement($id_vente){
-        $versements = Versement::all();
+        $versements = Versement::sansInvoiceSpec($id_vente)->where("region",Auth::user()->region)->get();
         $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
         $accessories = Article::where("type", "=", "accessoire")->get("title");
         $articles = Article::where("state", 1)->orWhere("type", "accessoire")->get();
@@ -503,10 +504,34 @@ class CommercialController extends Controller
         $sale = Invoices::findOrfail($id_vente);
         return view("commercial.vente_versement_assoc",["versements"=>$versements,"sale"=>$sale,"clientsList" => $clients, "articlesList" => $articles, "stocks" => $stocks, "accessories" => $accessories]);
     }
+    //desassocier une vente a un versement
+    public function vente_versement_detach($id_vente){
+        $versements = Versement::avecInvoiceSpec($id_vente)->where("region",Auth::user()->region)->get();
+        $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
+        $accessories = Article::where("type", "=", "accessoire")->get("title");
+        $articles = Article::where("state", 1)->orWhere("type", "accessoire")->get();
+        $clients = Client::all();
+        $sale = Invoices::findOrfail($id_vente);
+        return view("commercial.vente_versement_detach",["versements"=>$versements,"sale"=>$sale,"clientsList" => $clients, "articlesList" => $articles, "stocks" => $stocks, "accessories" => $accessories]);
+    }
     public function vente_versement_assoc($id_vente,$id_verse){
         $invoice = Invoices::findOrFail($id_vente);
-        $invoice->id_versement = $id_verse;
+        $invoice->versement()->attach($id_verse) ;
         $invoice->save();
         return back()->withSuccess("versement associe avec succes");
+    }
+    public function vente_versement_dissoc($id_vente,$id_verse){
+        $invoice = Invoices::findOrFail($id_vente);
+        $invoice->versement()->detach($id_verse) ;
+        $invoice->save();
+        return back()->withSuccess("versement associe avec succes");
+    }
+    public function versement_vente_assoc(Request $request){
+        $versement = Versement::findOrFail($request->versement);
+        $ventesIds = explode(",",$request->ventes);
+        $versement->Invoice()->attach($ventesIds);
+        
+        return back()->withSuccess("association realisee avec success");
+        
     }
 }
