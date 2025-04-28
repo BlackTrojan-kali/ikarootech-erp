@@ -27,19 +27,31 @@ class DirectorController extends Controller
     {
         $year = 2024;
         $region = Region::all();
-        $versements =  DB::table('versements')
-            ->select(
+        $versements =  Versement::query()
+        ->selectRaw('DATE_FORMAT(versements.created_at, "%Y-%m") as mois')
+        ->selectRaw('SUM(versements.montant_gpl) as total_gpl')
+        ->selectRaw('SUM(versements.montant_consigne) as total_consigne')
+        ->selectRaw('SUM(invoices.total_price) as total_factures')
+        ->selectRaw('versements.bank as bank') 
+        ->leftJoin('invoices_versement', 'versements.id', '=', 'invoices_versement.versement_id')
+        ->leftJoin('invoices', 'invoices_versement.invoices_id', '=', 'invoices.id')
+        ->groupBy('mois','versements.bank')
+        ->orderBy('mois', 'desc','versements.bank')
+        ->get();
+        
+        /*select(
                 DB::raw('YEAR(created_at) as annee'),
                 DB::raw('MONTH(created_at) as mois'),
                 'bank',
                 DB::raw('SUM(montant_gpl) as total_gpl')
-            )
+            )->with(['Invoice' => function ($query) {
+                $query->select( 'total_price'); // Sélectionner uniquement les colonnes nécessaires
+            }])
             ->groupBy('annee', 'mois', 'bank')
             ->orderBy('annee')
             ->orderBy('mois')
             ->orderBy('bank')
-            ->get();
-
+            ->get();*/
 
         //Versement::
         //selectRaw('YEAR(created_at) as annee, MONTH(created_at) as mois,bank,SUM(montant_gpl) as total_gpl')->whereYear("created_at", $year)->groupBy("annee", "mois", "bank",)->get();
@@ -51,18 +63,18 @@ class DirectorController extends Controller
     {
         $year = 2024;
         $region = Region::all();
-        $versements =  DB::table('versements')
-            ->select(
-                DB::raw('YEAR(created_at) as annee'),
-                DB::raw('MONTH(created_at) as mois'),
-                'bank',
-                DB::raw('SUM(montant_consigne) as total_gpl')
-            )
-            ->groupBy('annee', 'mois', 'bank')
-            ->orderBy('annee')
-            ->orderBy('mois')
-            ->orderBy('bank')
-            ->get();
+        $versements =  Versement::query()
+        ->selectRaw('DATE_FORMAT(versements.created_at, "%Y-%m") as mois')
+        ->selectRaw('SUM(versements.montant_gpl) as total_gpl')
+        ->selectRaw('SUM(versements.montant_consigne) as total_consigne')
+        ->selectRaw('SUM(invoices.total_price) as total_factures')
+        ->selectRaw('versements.bank as bank') 
+        ->leftJoin('invoices_versement', 'versements.id', '=', 'invoices_versement.versement_id')
+        ->leftJoin('invoices', 'invoices_versement.invoices_id', '=', 'invoices.id')
+        ->groupBy('mois','versements.bank')
+        ->orderBy('mois', 'desc','versements.bank')
+        ->get();
+        
         //Versement::selectRaw('YEAR(created_at) as annee, MONTH(created_at) as mois,bank,SUM(montant_consigne) as total_gpl')->whereYear("created_at", $year)->groupBy("annee", "mois", "bank",)->get();
         $type = "Consigne";
         return view("director.globalCA", ["versements" => $versements, "region" => $region, "type" => $type]);
@@ -71,18 +83,19 @@ class DirectorController extends Controller
     {
         $year = 2024;
         $region = Region::all();
-        $versements = DB::table('versements')
-            ->select(
-                DB::raw('YEAR(created_at) as annee'),
-                DB::raw('MONTH(created_at) as mois'),
-                'bank',
-                DB::raw('SUM(montant_gpl) as total_gpl')
-            )->where("region", $regionHere)
-            ->groupBy('annee', 'mois', 'bank')
-            ->orderBy('annee')
-            ->orderBy('mois')
-            ->orderBy('bank')
-            ->get();
+        $versements = Versement::query()
+        ->selectRaw('DATE_FORMAT(versements.created_at, "%Y-%m") as mois')
+        ->selectRaw('SUM(versements.montant_gpl) as total_gpl')
+        ->selectRaw('SUM(versements.montant_consigne) as total_consigne')
+        ->selectRaw('SUM(invoices.total_price) as total_factures')
+        ->selectRaw('versements.bank as bank') 
+        ->where('versements.region', $regionHere) 
+        ->leftJoin('invoices_versement', 'versements.id', '=', 'invoices_versement.versement_id')
+        ->leftJoin('invoices', 'invoices_versement.invoices_id', '=', 'invoices.id')
+        ->groupBy('mois','versements.bank')
+        ->orderBy('mois', 'desc','versements.bank')
+        ->get();
+        
         // Versement::selectRaw('YEAR(created_at) as annee, MONTH(created_at) as mois,region,bank,SUM(montant_gpl) as total_gpl')->where("region", $regionHere)->whereYear("created_at", $year)->groupBy("annee", "mois", "region", "bank")->get();
         $type = "GPL";
         return view("director.CAPerRegion", ["versements" => $versements, "region" => $region, "here" => $regionHere, "type" => $type]);
@@ -92,18 +105,18 @@ class DirectorController extends Controller
     {
         $year = 2024;
         $region = Region::all();
-        $versements = DB::table('versements')
-            ->select(
-                DB::raw('YEAR(created_at) as annee'),
-                DB::raw('MONTH(created_at) as mois'),
-                'bank',
-                DB::raw('SUM(montant_consigne) as total_gpl')
-            )->where("region", $regionHere)
-            ->groupBy('annee', 'mois', 'bank')
-            ->orderBy('annee')
-            ->orderBy('mois')
-            ->orderBy('bank')
-            ->get();
+        $versements = Versement::query()
+        ->selectRaw('DATE_FORMAT(versements.created_at, "%Y-%m") as mois')
+        ->selectRaw('SUM(versements.montant_gpl) as total_gpl')
+        ->selectRaw('SUM(versements.montant_consigne) as total_consigne')
+        ->selectRaw('SUM(invoices.total_price) as total_factures')
+        ->selectRaw('versements.bank as bank') 
+        ->where('versements.region', $regionHere) 
+        ->leftJoin('invoices_versement', 'versements.id', '=', 'invoices_versement.versement_id')
+        ->leftJoin('invoices', 'invoices_versement.invoices_id', '=', 'invoices.id')
+        ->groupBy('mois','versements.bank')
+        ->orderBy('mois', 'desc','versements.bank')
+        ->get();
         //Versement::selectRaw('YEAR(created_at) as annee, MONTH(created_at) as mois,region,bank,SUM(montant_consigne) as total_gpl')->where("region", $regionHere)->whereYear("created_at", $year)->groupBy("annee", "mois", "region", "bank")->get();
         $type = "consigne";
         return view("director.CAPerRegion", ["versements" => $versements, "region" => $region, "here" => $regionHere, "type" => $type]);
@@ -257,18 +270,17 @@ class DirectorController extends Controller
         if ($request->region == "global") {
             if ($request->type == "gpl") {
                 $region = Region::all();
-                $versements =  DB::table('versements')
-                    ->select(
-                        DB::raw('YEAR(created_at) as annee'),
-                        DB::raw('MONTH(created_at) as mois'),
-                        'bank',
-                        DB::raw('SUM(montant_gpl) as total_gpl')
-                    )
-                    ->groupBy('annee', 'mois', 'bank')
-                    ->orderBy('annee')
-                    ->orderBy('mois')
-                    ->orderBy('bank')
-                    ->get();
+                $versements =  Versement::query()
+                ->selectRaw('DATE_FORMAT(versements.created_at, "%Y-%m") as mois')
+                ->selectRaw('SUM(versements.montant_gpl) as total_gpl')
+                ->selectRaw('SUM(versements.montant_consigne) as total_consigne')
+                ->selectRaw('SUM(invoices.total_price) as total_factures')
+                ->selectRaw('versements.bank as bank') 
+                ->leftJoin('invoices_versement', 'versements.id', '=', 'invoices_versement.versement_id')
+                ->leftJoin('invoices', 'invoices_versement.invoices_id', '=', 'invoices.id')
+                ->groupBy('mois','versements.bank')
+                ->orderBy('mois', 'desc','versements.bank')
+                ->get();
                 $pdf = Pdf::loadview("director.GcaPDF", ["versements" => $versements, "region" => $region, "type" => $request->type]);
 
                 $pdf->output();
@@ -279,18 +291,17 @@ class DirectorController extends Controller
                 return $pdf->download($request->region . $request->type . "GLOBAL.pdf");
             } else {
                 $region = Region::all();
-                $versements =  DB::table('versements')
-                    ->select(
-                        DB::raw('YEAR(created_at) as annee'),
-                        DB::raw('MONTH(created_at) as mois'),
-                        'bank',
-                        DB::raw('SUM(montant_consigne) as total_gpl')
-                    )
-                    ->groupBy('annee', 'mois', 'bank')
-                    ->orderBy('annee')
-                    ->orderBy('mois')
-                    ->orderBy('bank')
-                    ->get();
+                $versements =   Versement::query()
+                ->selectRaw('DATE_FORMAT(versements.created_at, "%Y-%m") as mois')
+                ->selectRaw('SUM(versements.montant_gpl) as total_gpl')
+                ->selectRaw('SUM(versements.montant_consigne) as total_consigne')
+                ->selectRaw('SUM(invoices.total_price) as total_factures')
+                ->selectRaw('versements.bank as bank') 
+                ->leftJoin('invoices_versement', 'versements.id', '=', 'invoices_versement.versement_id')
+                ->leftJoin('invoices', 'invoices_versement.invoices_id', '=', 'invoices.id')
+                ->groupBy('mois','versements.bank')
+                ->orderBy('mois', 'desc','versements.bank')
+                ->get();
                 $pdf = Pdf::loadview("director.GcaPDF", ["versements" => $versements, "region" => $region, "type" => $request->type]);
 
                 $pdf->output();

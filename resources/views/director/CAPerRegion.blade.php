@@ -8,6 +8,8 @@
                     <tr>
                         <th>Date</th>
                         <th>Versements</th>
+                        <th>Total Facture</th>
+                        <th>Ecart</th>
                         <th>Bank</th>
                     </tr>
                 </thead>
@@ -15,7 +17,19 @@
                     @foreach ($versements as $versement)
                         <tr>
                             <td>{{ $versement->mois }}/{{ $versement->annee }} </td>
+                           @if($type == "GPL")
                             <td>{{ number_format($versement->total_gpl, 2, ',', ' ') }}</td>
+                            <td>{{$versement->total_factures}}</td>
+                            <?php $ecart = $versement->total_factures - ($versement->total_gpl)?>
+                            <td class="{{ $ecart >0? "text-green-500":"text-red-500" }}">{{$ecart}}</td>
+                           @else
+                           
+                           <td>{{ number_format($versement->total_consigne, 2, ',', ' ') }}</td>
+                           <td>{{$versement->total_facture}}</td>
+                           <?php $ecart = $versement->total_factures - ($versement->total_consigne)?>
+                           <td class="{{ $ecart >0? "text-green-500":"text-red-500" }}">{{$ecart}}</td>
+                           <td></td>
+                           @endif
                             <td>{{ $versement->bank }}</td>
                         </tr>
                     @endforeach

@@ -93,6 +93,7 @@
                 <ul class="drop-items">
 
                     <li class="elem" id="activate-pdf-form">Etats des mouvements</li>
+                    <li class="elem text-red-600" id="activate-new-sales-state-pdf-form">Etats des vente nouveau</li>
                     <li class="elem" id="activate-receives-pdf-form">Historique des receptions</li>
                     <li class="elem" id="activate-sales-state-pdf-form">Etats des Ventes</li>
                     <li class="elem" id="activate-versement-pdf-form">Historique des Versements</li>
@@ -128,6 +129,82 @@
         </nav>
     </header>
 
+    <!--FORMULAIRE GENERATION ETAT DES VENTES NOUVEAU-->
+
+    <div id="new-sales-pdf-form" class="modals">
+        <center>
+
+            <div class="modal-active">
+                <div class="modal-head">
+                    <h1>Generer un PDF historique des ventes/consignes <span class="text-red-500"> Nouveau</span></h1>
+                    <b class="close-modal">X </b>
+                </div>
+                <b class="success text-green-500"></b>
+                <b class="errors text-red-500"></b>
+                <form method="POST" action="{{ route('new-sales-pdf') }}">
+                    @csrf
+                    <div class="modal-champs">
+                        <label for="">Du:</label>
+                        <input type="date" name="depart">
+                        @if ($errors->has('depart'))
+                            <b class="text-red-500">{{ $errors->first('depart') }}</b>
+                        @endif
+                    </div>
+                    <div class="modal-champs">
+                        <label for="">Au:</label>
+                        <input type="date" name="fin">
+                        @if ($errors->has('fin'))
+                            <b class="text-red-500">{{ $errors->first('fin') }}</b>
+                        @endif
+                    </div>
+                    <div class="modal-champs">
+                        <label for="">Client :</label><br>
+
+                        <select name="client" id="">
+
+                            <option value="all">Tous</option>
+                            @foreach ($clientsList as $client)
+                                <option value="{{ $client->id }}">{{ $client->nom }} {{ $client->prenom }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @if ($errors->has('state'))
+                        <b class="text-red-500">{{ $errors->first('state') }}</b>
+                    @endif
+                    <div class="modal-champs">
+                        <label for="">Type de Action</label>
+                        <select name="sale" id="">
+
+                            <option value="vente">vente</option>
+                            <option value="consigne">consigne</option>
+
+                        </select>
+                        @if ($errors->has('move'))
+                            <b class="text-red-500">{{ $errors->first('move') }}</b>
+                        @endif
+                    </div>
+                    <div class="modal-champs">
+                        <label for="">Article:</label>
+                        <select name="article" id="">
+                            @foreach ($articlesList as $article)
+                                <option value="{{ $article->id }}">
+                                    {{ $article->type == 'accessoire' ? $article->title : $article->weight . ' kg' }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @if ($errors->has('move'))
+                            <b class="text-red-500">{{ $errors->first('move') }}</b>
+                        @endif
+                    </div>
+                    <div class="modal-validation">
+                        <button type="reset">annuler</button>
+                        <button type="submit">creer</button>
+                    </div>
+                </form>
+            </div>
+        </center>
+    </div>
 
     <!--FORMULAIRE DE GENERATION DE EXCEL-->
     <div id="move-excel-form" class="modals">
@@ -936,6 +1013,26 @@
     <script type="module">
         $(function() {
             $('table').DataTable();
+            
+            
+            //ACTION NEW SALES STATE PDF FORM
+            $("#activate-new-sales-state-pdf-form").on("click", function(e) {
+                e.preventDefault()
+                if ($("#new-sales-pdf-form").hasClass("modals")) {
+                    $("#new-sales-pdf-form").addClass("modals-active")
+
+                    $("#new-sales-pdf-form").removeClass("modals")
+                }
+            })
+
+            $(".close-modal").on("click", function(e) {
+                e.preventDefault()
+                if ($("#new-sales-pdf-form").hasClass("modals-active")) {
+                    $("#new-sales-pdf-form").addClass("modals")
+                    $("#new-sales-pdf-form").removeClass("modals-active")
+                }
+            })
+            
             //ACTION generate excel movements
             $("#activate-move-excels-form").on("click", function(e) {
                 e.preventDefault()
@@ -970,6 +1067,9 @@
                     $("#recieves-excel-form").removeClass("modals-active")
                 }
             })
+
+
+
             //ACTION GENERER EXCEL VENTES
 
             $("#activate-sales-state-excel-form").on("click", function(e) {

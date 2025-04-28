@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Broute;
 use App\Models\Citerne;
+use App\Models\Client;
 use App\Models\Movement;
 use App\Models\Receive;
 use App\Models\Stock;
@@ -23,7 +24,9 @@ class BossController extends Controller
         $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
         $mobile = Citerne::where("type", "mobile")->get();
         $fixe  = Citerne::where("type", "fixe")->get();
-        return view("controller.ControllerDashboard", ["stocks" => $stocks, "mobile" => $mobile, "fixe" => $fixe]);
+        $articles = Article::where("state", 1)->orWhere("type", "accessoire")->get();
+        $clients = Client::all();
+        return view("controller.ControllerDashboard", ["clientsList" => $clients, "articlesList" => $articles,"stocks" => $stocks, "mobile" => $mobile, "fixe" => $fixe]);
     }
 
     public function showCiterne()
@@ -34,9 +37,10 @@ class BossController extends Controller
             $query->where("region", Auth::user()->region);
         }])->where("type", "fixe")->get();
         $mobile = Citerne::where("type", "mobile")->get();
+        $articles = Article::where("state", 1)->orWhere("type", "accessoire")->get();
+        $clients = Client::all();
 
-
-        return view("controller.citerne", ["stocks" => $stocks, "fixe" => $fixe, "mobile" => $mobile]);
+        return view("controller.citerne", ["clientsList" => $clients, "articlesList" => $articles,"stocks" => $stocks, "fixe" => $fixe, "mobile" => $mobile]);
     }
     public function generate_receive_pdf(Request $request)
     {
@@ -219,4 +223,7 @@ class BossController extends Controller
         $canvas->page_text(510, 800, "[{PAGE_NUM} sur {PAGE_COUNT}]", null, 15, array(0, 0, 0));
         return $pdf->download($broute->nom_chauffeur . $broute->created_at . ".pdf");
     }
+
+    //new sales state pdf
+    
 }

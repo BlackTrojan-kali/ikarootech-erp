@@ -13,6 +13,9 @@
                     <tr>
                         <th>Date</th>
                         <th>Versements</th>
+                        <th>Consigne</th>
+                        <th>Total Factures</th>
+                        <th>Ecart</th>
                         <th>Bank</th>
                     </tr>
                 </thead>
@@ -21,6 +24,11 @@
                         <tr>
                             <td>{{ $versement->mois }}/{{ $versement->annee }} </td>
                             <td>{{ number_format($versement->total_gpl, 2, ',', ' ') }}</td>
+                            <td>{{ number_format($versement->total_consigne, 2, ',', ' ') }}</td>
+                           
+                            <td>{{$versement->total_factures}}</td>
+                            <?php $ecart = $versement->total_factures - ($versement->total_gpl+$versement->total_consigne);?>
+                            <td class="{{ $ecart >0? "text-green-500":"text-red-500" }}">{{$ecart}}</td>
                             <td>{{ $versement->bank }}</td>
                         </tr>
                     @endforeach
