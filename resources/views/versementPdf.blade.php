@@ -86,6 +86,7 @@
                 <th>CONSIGNE</th>
                 <th>TOTAL</th>
                 <th>COMMENTAIRE</th>
+                <th>TOTAL COMMENTAIRE</th>
                 <th>BORDEREAU</th>
                 <th>Date</th>
             </thead>
@@ -93,6 +94,7 @@
             $total_gpl = 0;
             $total_consigne = 0;
             $total_total = 0;
+            $total_commentaire = 0;
             ?>
             <tbody>
                 @foreach ($deposit as $data)
@@ -102,11 +104,13 @@
                         $total_gpl += $data->montant_gpl;
                         $total_consigne += $data->montant_consigne;
                         $total_total += $data->montant_gpl + $data->montant_consigne;
+                        $total_commentaire += $data->montantcom;
                         ?>
                         <td>{{ number_format($data->montant_gpl, 2, ',', ' ') }}</td>
                         <td>{{ number_format($data->montant_consigne, 2, ',', ' ') }}</td>
                         <td>{{ number_format($data->montant_gpl + $data->montant_consigne, 2, ',', ' ') }}</td>
-                        <td>{{ $data->commentaire }}</td>
+                        <td>{{ $data->commentaire }}</td>  
+                        <td>{{ $data->montantcom}}</td>
                         <td>{{ $data->bordereau }}</td>
                         <td>{{ $data->created_at }}</td>
                     </tr>
@@ -117,6 +121,7 @@
                     <td><b>{{ number_format($total_consigne, 2, ',', ' ') }}</b></td>
                     <td><b>{{ number_format($total_total, 2, ',', ' ') }}</b></td>
                     <td>/</td>
+                    <td><b>{{ number_format($total_commentaire, 2, ',', ' ') }}</b></td>
                     <td>/</td>
                     <td>/</td>
                 </tr>

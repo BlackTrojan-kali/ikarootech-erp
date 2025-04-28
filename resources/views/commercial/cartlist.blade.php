@@ -8,7 +8,7 @@
                     <h1>Formulaire de ventes/Consigne</h1>
                 </div>
 
-                List des elements
+                Liste des elements
                 <div class="flex flex-col gap-2 w-full p-2 ">
                     @foreach (Cart::content() as $row)
                         <div class="font-bold w-full flex gap-4  p-2  shadow-lg rounded-md bg-slate-200 ">

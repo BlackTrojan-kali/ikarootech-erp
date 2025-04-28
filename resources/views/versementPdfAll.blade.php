@@ -38,13 +38,15 @@
         }
 
         .table-1,
-        .table-2 {
+        .table-2,
+        .table-3 {
             border: 2px solid black;
 
         }
 
         .table-1 th,
-        .table-2 th {
+        .table-2 th,
+        .table-3 th {
             font-size: 0.8rem;
 
         }
@@ -54,7 +56,10 @@
         .table-1 td,
         .table-2 th,
         .table-2 tr,
-        .table-2 td {
+        .table-2 td,
+        .table-3 th,
+        .table-3 tr,
+        .table-3 td  {
             border: 1px solid black;
             padding: 4px;
 
@@ -96,19 +101,30 @@
         </u></center>
     <table class="table-1">
         <thead>
-            <th colspan="5">VERSEMENTS AFB</th>
+            <th colspan="6">VERSEMENTS AFB</th>
+            <th colspan="3">VENTES Associees</th>
             <tr>
                 <th><b>DATES</b></th>
                 <th><b>GPL</b></th>
                 <th><b>Consigne</b></th>
                 <th><b>Total</b></th>
                 <th><b>Commentaire</b></th>
+                <th><b>Total Commentaire</b></th>
+                <th><b>Factures Associées</b></th>
+                <th><b>Total Factures</b></th>
+                <th><b>Écart</b></th>
             </tr>
         </thead>
 
         <?php $total1 = 0;
         $total_gpl1 = 0;
-        $total_consigne1 = 0; ?>
+        $total_consigne1 = 0;
+        $total_com1 = 0; 
+        
+        $total_ecart1 = 0;
+        $total_invoices1 = 0;
+        ?>
+
         <tbody>
             @foreach ($afb as $data)
                 <tr class="hover:bg-blue-400 hover:text-white hover:cursor-pointer">
@@ -125,9 +141,33 @@
                     $total1 += $data->montant_gpl + $data->montant_consigne;
                     $total_gpl1 += $data->montant_gpl;
                     $total_consigne1 += $data->montant_consigne;
+                    $total_com1 += $data->montantcom;
                     ?>
                     <td>{{ $data->montant_gpl + $data->montant_consigne }}</td>
                     <td>{{ $data->commentaire }}</td>
+                    <td>{{$data->montantcom}}</td>
+                    <td>
+                        <ul>
+                            <?php $total_factures= 0?>
+                            @foreach ($data->Invoice as $facture)
+                                <li>Facture N°: {{ $facture->region."-".$facture->id."/".$facture->id_client}} ({{ $facture->total_price }})</li>
+                                <?php $total_factures += $facture->total_price;?>
+                                {{-- Adaptez l'affichage des informations de la facture selon vos besoins --}}
+                            @endforeach
+                        </ul>
+                    </td>
+                    <td>{{ $total_factures }}
+
+                        <?php 
+                            $ecart = $total_factures - ($data->montant_gpl +$data->montant_consigne);
+                            
+                            $total_ecart1 += $ecart;
+                            $total_invoices1 +=$total_factures;
+                            ?>
+                    </td>
+                    <td style="{{ $ecart < 0 ? 'color: red;' : 'color: green;' }}">
+                        {{ $ecart }}
+                    </td>
                 </tr>
             @endforeach
             <tr style="font-weight: bold;">
@@ -136,6 +176,10 @@
                 <td>{{ $total_consigne1 }}</td>
                 <td>{{ number_format($total1, 2, ',', ' ') }}</td>
                 <td>/</td>
+                <td>{{ number_format($total_com1, 2, ',', ' ') }}</td>
+                <td>/</td>
+                <td>{{ number_format($total_invoices1, 2, ',', ' ') }}</td>
+                <td>{{ number_format($total_ecart1, 2, ',', ' ') }}</td>
             </tr>
         </tbody>
     </table>
@@ -148,20 +192,119 @@
 
     <table class="table-2">
         <thead>
-            <th colspan="5">VERSEMENTS CCA</th>
+            <th colspan="6">VERSEMENTS CCA</th>
+            <th colspan="3">VENTES Associees</th>
             <tr>
                 <th><b>DATES</b></th>
                 <th><b>GPL</b></th>
                 <th><b>Consigne</b></th>
                 <th><b>Total</b></th>
                 <th><b>Commentaire</b></th>
+                <th><b>Total Commentaire</b></th>
+                <th><b>Factures Associées</b></th>
+                <th><b>Total Factures</b></th>
+                <th><b>Écart</b></th>
             </tr>
         </thead>
         <?php $total = 0;
         $total_gpl = 0;
-        $total_consigne = 0; ?>
+        $total_consigne = 0;
+        $total_com2 = 0;
+
+        $total_ecart2 = 0;
+        $total_invoices2 = 0;
+         ?>
+        
         <tbody>
             @foreach ($cca as $data)
+                <tr class="hover:bg-blue-400 border-1 hover:text-white hover:cursor-pointer">
+                    <td>
+                        {{ $data->created_at }}
+                    </td>
+
+                    <td>
+                        {{ $data->montant_gpl }}
+                    </td>
+                    <td>{{ $data->montant_consigne }}</td>
+                    <td>
+                        <?php
+                        $total += $data->montant_gpl + $data->montant_consigne;
+                        $total_gpl += $data->montant_gpl;
+                        $total_consigne += $data->montant_consigne;
+                        $total_com2 += $data->montantcom;
+                        ?>
+                        {{ $data->montant_gpl + $data->montant_consigne }}</td>
+                    <td>{{ $data->commentaire }}</td>
+                    <td>{{$data->montantcom}}</td>
+                     <td>
+                        <ul>
+                            <?php $total_factures= 0?>
+                            @foreach ($data->Invoice as $facture)
+                                <li>Facture N°: {{ $facture->region."-".$facture->id."/".$facture->id_client}} ({{ $facture->total_price }})</li>
+                                <?php $total_factures += $facture->total_price;?>
+                                {{-- Adaptez l'affichage des informations de la facture selon vos besoins --}}
+                            @endforeach
+                        </ul>
+                    </td>
+                    <td>{{ $total_factures }}
+
+                        <?php 
+                            $ecart = $total_factures - ($data->montant_gpl +$data->montant_consigne);
+                            
+                            $total_ecart2 += $ecart;
+                            $total_invoices2 +=$total_factures;
+                            ?>
+                    </td>
+                    <td style="{{ $ecart < 0 ? 'color: red;' : 'color: green;' }}">
+                        {{ $ecart }}
+                    </td>
+                </tr>
+            @endforeach
+            <tr style="font-weight: bold;">
+                <td>/</td>
+                <td>{{ $total_gpl }}</td>
+                <td>{{ $total_consigne }}</td>
+                <td>{{ number_format($total, 2, ',', ' ') }}</td>
+                <td>/</td>
+                <td>{{ number_format($total_com2, 2, ',', ' ') }}</td>
+                <td>/</td>
+                <td>{{ number_format($total_invoices2, 2, ',', ' ') }}</td>
+                <td>{{ number_format($total_ecart2, 2, ',', ' ') }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <center>
+        <u>
+            <h1>CAISSE</h1>
+        </u>
+    </center>
+    <table class="table-3">
+        <thead>
+            <th colspan="6">VERSEMENTS CAISSE</th>
+            <th colspan="3">VENTES Associees</th>
+            <tr>
+                <th><b>DATES</b></th>
+                <th><b>GPL</b></th>
+                <th><b>Consigne</b></th>
+                <th><b>Total</b></th>
+                <th><b>Commentaire</b></th>
+                <th><b>Total Commentaire</b></th>
+                <th><b>Factures Associées</b></th>
+                <th><b>Total Factures</b></th>
+                <th><b>Écart</b></th>
+            </tr>
+        </thead>
+        <?php $total = 0;
+        $total_gpl = 0;
+        $total_consigne = 0;
+        $total_com3 = 0;
+        
+        $total_ecart3 = 0;
+        $total_invoices3 = 0;
+         ?>
+        <tbody>
+            @foreach ($caisse as $data)
                 <tr class="hover:bg-blue-400 hover:text-white hover:cursor-pointer">
                     <td>
                         {{ $data->created_at }}
@@ -176,9 +319,32 @@
                         $total += $data->montant_gpl + $data->montant_consigne;
                         $total_gpl += $data->montant_gpl;
                         $total_consigne += $data->montant_consigne;
+                        $total_com3 += $data->montantcom;
                         ?>
                         {{ $data->montant_gpl + $data->montant_consigne }}</td>
                     <td>{{ $data->commentaire }}</td>
+                    <td>{{$data->montantcom}}</td> <td>
+                        <ul>
+                            <?php $total_factures= 0?>
+                            @foreach ($data->Invoice as $facture)
+                                <li>Facture N°: {{ $facture->region."-".$facture->id."/".$facture->id_client}} ({{ $facture->total_price }})</li>
+                                <?php $total_factures += $facture->total_price;?>
+                                {{-- Adaptez l'affichage des informations de la facture selon vos besoins --}}
+                            @endforeach
+                        </ul>
+                    </td>
+                    <td>{{ $total_factures }}
+
+                        <?php 
+                            $ecart = $total_factures - ($data->montant_gpl +$data->montant_consigne);
+                            
+                            $total_ecart3 += $ecart;
+                            $total_invoices3 +=$total_factures;
+                            ?>
+                    </td>
+                    <td style="{{ $ecart < 0 ? 'color: red;' : 'color: green;' }}">
+                        {{ $ecart }}
+                    </td>
                 </tr>
             @endforeach
             <tr style="font-weight: bold;">
@@ -187,10 +353,13 @@
                 <td>{{ $total_consigne }}</td>
                 <td>{{ number_format($total, 2, ',', ' ') }}</td>
                 <td>/</td>
+                <td>{{ number_format($total_com3, 2, ',', ' ') }}</td>
+                <td>/</td>
+                <td>{{ number_format($total_invoices3, 2, ',', ' ') }}</td>
+                <td>{{ number_format($total_ecart3, 2, ',', ' ') }}</td>
             </tr>
         </tbody>
     </table>
-
 </body>
 
 </html>
