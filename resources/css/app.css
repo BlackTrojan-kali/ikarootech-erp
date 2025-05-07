@@ -6,9 +6,9 @@
 
 @layer base {
     :root {
-        --primary: #21e4dd;
-        --secondary: #0b4f4e;
-        --ternary: #37a9a4;
+        --primary: #1eadc9;
+        --secondary: #035666;
+        --ternary: #5b868f;
     }
 
     body {

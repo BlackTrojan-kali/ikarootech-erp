@@ -73,8 +73,9 @@
             <ul class="drop-items">
 
                 <!-- <li class="elem" id="activate-pdf-form">Etats des mouvements</li> -->
-                <li class="elem"><a href="{{ route('list-clients') }}">CLIENTS</a></li>
-                <li class="elem"><a href="{{ route('client-price') }}">PRIX CATEGORIES</a></li>
+                    <li class="elem"><a href="{{ route('client-cats') }}">Categories client</a></li>
+                <li class="elem"><a href="{{ route('list-clients') }}">Clients</a></li>
+                <li class="elem"><a href="{{ route('client-price') }}">Prix categories</a></li>
             </ul>
         </div>
         <!--

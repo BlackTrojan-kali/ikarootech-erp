@@ -43,7 +43,7 @@ class SuperAdminPageController extends Controller
         $user->role = $request->role;
         $user->region = $request->region;
         $user->save();
-        return redirect()->route('super.manageUsers')->withSuccess("utilisateur modifier avec success");
+        return redirect()->route('manageUsers')->withSuccess("utilisateur modifier avec success");
     }
     public function deleteUser(Request $request, $id){
         $user=  User::findOrFail($id);

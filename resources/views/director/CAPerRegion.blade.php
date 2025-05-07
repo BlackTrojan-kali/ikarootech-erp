@@ -19,16 +19,16 @@
                             <td>{{ $versement->mois }}/{{ $versement->annee }} </td>
                            @if($type == "GPL")
                             <td>{{ number_format($versement->total_gpl, 2, ',', ' ') }}</td>
-                            <td>{{$versement->total_factures}}</td>
+                            <td>{{$versement->total_factures? $versement->total_factures : 0}}</td>
                             <?php $ecart = $versement->total_factures - ($versement->total_gpl)?>
                             <td class="{{ $ecart >0? "text-green-500":"text-red-500" }}">{{$ecart}}</td>
                            @else
                            
                            <td>{{ number_format($versement->total_consigne, 2, ',', ' ') }}</td>
-                           <td>{{$versement->total_facture}}</td>
+                           <td>{{$versement->total_factures? $versement->total_factures : 0}}</td>
                            <?php $ecart = $versement->total_factures - ($versement->total_consigne)?>
                            <td class="{{ $ecart >0? "text-green-500":"text-red-500" }}">{{$ecart}}</td>
-                           <td></td>
+                       
                            @endif
                             <td>{{ $versement->bank }}</td>
                         </tr>

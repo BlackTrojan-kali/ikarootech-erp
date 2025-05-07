@@ -93,6 +93,8 @@ Route::group(["middleware" => "auth"], function () {
             //modification de mouvement
             Route::get("/producer/modifmove/{id}", [Controllers\ProducerController::class, "modifyMove"])->name("modify-move-pro");
             Route::post("/producer/modifmove/post/{id}", [Controllers\ProducerController::class, "updateMove"])->name("update-move-pro");
+            //historique des depotages
+            Route::get("/producer/depotage/",[Controllers\ProducerController::class,"depotages_list"])->name("depotage_list");
       });
       Route::middleware(isCommercial::class)->controller(Controllers\CommercialController::class)->group(
             function () {

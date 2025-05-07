@@ -12,6 +12,7 @@ use App\Models\Receive;
 use App\Models\Relhistorie;
 use App\Models\Stock;
 use App\Models\Transmit;
+use App\Models\Depotage;
 use App\Models\Vracmovement;
 use App\Models\Vracstock;
 use Illuminate\Http\Request;
@@ -195,6 +196,13 @@ class ProducerController extends Controller
         $move->qty = $request->qty;
         $move->matricule = $request->matricule;
         $move->save();
+        $move  = new Depotage();
+        $move->id_citerne_fixe = $fixe;
+        $move->id_citerne_mobile = $mobile;
+        $move->qty = $request->qty;
+        $move->matricule = $request->matricule;
+        $move->region = Auth::user()->region;
+        $move->save();
         return response()->json(["success" => "mouvement enregistre avec success"]);
     }
 
@@ -291,6 +299,7 @@ class ProducerController extends Controller
 
             $move->id_citerne = $citerne->id;
             $move->type = $type;
+            $move->remains = 30000;
             $move->qty = $request->qty;
             $move->bordereau = $request->bord;
             $move->region = Auth::user()->region;
@@ -331,6 +340,7 @@ class ProducerController extends Controller
         $citerne->stock[0]->stock_theo = $stockQty - (intval($request->qty) * floatval($type));
         $citerne->stock[0]->stock_rel = $stockQty - (intval($request->qty) * floatval($type));
         $citerne->stock[0]->save();
+        $move->remains =$citerne->stock[0]->stock_theo;
         //$move->save();
 
         if ($article) {
@@ -478,5 +488,17 @@ class ProducerController extends Controller
         $move->stock = $request->stock_qty;
         $move->save();
         return back()->withSuccess("movement modifié avec succès");
+    }
+    public function depotages_list(){
+        $vracstocks = Citerne::where("type", "mobile")->get();
+        $fixe  = Citerne::where("type", "fixe")->get();
+        $allvrackstocks = Citerne::all();
+        $depotages = Depotage::with("citerne_mobile","citerne_fixe")->get();
+        return view("producer.depotages",["depotages"=>$depotages,"vrac" => $vracstocks,"all" => $allvrackstocks, "fixe" => $fixe,]);
+    }
+    public function delete_depotage($idDep){
+        $dep = Depotage::findOrFail($idDep);
+        $dep->delete();
+        return back()->withSuccess("movement supprime avec succes");
     }
 }

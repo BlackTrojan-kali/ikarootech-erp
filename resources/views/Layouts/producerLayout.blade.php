@@ -155,6 +155,7 @@
                         </ul>
                     </div>
                     <div class="drop-2 elem"><a href="{{ route('showProdHist') }}">ETAT DES PRODUCTION</a></div>
+                    <div class="drop-2 elem"><a href="{{ route('depotage_list') }}">ETAT DES DEPOTAGES</a></div>
                 </div>
             </div>
 
