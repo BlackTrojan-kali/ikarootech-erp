@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\Citerne;
+use App\Models\Client;
 use App\Models\Receive;
 use App\Models\Region;
 use App\Models\Relhistorie;
@@ -35,7 +36,9 @@ class CiternController extends Controller
         $fixe  = Citerne::where("type", "fixe")->get();
         $depotages = Relhistorie::all();
         if (Auth::user()->role == "controller") {
-            return view("controller.history-transmit", ["depotages" => $depotages, "stocks" => $stocks, "fixe" => $fixe, "mobile" => $mobile]);
+            $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
+            $clients = Client::where("region",Auth::user()->region)->get();
+            return view("controller.history-transmit", ["clientsList" => $clients,"articlesList" => $articles,"depotages" => $depotages, "stocks" => $stocks, "fixe" => $fixe, "mobile" => $mobile]);
         }
         return view("manager.history-transmit", ["depotages" => $depotages, "stocks" => $stocks, "accessories" => $accessories, "vrac" => $vracstocks, "fixe" => $fixe, "mobile" => $mobile]);
     }
@@ -51,8 +54,12 @@ class CiternController extends Controller
         if (Auth::user()->role == "magasin") {
             return view("manager.reception", ["mobile" => $mobile, "accessories" => $accessories, "vrac" => $vracstocks, "receptions" => $receptions, "fixe" => $fixe, "all" => $allvrackstocks]);
         } else if (Auth::user()->role == "controller") {
-            return view("controller.citerneRel", ["receptions" => $receptions, "stocks" => $stocks, "fixe" => $fixe, "mobile" => $mobile]);
-        } else {
+            
+            $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
+            $clients = Client::where("region",Auth::user()->region)->get();
+            return view("controller.citerneRel", ["clientsList" => $clients,"articlesList" => $articles,"receptions" => $receptions, "stocks" => $stocks, "fixe" => $fixe, "mobile" => $mobile]);
+        } 
+        else {
             return view("producer.reception", ["receptions" => $receptions, "vrac" => $vracstocks, "fixe" => $fixe, "all" => $allvrackstocks]);
         }
     }

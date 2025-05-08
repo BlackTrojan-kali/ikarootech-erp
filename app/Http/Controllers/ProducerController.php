@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Action;
 use App\Models\Article;
 use App\Models\Citerne;
+use App\Models\Client;
 use App\Models\Movement;
 use App\Models\Producermove;
 use App\Models\Receive;
@@ -424,7 +425,9 @@ class ProducerController extends Controller
         $datas = Producermove::where("region", Auth::user()->region)->get();
         $mobile = Citerne::where("type", "mobile")->get();
         if (Auth::user()->role == "controller") {
-            return view("controller.ProdMoves", ["datas" => $datas, "mobile" => $mobile, "fixe" => $fixe, "vrac" => $vracstocks, "all" => $allvrackstocks, "stocks" => $stocks]);
+            $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
+            $clients = Client::where("region",Auth::user()->region)->get();
+            return view("controller.ProdMoves", ["clientsList" => $clients,"articlesList" => $articles,"datas" => $datas, "mobile" => $mobile, "fixe" => $fixe, "vrac" => $vracstocks, "all" => $allvrackstocks, "stocks" => $stocks]);
         }
         return view("producer.ProdMoves", ["datas" => $datas, "fixe" => $fixe, "vrac" => $vracstocks, "all" => $allvrackstocks, "stocks" => $stocks]);
     }

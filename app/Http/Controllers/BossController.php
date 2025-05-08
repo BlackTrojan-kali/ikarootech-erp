@@ -209,7 +209,9 @@ class BossController extends Controller
         $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
         $mobile = Citerne::where("type", "mobile")->get();
         $fixe  = Citerne::where("type", "fixe")->get();
-        return view("controller.list-broute", ["broutes" => $broutes, "stocks" => $stocks, "mobile" => $mobile, "fixe" => $fixe]);
+        $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
+        $clients = Client::where("region",Auth::user()->region)->get();
+        return view("controller.list-broute", ["clientsList" => $clients,"articlesList" => $articles,"broutes" => $broutes, "stocks" => $stocks, "mobile" => $mobile, "fixe" => $fixe]);
     }
     public function BroutePDF(Request $request, $idRoute)
     {

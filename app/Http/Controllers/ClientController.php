@@ -28,10 +28,12 @@ class ClientController extends Controller
                 $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
                 $mobile = Citerne::where("type", "mobile")->get();
                 $fixe  = Citerne::where("type", "fixe")->get();
-                return view("controller.list_client_cats", ["clientcats" => $clientcats, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
+                $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
+                $clients = Client::where("region",Auth::user()->region)->get();
+                return view("controller.list_client_cats", ["clientsList" => $clients, "articlesList" => $articles, "clientcats" => $clientcats, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             case "commercial":
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
-                $clients = Client::all();
+                $clients = Client::where("region",Auth::user()->region)->get();
                 $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
                 $accessories = Article::where("type", "=", "accessoire")->get("title");
                 return view("commercial.list_client_cats", ["clientsList" => $clients, "articlesList" => $articles, "clientcats" => $clientcats, "stocks" => $stocks, "accessories" => $accessories]);
@@ -48,10 +50,12 @@ class ClientController extends Controller
                 $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
                 $mobile = Citerne::where("type", "mobile")->get();
                 $fixe  = Citerne::where("type", "fixe")->get();
-                return view("controller.create_client_cat", ["mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
+                $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
+                $clients = Client::where("region",Auth::user()->region)->get();
+                return view("controller.create_client_cat", ["clientsList" => $clients, "articlesList" => $articles,"mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             case "commercial":
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
-                $clients = Client::all();
+                $clients = Client::where("region",Auth::user()->region)->get();
                 $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
                 $accessories = Article::where("type", "=", "accessoire")->get("title");
                 return view("commercial.create_client_cat", ["clientsList" => $clients, "articlesList" => $articles, "stocks" => $stocks, "accessories" => $accessories]);
@@ -79,13 +83,15 @@ class ClientController extends Controller
             case "super":
                 return view("super.modify_client_cat", ["clientCat" => $clientcat]);
             case "controller":
+                $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
+                $clients = Client::where("region",Auth::user()->region)->get();
                 $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
                 $mobile = Citerne::where("type", "mobile")->get();
                 $fixe  = Citerne::where("type", "fixe")->get();
-                return view("controller.modify_client_cat", ["clientCat" => $clientcat, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
+                return view("controller.modify_client_cat", ["clientsList" => $clients, "articlesList" => $articles,"clientCat" => $clientcat, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             case "commercial":
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
-                $clients = Client::all();
+                $clients = Client::where("region",Auth::user()->region)->get();
                 $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
                 $accessories = Article::where("type", "=", "accessoire")->get("title");
                 return view("commercial.modify_client_cat", ["clientsList" => $clients, "articlesList" => $articles, "clientCat" => $clientcat, "stocks" => $stocks, "accessories" => $accessories]);
@@ -121,10 +127,11 @@ class ClientController extends Controller
                 return view("super.list-clients", ["clients" => $clients]);
             case "controller":
                 $clients = Client::where("region",Auth::user()->region)->with("Clientcat")->get();
+                $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
                 $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
                 $mobile = Citerne::where("type", "mobile")->get();
                 $fixe  = Citerne::where("type", "fixe")->get();
-                return view("controller.list-clients", ["clients" => $clients, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
+                return view("controller.list-clients", ["clientsList" => $clients, "articlesList" => $articles, "clients" => $clients, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             case "commercial":
                 $clients = Client::where("region",Auth::user()->region)->with("Clientcat")->get();
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
@@ -143,13 +150,15 @@ class ClientController extends Controller
             case "super":
                 return view("super.create_client", ["categories" => $categories, "regions" => $regions]);
             case "controller":
+                $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
+                $clients = Client::where("region",Auth::user()->region)->get();
                 $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
                 $mobile = Citerne::where("type", "mobile")->get();
                 $fixe  = Citerne::where("type", "fixe")->get();
-                return view("controller.create_client", ["categories" => $categories, "regions" => $regions, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
+                return view("controller.create_client", ["clientsList" => $clients, "articlesList" => $articles,"categories" => $categories, "regions" => $regions, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             case "commercial":
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
-                $clients = Client::all();
+                $clients = Client::where("region",Auth::user()->region)->get();
                 $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
                 $accessories = Article::where("type", "=", "accessoire")->get("title");
                 return view("commercial.create_client", ["clientsList" => $clients, "articlesList" => $articles, "categories" => $categories, "regions" => $regions, "stocks" => $stocks, "accessories" => $accessories]);
@@ -183,7 +192,7 @@ class ClientController extends Controller
     }
     public function modifClient($id)
     {
-        $client = Clientcat::where("id", $id)->first();
+        $client = Client::where("id", $id)->first();
         $categories = Clientcat::all();
         switch (Auth::user()->role) {
             case "super":
@@ -191,11 +200,13 @@ class ClientController extends Controller
             case "controller":
                 $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
                 $mobile = Citerne::where("type", "mobile")->get();
+                $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
+                $clients = Client::where("region",Auth::user()->region)->get();
                 $fixe  = Citerne::where("type", "fixe")->get();
-                return view("controller.modif_client", ["client" => $client, "categories" => $categories, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
+                return view("controller.modif_client", ["clientsList" => $clients, "articlesList" => $articles,"client" => $client, "categories" => $categories, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             case "commercial":
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
-                $clients = Client::all();
+                $clients = Client::where("region",Auth::user()->region)->get();
                 $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
                 $accessories = Article::where("type", "=", "accessoire")->get("title");
                 return view("commercial.modif_client", ["clientsList" => $clients, "articlesList" => $articles, "client" => $client, "categories" => $categories, "stocks" => $stocks, "accessories" => $accessories]);
@@ -242,11 +253,13 @@ class ClientController extends Controller
                 $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
                 $mobile = Citerne::where("type", "mobile")->get();
                 $fixe  = Citerne::where("type", "fixe")->get();
+                $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
+                $clients = Client::where("region",Auth::user()->region)->get();
                 $prices = Clientprice::with("client", "article")->where("region",Auth::user()->region)->get();
-                return view("controller.prix-client", ["prices" => $prices, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
+                return view("controller.prix-client", ["clientsList" => $clients, "articlesList" => $articles,"prices" => $prices, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             case "commercial":
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
-                $clients = Client::all();
+                $clients = Client::where("region",Auth::user()->region)->get();
                 $prices = Clientprice::with("client", "article")->where("region",Auth::user()->region)->get();
                 $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
                 $accessories = Article::where("type", "=", "accessoire")->get("title");
@@ -257,22 +270,24 @@ class ClientController extends Controller
     }
     public function createPrice()
     {
-        $clients = Clientcat::all();
+        $cats = Clientcat::all();
         $articles = Article::all();
         switch (Auth::user()->role) {
             case "super":
                 $region = Region::all();
-                return view("super.create-client-price", ["regions"=>$region,"clients" => $clients, "articles" => $articles]);
+                return view("super.create-client-price", ["regions"=>$region,"clients" => $cats, "articles" => $articles]);
             case "controller":
                 $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
                 $mobile = Citerne::where("type", "mobile")->get();
                 $fixe  = Citerne::where("type", "fixe")->get();
-                return view("controller.create-client-price", ["clients" => $clients, "articles" => $articles, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
+                $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
+                $clients = Client::where("region",Auth::user()->region)->get();
+                return view("controller.create-client-price", ["clientsList" => $clients, "articlesList" => $articles,"clients" => $cats, "articles" => $articles, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             case "commercial":
                 $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
                 $accessories = Article::where("type", "=", "accessoire")->get("title");
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
-                $clients = Client::all();
+                $clients = Client::where("region",Auth::user()->region)->get();
                 $cats = Clientcat::all();
                 return view("commercial.create-client-price", ["clientsList" => $clients, "articlesList" => $articles, "clients" => $cats, "articles" => $articles, "stocks" => $stocks, "accessories" => $accessories]);
             default:
@@ -317,10 +332,12 @@ class ClientController extends Controller
                 $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
                 $mobile = Citerne::where("type", "mobile")->get();
                 $fixe  = Citerne::where("type", "fixe")->get();
-                return view("controller.edit-prices", ["price" => $price, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
+                $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
+                $clients = Client::where("region",Auth::user()->region)->get();
+                return view("controller.edit-prices", ["clientsList" => $clients, "articlesList" => $articles,"price" => $price, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             case "commercial":
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
-                $clients = Client::all();
+                $clients = Client::where("region",Auth::user()->region)->get();
                 $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
                 $accessories = Article::where("type", "=", "accessoire")->get("title");
                 return view("commercial.edit-prices", ["clientsList" => $clients, "articlesList" => $articles, "price" => $price, "stocks" => $stocks, "accessories" => $accessories]);
