@@ -6,6 +6,7 @@
             <div class="w-6/12 border-2 border-gray-300">
                 <div class="modal-head">
                     <h1>Creer une nouvelle categorie client</h1>
+                    <span><a href="{{ route("list-clients") }}">X</a></span>
                 </div>
                 <b class="success text-green-500"></b>
                 <b class="errors text-red-500"></b>

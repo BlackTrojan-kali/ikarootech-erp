@@ -6,6 +6,7 @@
             <div class="w-6/12 border-2 border-gray-300">
                 <div class="modal-head">
                     <h1>Creer une nouvelle categorie client</h1>
+                    <span><a href="{{ route("list-clients") }}">X</a></span>
                 </div>
                 <b class="success text-green-500"></b>
                 <b class="errors text-red-500"></b>
@@ -55,6 +56,13 @@
                         @endif
                     </div>
                     <div class="modal-champs">
+                        <label for="">Numero D'identifiant Unique:</label>
+                        <input type="text" name="numero_unique">
+                        @if ($errors->has('numero_unique'))
+                            <b class="text-red-500">{{ $errors->first('numero_unique') }}</b>
+                        @endif
+                    </div>
+                    <div class="modal-champs">
                         <label for="">Categorie:</label>
                         <select name="category">
                             @foreach ($categories as $category)
@@ -68,7 +76,12 @@
                     <div class="modal-champs">
                         <label for="">Region :</label>
                         <select name="region">
-                                <option value="{{ Auth::user()->region }}">{{  Auth::user()->region }}</option>
+                            <option value="{{ Auth::user()->region }}">{{  Auth::user()->region }}</option>
+                      
+                            @foreach ($regions as $region )
+                            <option value="{{ $region->region }}">{{ $region->region }}</option>
+                      
+                            @endforeach
                         </select>
                         @if ($errors->has('region'))
                             <b class="text-red-500">{{ $errors->first('region') }}</b>

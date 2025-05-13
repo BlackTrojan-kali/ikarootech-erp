@@ -6,6 +6,7 @@
             <div class="w-6/12 border-2 border-gray-300">
                 <div class="modal-head">
                     <h1>Creer un nouveau prix pour une categorie</h1>
+                    <span><a href="{{ route("client-price") }}">X</a></span>
                 </div>
                 <b class="success text-green-500"></b>
                 <b class="errors text-red-500"></b>
@@ -46,15 +47,22 @@
                         @endif
                     </div>
                     <div class="modal-champs">
-                        <label for="">Prix GPL:</label>
-                        <input type="number" name="price">
-                        @if ($errors->has('price'))
-                            <b class="text-red-500">{{ $errors->first('price') }}</b>
+                        <label for="">Region:</label>
+                        <select name="region">
+                            @foreach ($regions as $region)
+                                        <option value="{{ $region->region}}">
+                                            {{ $region->region }}
+
+                                        </option>
+                            @endforeach
+                        </select>
+                        @if ($errors->has('region'))
+                            <b class="text-red-500">{{ $errors->first('region') }}</b>
                         @endif
                     </div>
-                    <div class="modal-champs hidden">
+                    <div class="modal-champs">
                         <label for="">Prix GPL:</label>
-                        <input type="text" name="region" value="{{ Auth::user()->region }}">
+                        <input type="number" name="price">
                         @if ($errors->has('price'))
                             <b class="text-red-500">{{ $errors->first('price') }}</b>
                         @endif

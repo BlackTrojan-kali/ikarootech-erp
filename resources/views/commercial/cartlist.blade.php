@@ -74,13 +74,6 @@
                             <p class="text-red-500">{{ $errors->first('currency') }}</p>
                         @endif
                     </div>
-                    <div class="champs">
-                        <label for="">Encaissement:</label>
-                        <input type="number" name="amount" required>
-                        @if ($errors->has('amount'))
-                            <p class="text-red-500">{{ $errors->first('amount') }}</p>
-                        @endif
-                    </div>
                     <div class="flex justify-between mt-4">
                         <button type="reset" class="p-2 bg-black  text-white rounded-md">annuler</button>
                         <button type="submit" class="p-2 primary  text-white rounded-md">Valider</button>

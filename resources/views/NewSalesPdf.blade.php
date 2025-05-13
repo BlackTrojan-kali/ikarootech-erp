@@ -96,12 +96,7 @@
                     <th>
                         total facture
                     </th>
-                    <th>
-                        encaissé
-                    </th>
-                    <th>
-                        ecart
-                    </th>
+                   
                     <th>
                         date
                     </th>
@@ -128,17 +123,7 @@
                         <td class="border  border-black">
                             {{ $sale->invoice->total_price }}
                         </td>
-                        <td class="border  border-black">
-                            {{ $sale->recieved }}
-                        </td>
-                        <td class="border  border-black">
-                            <?php $ecart = $sale->recieved - $sale->invoice->total_price; ?>
-                            @if ($ecart >= 0)
-                                <p class="text-blue-400">{{ $ecart }}</p>
-                            @else
-                                <p class="text-red-500">{{ $ecart }}</p>
-                            @endif
-                        </td>
+                   
                         <td class="border  border-black">{{ $sale->created_at }}</td>
 
                     </tr>

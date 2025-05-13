@@ -53,7 +53,6 @@ class cartController extends Controller
         $request->validate([
             "client" => "required",
             "currency" => "string |required",
-            "amount" => "numeric |required",
             "type" => "string |  required",
         ]);
         $client = Client::findOrFail($request->client);
@@ -88,7 +87,6 @@ class cartController extends Controller
         $invoice->id_client = $client->id;
         $invoice->currency = $request->currency;
         $invoice->region = Auth::user()->region;
-        $invoice->recieved = $request->amount;
         $invoice->articles = Cart::content();
         $invoice->total_price = floatval(str_replace(",", "", Cart::priceTotal()));
         $invoice->type = $request->type;

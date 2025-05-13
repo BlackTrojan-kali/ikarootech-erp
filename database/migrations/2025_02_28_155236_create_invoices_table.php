@@ -16,7 +16,6 @@ return new class extends Migration
             $table->unsignedBigInteger("id_client");
             $table->json("articles");
             $table->float("total_price");
-            $table->float("recieved");
             $table->string("commercial");
             $table->string("region");
             $table->string("currency");

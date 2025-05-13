@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string("region");
             $table->string("email")->nullable();
             $table->string("registre_commerce")->nullable();
+            $table->string("numero_unique")->nullable();
             $table->unsignedBigInteger("id_clientcat");
             $table->foreign("id_clientcat")->on("clientcats")->references("id")->onDelete("CASCADE");
             $table->timestamps();

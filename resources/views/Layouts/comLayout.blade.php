@@ -68,16 +68,16 @@
 
     <nav class="mt-2 p-2 w-full text-white flex flex-col md:flex-row gap-4   primary rounded-md">
         <a href="{{ route('dashboardCom') }}"><i class="fa-solid fa-home"></i> ACCEUIL</a>
-
+<!--
         <div class="font-bold cursor-pointer dropdown relative">GERER CLIENTS<i class="fa-solid fa-angle-down"></i>
             <ul class="drop-items">
 
-                <!-- <li class="elem" id="activate-pdf-form">Etats des mouvements</li> -->
+                 <li class="elem" id="activate-pdf-form">Etats des mouvements</li> 
                     <li class="elem"><a href="{{ route('client-cats') }}">Categories client</a></li>
                 <li class="elem"><a href="{{ route('list-clients') }}">Clients</a></li>
                 <li class="elem"><a href="{{ route('client-price') }}">Prix categories</a></li>
             </ul>
-        </div>
+        </div>-->
         <!--
         <div class="font-bold cursor-pointer dropdown relative">STOCK <i class="fa-solid fa-angle-down"></i>
             <div class="drop-items">

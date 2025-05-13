@@ -16,12 +16,6 @@
                         total facture
                     </th>
                     <th>
-                        encaissé
-                    </th>
-                    <th>
-                        ecart
-                    </th>
-                    <th>
                         date
                     </th>
                     <th>actions</td>
@@ -42,17 +36,7 @@
                         <td   class="border  border-black">
                             {{ $sale->total_price }}
                         </td>
-                        <td    class="border  border-black">
-                            {{ $sale->recieved }}
-                        </td>
-                        <td    class="border  border-black">
-                            <?php $ecart = $sale->recieved - $sale->total_price; ?>
-                            @if ($ecart >= 0)
-                                <p class="text-blue-400">{{ $ecart }}</p>
-                            @else
-                                <p class="text-red-500">{{ $ecart }}</p>
-                            @endif
-                        </td>
+                    
                         <td   class="border  border-black">{{ $sale->created_at }}</td>
                         <td   class="border  border-black"><a href="{{ route('printNeoInvoice', ['id' => $sale->id]) }}"><i
                                     class="text-teal-900 fa-solid fa-download" title="generer pdf"></i></a>

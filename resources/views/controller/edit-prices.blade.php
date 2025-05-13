@@ -6,6 +6,8 @@
             <div class="w-6/12 border-2 border-gray-300">
                 <div class="modal-head">
                     <h1>Modifier le prix client</h1>
+                    
+                    <span><a href="{{ route("client-price") }}">X</a></span>
                 </div>
                 <b class="success text-green-500"></b>
                 <b class="errors text-red-500"></b>
