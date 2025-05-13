@@ -133,8 +133,6 @@
                         <td colspan="4">Totaux</td>
                         <td>{{$total_unit_total}}</td>
                         <td>{{$total_price_total}}</td>
-                        <td>{{$total_received}}</td>
-                        <td>{{$total_received - $total_price_total}}</td>
                         <td></td>
                     </tr>
                 </tfoot>

@@ -150,7 +150,7 @@
                         <ul>
                             <?php $total_factures= 0?>
                             @foreach ($data->Invoice as $facture)
-                                <li>Facture N°: {{ $facture->region."-".$facture->id."/".$facture->id_client}} ({{ $facture->total_price }})</li>
+                                <li>Facture N°: {{ $facture->region."-".$facture->id."/".$facture->client->nom." ".$facture->client->prenom}} ({{ $facture->total_price }})</li>
                                 <?php $total_factures += $facture->total_price;?>
                                 {{-- Adaptez l'affichage des informations de la facture selon vos besoins --}}
                             @endforeach
@@ -159,7 +159,7 @@
                     <td>{{ $total_factures }}
 
                         <?php 
-                            $ecart = $total_factures - ($data->montant_gpl +$data->montant_consigne);
+                            $ecart = $total_factures - ($data->montant_gpl +$data->montant_consigne)-$data->montantcom;
                             
                             $total_ecart1 += $ecart;
                             $total_invoices1 +=$total_factures;
@@ -240,8 +240,8 @@
                         <ul>
                             <?php $total_factures= 0?>
                             @foreach ($data->Invoice as $facture)
-                                <li>Facture N°: {{ $facture->region."-".$facture->id."/".$facture->id_client}} ({{ $facture->total_price }})</li>
-                                <?php $total_factures += $facture->total_price;?>
+                            <li>Facture N°: {{ $facture->region."-".$facture->id."/".$facture->client->nom." ".$facture->client->prenom}} ({{ $facture->total_price }})</li>
+                            <?php $total_factures += $facture->total_price;?>
                                 {{-- Adaptez l'affichage des informations de la facture selon vos besoins --}}
                             @endforeach
                         </ul>
@@ -249,7 +249,7 @@
                     <td>{{ $total_factures }}
 
                         <?php 
-                            $ecart = $total_factures - ($data->montant_gpl +$data->montant_consigne);
+                            $ecart = $total_factures - ($data->montant_gpl +$data->montant_consigne)-$data->montantcom;
                             
                             $total_ecart2 += $ecart;
                             $total_invoices2 +=$total_factures;
@@ -327,8 +327,8 @@
                         <ul>
                             <?php $total_factures= 0?>
                             @foreach ($data->Invoice as $facture)
-                                <li>Facture N°: {{ $facture->region."-".$facture->id."/".$facture->id_client}} ({{ $facture->total_price }})</li>
-                                <?php $total_factures += $facture->total_price;?>
+                            <li>Facture N°: {{ $facture->region."-".$facture->id."/".$facture->client->nom." ".$facture->client->prenom}} ({{ $facture->total_price }})</li>
+                            <?php $total_factures += $facture->total_price;?>
                                 {{-- Adaptez l'affichage des informations de la facture selon vos besoins --}}
                             @endforeach
                         </ul>
@@ -336,7 +336,7 @@
                     <td>{{ $total_factures }}
 
                         <?php 
-                            $ecart = $total_factures - ($data->montant_gpl +$data->montant_consigne);
+                            $ecart = $total_factures - ($data->montant_gpl +$data->montant_consigne)-$data->montantcom;
                             
                             $total_ecart3 += $ecart;
                             $total_invoices3 +=$total_factures;

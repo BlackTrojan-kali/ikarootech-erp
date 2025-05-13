@@ -211,7 +211,7 @@
                         </td>
                         <td>{{ $article['qty'] }}</td>
                         <td>{{ $article['price'] }}</td>
-                        <td>{{ $article['subtotal'] }}</td>
+                        <td>{{  number_format($article['subtotal'], 2, ',', ' ')  }}</td>
                     </tr>
                 @endforeach
             </tbody>

@@ -90,9 +90,10 @@ class cartController extends Controller
         $invoice->articles = Cart::content();
         $invoice->total_price = floatval(str_replace(",", "", Cart::priceTotal()));
         $invoice->type = $request->type;
+        
+        $invoice->save();
         $pdf = Pdf::loadView("commercial.invoice3", ["invoice" => $invoice, "articles" => $articles, "client" => $client]);
 
-        $invoice->save();
 
         foreach (Cart::content() as $content) {
             $trace = new Invoicetrace();

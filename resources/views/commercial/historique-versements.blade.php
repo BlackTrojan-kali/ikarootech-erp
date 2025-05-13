@@ -213,14 +213,14 @@
         </div>
     </center>
     <center>
-    <div class=" bg-white top-1/3 left-1/4 p-2 border rounded-md hidden border-black modal-list fixed">
-        <div class="w-full justify-end">
+    <div class=" bg-white top-1/3 left-1/4 w-1/2 p-2 border rounded-md hidden border-black modal-list fixed">
+        <div class="w-full justify-between">
             <button class="primary text-white p-2 rounded-md" id="associate">associer</button>
             <button class="secondary text-white p-2 rounded-md" id="close">Fermer</button>
         </div>
         <form id="associationForm" action="{{ route("assoc_versement_vente") }}" method="POST">
         @csrf
-            <table id="ventesTable">
+            <table id="ventesTable overflow-x-scrolls">
             <thead>
                 <tr>
                     <td>Client</td>
@@ -235,7 +235,7 @@
                 @foreach ($invoices as $invoice )
                     <tr>
 
-                    <td>{{ $invoice->client->name." ".$invoice->client->prenom }}</td>
+                    <td>{{ $invoice->client->nom." ".$invoice->client->prenom }}</td>
                     <td>{{ $invoice->total_price  }}</td>
                     <td>{{ $invoice->currency }}</td>
                     <td>{{$invoice->type}}</td>
