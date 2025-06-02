@@ -62,14 +62,14 @@
                     </div>
                     <div class="modal-champs">
                         <label for="">Prix GPL:</label>
-                        <input type="number" name="price">
+                        <input type="number" name="price" min="0">
                         @if ($errors->has('price'))
                             <b class="text-red-500">{{ $errors->first('price') }}</b>
                         @endif
                     </div>
                     <div class="modal-champs">
                         <label for="">Prix Consigne:</label>
-                        <input type="number" name="consigne_price">
+                        <input type="number" name="consigne_price" min="0">
                         @if ($errors->has('consigne_price'))
                             <b class="text-red-500">{{ $errors->first('consigne_price') }}</b>
                         @endif

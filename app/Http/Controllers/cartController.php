@@ -133,11 +133,9 @@ class cartController extends Controller
     {
         $request->validate([
             "currency" => "string | required",
-            "amount" => "numeric | required",
         ]);
         $sale = Invoices::findOrFail($idSale);
         $sale->currency = $request->currency;
-        $sale->recieved = $request->amount;
         $sale->save();
         return back()->withSuccess("Invoice modified successfully");
     }

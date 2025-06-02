@@ -16,14 +16,6 @@
 
 
                         <div class="modal-champs">
-                            <label for="">Somme recue:</label>
-                            <input type="text" value="{{ $sale->recieved }}" name="amount" value="{{ $sale->customer }}"
-                                required>
-                            @if ($errors->has('amount'))
-                                <b class="text-red-500">{{ $errors->first('amount') }}</b>
-                            @endif
-                        </div>
-                        <div class="modal-champs">
                             <label for="">Type de Paiement</label>
                             <select name="currency">
                                 <object data="{{ $sale->currency }}" type="">{{ $sale->currency }}</object>

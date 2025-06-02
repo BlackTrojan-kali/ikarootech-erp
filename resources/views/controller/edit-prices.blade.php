@@ -29,14 +29,14 @@
                     </div>
                     <div class="modal-champs">
                         <label>Price:</label>
-                        <input type="number" value="{{ $price->unite_price }}" name="price" />
+                        <input type="number" min="0" value="{{ $price->unite_price }}" name="price" />
                         @if ($errors->has('price'))
                             <p class="text-red-500">{{ $erros->first('price') }}</p>
                         @endif
                     </div>
                     <div class="modal-champs">
                         <label for="">Prix Consigne:</label>
-                        <input type="number" name="consigne_price" value="{{ $price->consigne_price }}">
+                        <input type="number" name="consigne_price" min="0" value="{{ $price->consigne_price }}">
                         @if ($errors->has('consigne_price'))
                             <b class="text-red-500">{{ $errors->first('consigne_price') }}</b>
                         @endif
