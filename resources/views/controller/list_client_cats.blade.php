@@ -9,7 +9,6 @@
                 <tr class="">
                     <td>id</td>
                     <td>Nom Categorie</td>
-                    <td>Reduction</td>
                     <td>action</td>
                 </tr>
             <tbody>
@@ -17,7 +16,6 @@
                     <tr class="mb-5 ">
                         <td>{{ $cat->id }}</td>
                         <td>{{ $cat->name }}</td>
-                        <td>{{ $cat->reduction }} %</td>
                         <td>
 
                             <a id={{ $cat->id }} href={{ route('modify-client-cat', ['id' => $cat->id]) }}

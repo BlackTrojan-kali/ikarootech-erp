@@ -6,7 +6,7 @@
             <div class="w-6/12 border-2 border-gray-300">
                 <div class="modal-head">
                     <h1>Creer une nouvelle categorie client</h1>
-                    <span><a href="{{ route("list-clients") }}">X</a></span>
+                    <span><a href="{{ route("client-cats") }}">X</a></span>
                 </div>
                 <b class="success text-green-500"></b>
                 <b class="errors text-red-500"></b>
@@ -19,9 +19,9 @@
                             <b class="text-red-500">{{ $errors->first('name') }}</b>
                         @endif
                     </div>
-                    <div class="modal-champs">
+                    <div class="modal-champs hidden">
                         <label for="">Reduction:</label>
-                        <input type="number" value="{{ $clientCat->reduction }}" name="redux">
+                        <input type="number" disabled class="hidden" value="{{ $clientCat->reduction }}" name="redux">
                         @if ($errors->has('redux'))
                             <b class="text-red-500">{{ $errors->first('redux') }}</b>
                         @endif
