@@ -22,7 +22,8 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
-
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     @if (session('success'))
         <script type="module">
@@ -232,9 +233,9 @@
                     <div class="modal-champs">
                         <label for="">Client :</label><br>
 
-                        <select name="client" id="">
+                        <select name="client" class="clients2" style="width: 100%" id="">
 
-                            <option value="all">Tous</option>
+                            <option value="all" class="w-full">Tous</option>
                             @foreach ($clientsList as $client)
                                 <option value="{{ $client->id }}">{{ $client->nom }} {{ $client->prenom }}
                                 </option>
@@ -258,7 +259,7 @@
                     </div>
                     <div class="modal-champs">
                         <label for="">Article:</label>
-                        <select name="article" id="">
+                        <select name="article" class="clients2" style="width: 100%" id="">
                             @foreach ($articlesList as $article)
                                 <option value="{{ $article->id }}">
                                     {{ $article->type == 'accessoire' ? $article->title : $article->weight . ' kg' }}
@@ -1253,7 +1254,10 @@
         //TRANSMIT FORM
 
         $('table').DataTable();
+        //smart search
+        $(".clients2").select2()
         //ACTION ENTRY ON MODAL GPL
+        
         $(function() {
             //ACTION versement historique
             $("#activate-versement-pdf-form").on("click", function(e) {

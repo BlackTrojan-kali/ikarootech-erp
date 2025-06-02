@@ -42,7 +42,7 @@
                     @csrf
                     <div class="champs">
                         <label for="">Client:</label>
-                        <select name="client" id="" class="w-full p-2 border border-black">
+                        <select  name="client" id="" class="clients w-full p-2 border border-black">
                             @foreach ($clients as $client)
                                 <option value="{{ $client->id }}">{{ $client->nom . ' ' . $client->prenom }}</option>
                             @endforeach
@@ -125,6 +125,8 @@
     </div>
     <script type="module">
         $(function() {
+            //smart search
+            $(".clients").select2();
             //ACTION versement historique
             $("#add-products-form").on("click", function(e) {
                 e.preventDefault()
