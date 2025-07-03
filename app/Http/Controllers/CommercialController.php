@@ -325,7 +325,7 @@ class CommercialController extends Controller
         $versement->bank = $request->bank;
         
         $versement->save();
-        return response()->json(["success" => "versement enregistre avec succes"]);
+        return response()->json(["success" => "versement enregistre avec succes","idVer"=>$versement->id]);
     }
     //SALES STATE GENERATE PDF
 
@@ -533,5 +533,15 @@ class CommercialController extends Controller
         
         return back()->withSuccess("association realisee avec success");
         
+    }
+//associate by saving versements
+    public function associate($idVer){
+
+        $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
+        $accessories = Article::where("type", "=", "accessoire")->get("title");
+        $articles = Article::where("state", 1)->orWhere("type", "accessoire")->get();
+        $clients = Client::all();
+            $invoices = Invoices::sansVersement()->with("client")->where("region",Auth::user()->region)->get();
+    return view("commercial.assocBySave",["invoices"=>$invoices,"idVer"=>$idVer,"clientsList" => $clients, "articlesList" => $articles, "stocks" => $stocks, "accessories" => $accessories]);
     }
 }

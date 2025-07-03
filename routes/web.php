@@ -135,6 +135,8 @@ Route::group(["middleware" => "auth"], function () {
                  Route::get("/commercial/association/{id_vente}/{id_versement}",[Controllers\CommercialController::class,"vente_versement_assoc"])->name("versement_vente_assoc");
                  Route::get("/commercial/dissociation/{id_vente}/{id_versement}",[Controllers\CommercialController::class,"vente_versement_dissoc"])->name("versement_vente_dissoc");
                   Route::post("/commercila/assoc-versement-vent/",[Controllers\CommercialController::class,"versement_vente_assoc"])->name("assoc_versement_vente");
+            //assoc view
+            Route::get("/commmercial/assoc-by-save/{idVer}",[Controllers\CommercialController::class,"associate"])->name("assocBySave");
             }
       );
       Route::middleware(isCommercial::class)->group(function () {

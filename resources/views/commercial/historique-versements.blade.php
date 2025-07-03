@@ -213,7 +213,7 @@
         </div>
     </center>
     <center>
-    <div class=" bg-white top-1/3 left-1/4 w-1/2 p-2 border rounded-md hidden border-black modal-list fixed">
+    <div class=" bg-white top-1/3 left-1/4 w-2/3 p-2 border rounded-md hidden border-black modal-list fixed">
         <div class="w-full justify-between">
             <button class="primary text-white p-2 rounded-md" id="associate">associer</button>
             <button class="secondary text-white p-2 rounded-md" id="close">Fermer</button>

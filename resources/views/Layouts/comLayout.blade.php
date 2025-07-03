@@ -1236,7 +1236,7 @@
 
 
 
-    <div class="w-full overflow-x-scroll  ">
+    <div class="w-full overflow-x-scroll h-full ">
         @yield('content')
     </div>
     <footer class="mt-10 w-full secondary flex justify-between p-4 text-white rounded-md">
@@ -1775,6 +1775,7 @@
                             $("#submitForm").prop("disabled", false);
                             $('#loading').hide();
                             $(".success").text(response.success);
+                            var idVer = response.idVer;
                             setTimeout(() => {
                                 $(".success").text("");
 
@@ -1782,6 +1783,7 @@
                             $("#submitForm").prop("disabled", false);
                             $("table").load(location.href + " table")
                             $(".info").load(location.href + " .info")
+                            window.location.href="/commmercial/assoc-by-save/"+idVer
                         }
                     }
                 })

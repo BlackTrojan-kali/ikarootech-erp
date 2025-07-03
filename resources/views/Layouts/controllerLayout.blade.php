@@ -999,7 +999,8 @@
             </div>
         </center>
     </div>
-    <div class=" overflow-x-scroll">
+
+    <div class="w-full overflow-x-scroll  h-full ">
         @yield('content')
     </div>
     <footer class="mt-10 w-full secondary flex justify-between p-4 text-white rounded-md">
