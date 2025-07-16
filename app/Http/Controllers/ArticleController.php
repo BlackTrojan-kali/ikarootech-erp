@@ -14,6 +14,8 @@ use App\Models\Role;
 use App\Models\Vracstock;
 use App\Models\Relhistorie;
 use App\Models\Articlefamily;
+use Carbon\Carbon;
+
 class ArticleController extends Controller
 {
     //
@@ -62,22 +64,22 @@ class ArticleController extends Controller
             "type" => "string | required",
             "service" => "required | string",
         ]);
-        $fromdate = $request->depart;
-        $todate = $request->fin;
+        $fromdate = Carbon::parse($request->depart)->startOfDay();
+        $todate = Carbon::parse($request->fin)->endOfDay();
         $first = null;
         $region = Auth::user()->region;
         $service = $request->service;
         if ($request->type == "777") {
             if ($request->move == "777") {
                 $data  = Movement::join("articles", "movements.article_id", "articles.id")->where("movements.service", $request->service)->where("stocks.region", Auth::user()->region)->where("article.type", "accessoire")->with("fromArticle")->select("movements.*")->orderBy("id")->get();
-                $data2  = Movement::join("articles", "movements.article_id", "articles.id")->join("stocks", "movements.stock_id", "stocks.id")->whereBetween("movements.created_at", [$request->depart, $request->fin])->where("movements.service", $request->service)->where("stocks.region", Auth::user()->region)->where("article.type", "accessoire")->with("fromArticle")->select("movements.*")->orderBy("id")->get();
+                $data2  = Movement::join("articles", "movements.article_id", "articles.id")->join("stocks", "movements.stock_id", "stocks.id")->whereBetween("movements.created_at", [$fromdate, $todate])->where("movements.service", $request->service)->where("stocks.region", Auth::user()->region)->where("article.type", "accessoire")->with("fromArticle")->select("movements.*")->orderBy("id")->get();
             } else {
-                $data  = Movement::join("articles", "movements.article_id", "articles.id")->join("stocks", "movements.stock_id", "stocks.id")->whereBetween("movements.created_at", [$request->depart, $request->fin])->where("movements.entree", $request->move)->where("movements.service", $request->service)->where("stocks.region", Auth::user()->region)->where("article.type", "accessoire")->with("fromArticle")->select("movements.*")->orderBy("id")->get();
+                $data  = Movement::join("articles", "movements.article_id", "articles.id")->join("stocks", "movements.stock_id", "stocks.id")->whereBetween("movements.created_at", [$fromdate, $todate])->where("movements.entree", $request->move)->where("movements.service", $request->service)->where("stocks.region", Auth::user()->region)->where("article.type", "accessoire")->with("fromArticle")->select("movements.*")->orderBy("id")->get();
             }
         } else {
             if ($request->move == "777") {
-                $data  = Movement::leftjoin("articles", "movements.article_id", "articles.id")->leftjoin("stocks", "movements.stock_id", "stocks.id")->whereBetween("movements.created_at", [$request->depart, $request->fin])->where("movements.service", $request->service)->where("stocks.region", Auth::user()->region)->where("articles.type", "bouteille-gaz")->where("articles.weight", floatval($request->type))->where("articles.state", 1)->with("fromArticle")->select("movements.*")->orderBy("id")->get();
-                $data2  = Movement::leftjoin("articles", "movements.article_id", "articles.id")->leftjoin("stocks", "movements.stock_id", "stocks.id")->whereBetween("movements.created_at", [$request->depart, $request->fin])->where("movements.service", $request->service)->where("stocks.region", Auth::user()->region)->where("articles.type", "bouteille-gaz")->where("articles.weight", floatval($request->type))->where("articles.state", 0)->with("fromArticle")->select("movements.*")->orderBy("id")->get();
+                $data  = Movement::leftjoin("articles", "movements.article_id", "articles.id")->leftjoin("stocks", "movements.stock_id", "stocks.id")->whereBetween("movements.created_at", [$fromdate, $todate])->where("movements.service", $request->service)->where("stocks.region", Auth::user()->region)->where("articles.type", "bouteille-gaz")->where("articles.weight", floatval($request->type))->where("articles.state", 1)->with("fromArticle")->select("movements.*")->orderBy("id")->get();
+                $data2  = Movement::leftjoin("articles", "movements.article_id", "articles.id")->leftjoin("stocks", "movements.stock_id", "stocks.id")->whereBetween("movements.created_at", [$fromdate, $todate])->where("movements.service", $request->service)->where("stocks.region", Auth::user()->region)->where("articles.type", "bouteille-gaz")->where("articles.weight", floatval($request->type))->where("articles.state", 0)->with("fromArticle")->select("movements.*")->orderBy("id")->get();
 
                 if (!empty($data[0])) {
                     $first = $data[0]->fromArticle;

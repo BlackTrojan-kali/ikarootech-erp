@@ -307,6 +307,18 @@
                         @endif
                     </div>
                     <div class="modal-champs">
+                        <label for="">Client :</label><br>
+
+                        <select name="client" class="clients2" style="width: 100%" id="">
+
+                            <option value="all" class="w-full">Tous</option>
+                            @foreach ($clientsList as $client)
+                                <option value="{{ $client->id }}">{{ $client->nom }} {{ $client->prenom }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="modal-champs">
                         <label for="">BANQUE :</label><br>
 
                         <select name="bank" id="">
@@ -476,6 +488,17 @@
                             <option value="{{ env('COMPANIE_BANK_1') }}">{{ env('COMPANIE_BANK_1') }}</option>
                             <option value="{{ env('COMPANIE_BANK_2') }}">{{ env('COMPANIE_BANK_2') }}</option>
                             <option value="CAISSE">CAISSE</option>
+                        </select>
+                        @if ($errors->has('bank'))
+                            <b class="text-red-500">{{ $errors->first('bank') }}</b>
+                        @endif
+                    </div>
+                    <div class="modal-champs">
+                        <label for="">Client:</label>
+                        <select name="client_id" class="clients2"  style="width: 100%" id="">
+                           @foreach($clients as $client)
+                            <option value={{ $client->id }}>{{ $client->nom }}</option>
+                            @endforeach
                         </select>
                         @if ($errors->has('bank'))
                             <b class="text-red-500">{{ $errors->first('bank') }}</b>

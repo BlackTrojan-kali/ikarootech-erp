@@ -12,6 +12,7 @@ use App\Models\Stock;
 use App\Models\Vracmovement;
 use App\Models\Vracstock;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -129,11 +130,11 @@ class CiternController extends Controller
             "fin" => "date | required",
             "citerne" => "string | required"
         ]);
-        $fromDate = $request->depart;
-        $toDate = $request->fin;
+        $fromDate =  Carbon::parse($request->depart)->startOfDay();
+        $toDate =  Carbon::parse($request->fin)->endOfDay();
         $idCitern = intval($request->citerne);
         if ($request->citerne == "global") {
-            $receive = Receive::whereBetween("created_at", [$request->depart, $request->fin])->where("region", Auth::user()->region)->get();
+            $receive = Receive::whereBetween("created_at", [$fromDate, $toDate])->where("region", Auth::user()->region)->get();
             $pdf = Pdf::loadview("RecievePdf", ["receive" => $receive, "fromDate" => $fromDate, "toDate" => $toDate]);
             $pdf->output();
             $dom_pdf = $pdf->getDomPDF();
@@ -159,11 +160,11 @@ class CiternController extends Controller
             "fin" => "date | required",
             "citerne" => "string | required"
         ]);
-        $fromDate = $request->depart;
-        $toDate = $request->fin;
+        $fromDate = Carbon::parse($request->depart)->startOfDay();
+        $toDate =  Carbon::parse($request->fin)->endOfDay();
         $idCitern = $request->citerne;
         if ($request->citerne == "global") {
-            $receive = Relhistorie::whereBetween("created_at", [$request->depart, $request->fin])->where("region", Auth::user()->region)->get();
+            $receive = Relhistorie::whereBetween("created_at", [$fromDate, $toDate])->where("region", Auth::user()->region)->get();
             $pdf = Pdf::loadview("RelevePdf", ["releve" => $receive, "fromDate" => $fromDate, "toDate" => $toDate]);
             $pdf->output();
             $dom_pdf = $pdf->getDomPDF();
@@ -172,7 +173,7 @@ class CiternController extends Controller
             $canvas->page_text(510, 800, "[{PAGE_NUM} sur {PAGE_COUNT}]", null, 15, array(0, 0, 0));
             return  $pdf->download("historique des releves.pdf");
         }
-        $receive = Relhistorie::where("citerne", $idCitern)->whereBetween("created_at", [$request->depart, $request->fin])->get();
+        $receive = Relhistorie::where("citerne", $idCitern)->whereBetween("created_at", [$fromDate, $toDate])->get();
         $pdf = Pdf::loadview("RelevePdf", ["releve" => $receive, "fromDate" => $fromDate, "toDate" => $toDate]);
         $pdf->output();
         $dom_pdf = $pdf->getDomPDF();

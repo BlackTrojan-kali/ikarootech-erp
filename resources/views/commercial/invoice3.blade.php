@@ -210,7 +210,7 @@
                         <td>{{ $article['name'] == 'stargas' ? 'bouteille-gas' . $article['weight'] . ' KG' : $article['name'] }}
                         </td>
                         <td>{{ $article['qty'] }}</td>
-                        <td>{{ $article['price'] }}</td>
+                        <td>{{ number_format($article['price'],2,",","") }}</td>
                         <td>{{  number_format($article['subtotal'], 2, ',', ' ')  }}</td>
                     </tr>
                 @endforeach

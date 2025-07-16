@@ -24,4 +24,8 @@ class Versement extends Model
     public function Invoice(){
         return $this->belongsToMany(Invoices::class);
         }
+        public function client(){
+            return $this->belongsTo(Client::class,"client_id");
+        }
+    
 }

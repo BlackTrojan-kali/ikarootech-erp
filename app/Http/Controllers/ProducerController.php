@@ -19,6 +19,7 @@ use App\Models\Vracstock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use function Ramsey\Uuid\v1;
 
@@ -439,11 +440,11 @@ class ProducerController extends Controller
             "fin" => "date | required",
             "citerne" => "string | required"
         ]);
-        $fromDate = $request->depart;
-        $toDate = $request->fin;
+        $fromDate =  Carbon::parse($request->depart)->startOfDay();
+        $toDate =  Carbon::parse($request->fin)->endOfDay();
         $idCitern = intval($request->citerne);
         if ($request->citerne == "global") {
-            $datas = Producermove::whereBetween("created_at", [$request->depart, $request->fin])->where("region", Auth::user()->region)->get();
+            $datas = Producermove::whereBetween("created_at", [$fromDate, $toDate])->where("region", Auth::user()->region)->get();
             $pdf = Pdf::loadview("ProductionPdf", ["datas" => $datas, "fromDate" => $fromDate, "toDate" => $toDate]);
             $pdf->output();
             $dom_pdf = $pdf->getDomPDF();

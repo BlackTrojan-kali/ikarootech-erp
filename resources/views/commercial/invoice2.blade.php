@@ -197,7 +197,7 @@
                         <td>01 </td>
                         <td> {{ $article->title }} - ACCESSOIRE</td>
                         <td>{{ $vente->qty_6 }}</td>
-                        <td>{{ $vente->prix_6 }} </td>
+                        <td>{{ number_format($vente->prix_6,2,",","") }} </td>
                         <td>{{ number_format($vente->qty_6 * $vente->prix_6, 2, ',', ' ') }}</td>
 
                     </tr>

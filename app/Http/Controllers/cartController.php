@@ -127,7 +127,7 @@ class cartController extends Controller
         $clients = Client::all();
         $articles = Article::all();
 
-        return view("commercial.ModifInvoice", ["clientsList" => $clients, "articlesList" => $articles, "stocks" => $stocks, "accessories" => $accessories, "sale" => $sale]);
+        return view("commercial.ModifInvoice", ["clientsList" => $clients, "clients"=>$clients,"articlesList" => $articles, "stocks" => $stocks, "accessories" => $accessories, "sale" => $sale]);
     }
     public function updateSales(Request $request, $idSale)
     {

@@ -4,8 +4,9 @@
 
         <center>
             <div class="w-2/4 border border-slate-300 rounded-md my-4">
-                <div class="bg-slate-500 text-white p-3 ">
+                <div class="bg-slate-500 text-white p-3 flex justify-between">
                     <h1>Formulaire de ventes/Consigne</h1>
+                    <a href={{ route("dashboardCom") }}>X</a>
                 </div>
 
                 Liste des elements
@@ -20,7 +21,7 @@
                                 <input type="hidden" class="flex" name="rowId" value="{{ $row->rowId }}">
                                 <div>
                                     <label for="">Qte:</label>
-                                    <input class="bg-gray-300  border p-1 border-black rounded-md" type="number"
+                                    <input disabled class="bg-gray-300  border p-1 border-black rounded-md" type="number"
                                         name="qtyup" value="{{ $row->qty }}"> <br>
                                 </div>
                                 <div class="flex gap-4 justify-between h-10">
@@ -28,9 +29,10 @@
                                     <a href="{{ route('deleteItem', ['id' => $row->rowId]) }}"
                                         class="bg-red-500 text-white p-2 rounded-md">Supprimer</a>
 
-                                    <button type="submit"
+                                 <!--   <button type="submit"
                                         class="bg-gray-200 p-2 rounded-md border border-black">Modifier</button>
-                                </div>
+                                 -->
+                                    </div>
                             </form>
                         </div>
                     @endforeach
