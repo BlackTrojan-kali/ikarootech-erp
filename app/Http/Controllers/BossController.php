@@ -51,11 +51,11 @@ class BossController extends Controller
             "citerne" => "string | required",
             "service" => "string | required"
         ]);
-        $fromDate = $request->depart;
-        $toDate = $request->fin;
+        $fromDate =  Carbon::parse($request->depart)->startOfDay();
+        $toDate =  Carbon::parse($request->fin)->endOfDay();
         $idCitern = intval($request->citerne);
         if ($request->citerne == "global") {
-            $receive = Receive::whereBetween("created_at", [$request->depart, $request->fin])->where("region", Auth::user()->region)->get();
+            $receive = Receive::whereBetween("created_at", [$fromDate, $toDate])->where("region", Auth::user()->region)->get();
             $pdf = Pdf::loadview("RecievePdf", ["receive" => $receive, "fromDate" => $fromDate, "toDate" => $toDate]);
             $pdf->output();
             $dom_pdf = $pdf->getDomPDF();
@@ -85,13 +85,13 @@ class BossController extends Controller
                 "sale" => "string |required",
             ]
         );
-        $fromDate = $request->depart;
-        $toDate = $request->fin;
+        $fromDate = Carbon::parse($request->depart)->startOfDay();
+        $toDate = Carbon::parse($request->fin)->endOfDay();
         if ($request->name) {
 
-            $sales = Vente::whereBetween("created_at", [$request->depart, $request->fin])->where("type", $request->sale)->where("region", Auth::user()->region)->where("customer", $request->customer)->get();
+            $sales = Vente::whereBetween("created_at", [$fromDate, $toDate])->where("type", $request->sale)->where("region", Auth::user()->region)->where("customer", $request->customer)->get();
         } else {
-            $sales = Vente::whereBetween("created_at", [$request->depart, $request->fin])->where("type", $request->sale)->where("region", Auth::user()->region)->get();
+            $sales = Vente::whereBetween("created_at", [$fromDate, $toDate])->where("type", $request->sale)->where("region", Auth::user()->region)->get();
         }
         $pdf = Pdf::loadview("salesPdf", ["fromDate" => $fromDate, "toDate" => $toDate, "sales" => $sales, "type" => $request->sale]);
         $pdf->output();
@@ -112,8 +112,8 @@ class BossController extends Controller
                 "service" => "string | required",
             ]
         );
-        $fromDate = $request->depart;
-        $toDate = $request->fin;
+        $fromDate = Carbon::parse($request->depart)->startOfDay();
+        $toDate = Carbon::parse($request->depart)->startOfDay();
         if ($request->bank == "all") {
             $afb = Versement::where("bank", env("COMPANIE_BANK_1"))->where("region", Auth::user()->region)->where("service", $request->service)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice")->get();
             $cca = Versement::where("bank", env("COMPANIE_BANK_2"))->where("region", Auth::user()->region)->where("service", $request->service)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice")->get();

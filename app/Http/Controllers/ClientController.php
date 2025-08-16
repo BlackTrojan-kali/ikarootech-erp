@@ -171,11 +171,11 @@ class ClientController extends Controller
     {
         $request->validate([
             "name" => "string | min:3 | required",
-            "address" => "string | min:3 | required",
-            "fname" => "string | min:3 | required",
-            "email" => "email | required",
-            "phone" => "numeric | required",
-            "category" => "required",
+            "address" => "string | min:3 | nullable",
+            "fname" => "string | min:3 | nullable",
+            "email" => "email | nullable",
+            "phone" => "numeric | nullable",
+            "category" => "required ",
             "region" => " string |required",
             "registre"=>"string |nullable",
             "numero_unique"=>"string| nullable",

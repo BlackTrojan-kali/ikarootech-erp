@@ -48,6 +48,13 @@
                             <b class="text-red-500">{{ $errors->first('commentaire') }}</b>
                         @endif
                     </div>
+                    <div class="modal-champs">
+                        <label for="">Montant Commentaire:</label>
+                        <input type="text" name="montantcom" value="{{ $versement->montantcom }}">
+                        @if ($errors->has('montantcom'))
+                            <b class="text-red-500">{{ $errors->first('montantcom') }}</b>
+                        @endif
+                    </div>
                     <div class="modal-validation">
                         <button type="reset">annuler</button>
                         <button type="submit" id="submitForm">modifier</button>

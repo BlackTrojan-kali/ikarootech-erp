@@ -9,7 +9,7 @@
     <link rel="icon" href="/images/logo.png">
     <link href="toastr.css" rel="stylesheet" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    @vite('resources/css/app.css')
+    @vite(['resources/css/app.css'])
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">

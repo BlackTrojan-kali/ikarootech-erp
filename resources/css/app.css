@@ -14,19 +14,17 @@
     body {
         font-family: "Roboto";
         @apply relative p-4 overflow-x-hidden;
-
     }
 
     header a,
     footer a {
         @apply w-full;
     }
-
 }
 
 @layer components {
     .primary {
-        background: var(--primary);
+        background-color: var(--primary); /* Uniformisé à background-color */
     }
 
     .Productcard {
@@ -47,12 +45,11 @@
     }
 
     .general {
-        color: var(--primary)
+        color: var(--primary);
     }
 
     .champs {
         @apply text-start;
-
     }
 
     .info {
@@ -77,12 +74,11 @@
 
     .drop-items,
     .drop-items-2 {
-        @apply hidden
+        @apply hidden;
     }
 
     .elem {
         list-style: none;
-
         @apply p-1;
     }
 
@@ -94,14 +90,14 @@
         background-color: rgba(0, 0, 0, 0.363);
     }
 
-    .dropdown:hover>.drop-items {
+    .dropdown:hover > .drop-items {
         background-color: var(--primary);
-        @apply block md:absolute z-20 rounded-md text-black w-56
+        @apply block md:absolute z-20 rounded-md text-black w-56;
     }
 
-    .drop-2:hover>.drop-items-2 {
+    .drop-2:hover > .drop-items-2 {
         background-color: var(--primary);
-        @apply block absolute -right-48 text-start top-0 w-full rounded-md
+        @apply block absolute -right-48 text-start top-0 w-full rounded-md;
     }
 
     .modals-active {
@@ -137,47 +133,46 @@
         height: auto;
         z-index: 1000;
         @apply mt-20 bg-white text-center rounded-lg border border-gray-400;
-
     }
 
     .modal-head {
-        @apply p-2 flex gap-4 text-center bg-gray-700 text-white justify-between font-bold
+        @apply p-2 flex gap-4 text-center bg-gray-700 text-white justify-between font-bold;
     }
 
     .modal-active form {
-        @apply p-3
+        @apply p-3;
     }
 
     .modal-champs {
-        @apply text-start mb-3
+        @apply text-start mb-3;
     }
 
     .modal-champs input {
-        @apply w-full h-8 border border-gray-300 p-2
+        @apply w-full h-8 border border-gray-300 p-2;
     }
 
     .modal-champs div {
-        @apply flex justify-between mx-6
+        @apply flex justify-between mx-6;
     }
 
     .modal-champs input[type="radio"] {
-        @apply w-5
+        @apply w-5;
     }
 
     .modal-champs select {
-        @apply w-full h-8
+        @apply w-full h-8;
     }
 
     .modal-validation {
-        @apply w-full flex justify-around mt-3
+        @apply w-full flex justify-around mt-3;
     }
 
     .modal-validation button {
         background-color: var(--secondary);
-        @apply p-2 w-24 font-bold text-white
+        @apply p-2 w-24 font-bold text-white;
     }
 
     .close-modal {
-        @apply cursor-pointer
+        @apply cursor-pointer;
     }
 }

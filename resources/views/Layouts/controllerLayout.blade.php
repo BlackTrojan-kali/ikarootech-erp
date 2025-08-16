@@ -22,6 +22,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @if (session('success'))
         <script type="module">
             $(document).ready(function() {
@@ -129,6 +131,7 @@
         </nav>
     </header>
 
+   
     <!--FORMULAIRE GENERATION ETAT DES VENTES NOUVEAU-->
 
     <div id="new-sales-pdf-form" class="modals">
@@ -160,9 +163,9 @@
                     <div class="modal-champs">
                         <label for="">Client :</label><br>
 
-                        <select name="client" id="">
+                        <select name="client" class="clients2" style="width: 100%" id="">
 
-                            <option value="all">Tous</option>
+                            <option value="all" class="w-full">Tous</option>
                             @foreach ($clientsList as $client)
                                 <option value="{{ $client->id }}">{{ $client->nom }} {{ $client->prenom }}
                                 </option>
@@ -186,7 +189,7 @@
                     </div>
                     <div class="modal-champs">
                         <label for="">Article:</label>
-                        <select name="article" id="">
+                        <select name="article" class="clients2" style="width: 100%" id="">
                             @foreach ($articlesList as $article)
                                 <option value="{{ $article->id }}">
                                     {{ $article->type == 'accessoire' ? $article->title : $article->weight . ' kg' }}
@@ -205,7 +208,6 @@
             </div>
         </center>
     </div>
-
     <!--FORMULAIRE DE GENERATION DE EXCEL-->
     <div id="move-excel-form" class="modals">
         <center>
@@ -894,7 +896,7 @@
                 </div>
                 <b class="success text-green-500"></b>
                 <b class="errors text-red-500"></b>
-                <form method="POST" action="{{ route('boss_versementPdf') }}">
+                <form method="POST" action="{{ route('versementPdf') }}">
                     @csrf
                     <div class="modal-champs">
                         <label for="">Du:</label>
@@ -911,6 +913,18 @@
                         @endif
                     </div>
                     <div class="modal-champs">
+                        <label for="">Client :</label><br>
+
+                        <select name="client" class="clients2" style="width: 100%" id="">
+
+                            <option value="all" class="w-full">Tous</option>
+                            @foreach ($clientsList as $client)
+                                <option value="{{ $client->id }}">{{ $client->nom }} {{ $client->prenom }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="modal-champs">
                         <label for="">BANQUE :</label><br>
 
                         <select name="bank" id="">
@@ -923,16 +937,6 @@
                     @if ($errors->has('bank'))
                         <b class="text-red-500">{{ $errors->first('bank') }}</b>
                     @endif
-                    <div class="modal-champs">
-                        <label for="">service</label>
-                        <select name="service" id="">
-                            <option value="commercial">Commercial</option>
-
-                        </select>
-                        @if ($errors->has('region'))
-                            <span class="text-red-500">{{ $errors->first('region') }}</span>
-                        @endif
-                    </div>
                     <div class="modal-validation">
                         <button type="reset">annuler</button>
                         <button type="submit" id="submitForm">creer</button>
@@ -1015,7 +1019,9 @@
         $(function() {
             $('table').DataTable();
             
-            
+        
+        $(".clients2").select2()
+        //ACTION ENTRY ON MODAL GPL
             //ACTION NEW SALES STATE PDF FORM
             $("#activate-new-sales-state-pdf-form").on("click", function(e) {
                 e.preventDefault()

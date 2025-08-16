@@ -1,247 +1,306 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Stargas SCMS</title>
-    <link rel="icon" href="/images/logo.png">
-    <link href="toastr.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css"
-        href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <title>Facture Client Stargas SCMS</title>
 </head>
 
-<body class="mx-20">
+<body>
     <style>
-        @font-face {
-            font-family: 'Riot';
-            src: url({{ storage_path('/fonts/ProtestRiot-Regular.ttf') }});
-            font-weight: 400;
-            font-style: normal;
-        }
+        /* Styles CSS optimisés pour DomPDF */
 
         body {
-            font-family: "Riot";
-            margin: 5px;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 20px;
+            font-size: 10px;
+        }
+
+        .no-break-inside {
+            page-break-inside: avoid;
         }
 
         header {
             text-align: center;
             position: relative;
             border-bottom: 3px solid black;
+            padding-bottom: 10px;
+            height: 150px;
+            margin-bottom: 15px;
+            overflow: hidden; /* Assure que les flottants sont contenus */
         }
 
         .logo-section {
-            width: 130px;
+            width: 90px; /* Largeur du conteneur du logo et des infos */
             text-align: start;
+            float: left;
+        }
+        .logo-section img {
+            width: 90px; /* Taille réelle de l'image du logo */
+            height: auto;
+        }
+
+        .company-info {
+            font-size: 0.9em;
+            color: black;
+            text-align: start;
+            line-height: 1.3;
+            margin-top: 5px; /* Petite marge au-dessus des infos */
         }
 
         .name-section {
-            position: absolute;
-            top: 0;
-            left: 45%;
             text-align: center;
             font-weight: bold;
+            float: right;
+            width: calc(100% - 160px); /* Laisse de l'espace pour le logo-section + marge */
+            margin-top: 10px;
+        }
+        .name-section h4 {
+            margin: 0;
+            font-size: 1.3em;
+        }
+        .name-section p {
+            margin: 0;
+            font-size: 1.1em;
         }
 
-        .head-2 {
+        .head-info-section {
+            clear: both;
             position: relative;
+            margin-top: 15px;
+            overflow: hidden;
         }
 
         .customer-section {
             text-align: start;
-            margin-bottom: 10px
+            width: 55%;
+            float: left;
+            margin-bottom: 10px;
         }
 
-        .stargas-section {
+        .invoice-details-section {
             text-align: start;
-            position: absolute;
-            top: 10px;
-            right: 10px;
+            width: 40%;
+            float: right;
+        }
+        .customer-section p, .invoice-details-section p {
+            margin: 0 0 3px 0;
         }
 
-        .table {
-            position: relative;
-            widows: 100%;
-
+        .table-container {
+            clear: both;
+            width: 100%;
+            margin-top: 15px;
+            page-break-inside: avoid;
         }
 
-        .table table {
+        .table-container table {
             width: 100%;
             border: 1px solid black;
             border-collapse: collapse;
-            padding: 10px;
+            font-size: 0.9em;
         }
 
-        .table td {
-            padding: 10px;
-        }
-
-        td {
-
+        .table-container td, .table-container th {
+            padding: 5px;
             border: 1px solid black;
+            text-align: left;
         }
 
-        .table table thead {
+        .table-container table thead {
             background-color: rgb(138, 218, 250);
-
             width: 100%;
-            padding: 10px;
+        }
+        .table-container table thead td {
+            font-weight: bold;
         }
 
-        .my-total {
+        .total-summary {
             background-color: rgb(106, 171, 197);
-            width: 300px;
+            width: 280px;
             color: white;
-            position: absolute;
-            right: 0;
+            float: right;
             padding: 10px;
+            margin-top: 10px;
+            text-align: right;
+            clear: right;
+        }
+        .total-summary p {
+            margin: 2px 0;
+            font-size: 1.1em;
         }
 
-        .english {
-            font-size: 0.8rem;
+        .english-translation {
+            font-size: 0.8em;
+            display: block;
         }
 
-        .signature {
+        .signature-section {
+            clear: both;
             position: relative;
+            margin-top: 60px;
+            overflow: hidden;
+            page-break-inside: avoid;
         }
 
-        .client {
-            height: 100px;
+        .signature-box {
+            width: 48%;
+            min-height: 80px;
+        }
+        .signature-client {
+            float: left;
+            text-align: left;
+        }
+        .signature-salesman {
+            float: right;
+            text-align: right;
         }
 
-        .salesMan {
-            position: absolute;
-            right: 10px;
-            top: 0;
-        }
-
-        .comptes {
+        .bank-details-section {
+            clear: both;
             border-top: 2px dashed black;
+            margin-top: 20px;
+            padding-top: 10px;
+            page-break-inside: avoid;
         }
 
-        .comptes table {
+        .bank-details-section h4 {
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .bank-details-section table {
             text-align: center;
             width: 100%;
             background-color: rgb(218, 218, 255);
             border-collapse: collapse;
-            font-size: 0.8rem
+            font-size: 0.75em;
+            margin-top: 10px;
+        }
+        .bank-details-section table th, .bank-details-section table td {
+            padding: 3px;
+            border: 1px solid black;
+        }
+        .bank-details-section table thead td {
+            font-weight: bold;
+            background-color: rgb(190, 190, 250);
         }
 
-        .contri {
-            font-size: 0.9rem
+        .contribution-info {
+            font-size: 0.8em;
+            text-align: center;
+            margin-top: 10px;
+            line-height: 1.4;
         }
 
         sup {
-            font-size: 0.8rem;
-        }
-        .info-com{
-            font-size: 14px;
-            text-align: start;
+            font-size: 0.7em;
         }
     </style>
     <header>
         <div class="logo-section">
-            <img src="{{ 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('images/logo.png'))) }}"
-                width="150px">
-            <p class="info-com">
+            {{-- Utilisation de l'intégration Base64 pour le logo : la méthode la plus fiable --}}
+            <img src="images/logo.png"
+                alt="Logo Stargas">
+            <p class="company-info">
                 <b>{{ env('COMPANIE_NAME') }}</b><br>
-                <b>B.P:</b>{{ env('COMPANIE_ADDRESS') }} <br>
-                <b>Tél:</b>{{ env('COMPANIE_CANTACT_1') }} <br>
+                <b>B.P:</b> {{ env('COMPANIE_ADDRESS') }} <br>
+                <b>Tél:</b> {{ env('COMPANIE_CANTACT_1') }} <br>
                 <b>Email:</b> {{ env('COMPANIE_EMAIL_1') }} <br>
             </p>
-
         </div>
         <div class="name-section">
             <h4>FACTURE CLIENT</h4>
             <h4>CUSTOMER INVOICE</h4>
-
-
-            <p>N <sup>O</sup>:{{ $invoice->id }}{{ strtoupper(substr($invoice->region, 0, 2)) }}</p>
+            <p>N <sup>O</sup>: {{ $invoice->id }}{{ strtoupper(substr($invoice->region, 0, 2)) }}</p>
         </div>
-
     </header>
 
-    <div class="head-2">
-
+    <div class="head-info-section no-break-inside">
         <div class="customer-section">
             <p>
-                nom du Client: <b> {{ $client->nom . ' ' . $client->prenom }}</b><br>
-                <span class="english"> customer </span>: <b>{{ $client->nom . ' ' . $client->prenom }}</b><br>
+                Nom du Client: <b>{{ $client->nom . ' ' . $client->prenom }}</b><br>
+                <span class="english-translation">Customer Name</span><br>
                 Adresse: <b>{{ $client->address }}</b> <br>
-                <span class="english">address</span> <br>
-                Numero: {{ $client->numero }} <br>
+                <span class="english-translation">Address</span><br>
+                Numéro de téléphone: <b>{{ $client->numero }}</b> <br>
+                <span class="english-translation">Phone Number</span><br>
                 Agent Commercial: <b>{{ $invoice->commercial }} - {{ $invoice->region }}</b> <br>
-                <span class="english"> Sales Representative:</span>
+                <span class="english-translation">Sales Representative</span>
             </p>
         </div>
-        <div class="stargas-section">
+        <div class="invoice-details-section">
             <p>
-                Date Facturation : <b>{{ $invoice->created_at }}</b><br>
-                <span class="english"> Date invoice : <br></span>
-                Commande Reference: <br>
-                <span class="english"> Order Reference: <br></span>
+                Date Facturation : <b>{{ \Carbon\Carbon::parse($invoice->created_at)->format('d/m/Y H:i') }}</b><br>
+                <span class="english-translation">Invoice Date</span><br>
+                Référence Commande: <b>{{ $invoice->order_reference ?? 'N/A' }}</b><br>
+                <span class="english-translation">Order Reference</span><br>
                 Mode de Paiement : <b> {{ $invoice->currency }}</b> <br>
-                <span class="english"> payment Mode: <br></span>
+                <span class="english-translation">Payment Mode</span>
             </p>
         </div>
+        <div style="clear: both;"></div>
     </div>
-    <br>
-    <div class="table">
+
+    <div class="table-container no-break-inside">
         <table>
             <thead>
                 <tr>
                     <td>No</td>
-                    <td>Designation <br><span class="english"> Item</span></td>
-                    <td>Quantite <br> <span class="english">Quantity</span></td>
-                    <td>PU(XAF) <br><span class="english">Unit Price</span></td>
-                    <td>PT <span class="english">HT</span>(XAF)</td>
+                    <td>Désignation <br><span class="english-translation">Item</span></td>
+                    <td>Quantité <br> <span class="english-translation">Quantity</span></td>
+                    <td>PU(XAF) <br><span class="english-translation">Unit Price</span></td>
+                    <td>PT <span class="english-translation">HT</span>(XAF)</td>
                 </tr>
             </thead>
-            <?php
-            $articles = json_decode($invoice->articles, true);
-            ?>
             <tbody>
-                @foreach ($articles as $article)
+                @foreach (json_decode($invoice->articles, true) as $article)
                     <tr>
                         <td>{{ $article['id'] }}</td>
-                        <td>{{ $article['name'] == 'stargas' ? 'bouteille-gas' . $article['weight'] . ' KG' : $article['name'] }}
+                        <td>
+                            @if ($article['name'] == 'stargas')
+                                Bouteille-gaz
+                                @if (isset($article['weight']) && $article['weight'] > 0)
+                                    {{ $article['weight'] }} KG
+                                @endif
+                            @else
+                                {{ $article['name'] }}
+                            @endif
                         </td>
                         <td>{{ $article['qty'] }}</td>
-                        <td>{{ number_format($article['price'],2,",","") }}</td>
-                        <td>{{  number_format($article['subtotal'], 2, ',', ' ')  }}</td>
+                        <td>{{ number_format($article['price'], 2, ",", " ") }}</td>
+                        <td>{{ number_format($article['subtotal'], 2, ',', ' ') }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
-        <div class="my-total">
+        <div class="total-summary">
             <p>Montant Total HT:
-                {{ number_format($invoice->total_price, 2, ',', ' ') }}
+                {{ number_format($invoice->total_price, 2, ',', ' ') }} XAF
             </p>
-
             <p>Montant Total TTC :
-                {{ number_format($invoice->total_price, 2, ',', ' ') }}
+                {{ number_format($invoice->total_price, 2, ',', ' ') }} XAF
             </p>
         </div>
+        <div style="clear: both;"></div>
     </div>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br><br>
-    <div class="signature">
-        <div class="client">
+
+    <div class="signature-section no-break-inside">
+        <div class="signature-box signature-client">
             Client(s) <br>
-            <span class="english">customer</span>
+            <span class="english-translation">Customer</span>
         </div>
-        <div class="salesMan">
-            Vendeurs(s)
-            <span class="english">SalesMan</span>
+        <div class="signature-box signature-salesman">
+            Vendeur(s) <br>
+            <span class="english-translation">Salesman</span>
         </div>
+        <div style="clear: both;"></div>
     </div>
-    <div class="comptes">
+
+    <div class="bank-details-section no-break-inside">
         <center>
             <h4>STARGAS S.A</h4>
             <table>
@@ -254,43 +313,45 @@
                         <td>Titulaire du compte</td>
                         <td>Code banque</td>
                         <td>Code guichet</td>
-                        <td>Numero de compte</td>
-                        <td>cle RIB</td>
+                        <td>Numéro de compte</td>
+                        <td>Clé RIB</td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ env('COMPANIE_BANK_2') }} bank</td>
+                        <td>{{ env('COMPANIE_BANK_2') }} Bank</td>
                         <td>{{ env('COMPANIE_NAME') }}</td>
                         <td>{{ env('COMPANIE_BANK_2_bank_code') }}</td>
                         <td>{{ env('COMPANIE_BANK_2_guichet') }}</td>
                         <td>{{ env('COMPANIE_BANK_2_ACCOUNT') }}</td>
-                        <td>
-                            {{ env('COMPANIE_BANK_2_RIB') }}
-                        </td>
+                        <td>{{ env('COMPANIE_BANK_2_RIB') }}</td>
                     </tr>
                     <tr>
-
-                        <td>{{ env('COMPANIE_BANK_1') }} bank</td>
+                        <td>{{ env('COMPANIE_BANK_1') }} Bank</td>
                         <td>{{ env('COMPANIE_NAME') }}</td>
                         <td>{{ env('COMPANIE_BANK_1_bank_code') }}</td>
                         <td>{{ env('COMPANIE_BANK_1_guichet') }}</td>
                         <td>{{ env('COMPANIE_BANK_1_ACCOUNT') }}</td>
-                        <td>
-                            {{ env('COMPANIE_BANK_1_RIB') }}
-                        </td>
+                        <td>{{ env('COMPANIE_BANK_1_RIB') }}</td>
                     </tr>
                 </tbody>
             </table>
-            <p class="contri"><i><b>Siège: {{ env('COMPANIE_LOCATION') }}Adresse:6792 Yaoundé Tél:+237
-                        {{ env('COMPANIE_CONTACT_1') }}/
+            <p class="contribution-info">
+                <i>
+                    <b>Siège: {{ env('COMPANIE_LOCATION') }} Adresse: 6792 Yaoundé Tél:+237
+                        {{ env('COMPANIE_CANTACT_1') }}/
                         {{ env('COMPANIE_CANTACT_2') }}
-                        08 Mail: <br>
-                        {{ env('COMPANIE_EMAIL_2') }}/{{ env('COMPANIE_EMAIL_2') }} Num contribuable:
+                        Mail: <br>
+                        {{ env('COMPANIE_EMAIL_1') }}/{{ env('COMPANIE_EMAIL_2') }} Num contribuable:
                         {{ env('COMPANIE_CONTRIB') }} Reg
                         Commerce: {{ env('COMPANIE_COMMERCE') }} <br>
                         Site Web : {{ env('COMPANIE_SITE') }}
-                    </b></i></p>
+                    </b>
+                </i>
+            </p>
+        </center>
     </div>
 
 </body>
+
+</html>

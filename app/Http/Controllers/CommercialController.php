@@ -408,15 +408,17 @@ class CommercialController extends Controller
         $toDate =  Carbon::parse($request->fin)->endOfDay();
         if ($request->bank == "all") {
             if($request->client == "all"){
-            $afb = Versement::where("bank", env("COMPANIE_BANK_1"))->where("region", Auth::user()->region)->where("service", Auth::user()->role)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice","client")->get();
-            $cca = Versement::where("bank", env("COMPANIE_BANK_2"))->where("region", Auth::user()->region)->where("service", Auth::user()->role)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice","client")->get();
-            $caisse = Versement::where("bank", "CAISSE")->where("region", Auth::user()->region)->where("service", Auth::user()->role)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice")->get();
-            }else{
+            $afb = Versement::where("bank", env("COMPANIE_BANK_1"))->where("region", Auth::user()->region)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice","client")->get();
+            $cca = Versement::where("bank", env("COMPANIE_BANK_2"))->where("region", Auth::user()->region)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice","client")->get();
+            $caisse = Versement::where("bank", "CAISSE")->where("region", Auth::user()->region)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice")->get();
+          
+        }else{
 
-            $afb = Versement::where("bank", env("COMPANIE_BANK_1"))->where("region", Auth::user()->region)->where("service", Auth::user()->role)->where("client_id",$request->client)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice","client")->get();
-            $cca = Versement::where("bank", env("COMPANIE_BANK_2"))->where("region", Auth::user()->region)->where("service", Auth::user()->role)->where("client_id",$request->client)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice","client")->get();
-            $caisse = Versement::where("bank", "CAISSE")->where("region", Auth::user()->region)->where("service", Auth::user()->role)->where("client_id",$request->client)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice","client")->get();
-            }
+            $afb = Versement::where("bank", env("COMPANIE_BANK_1"))->where("region", Auth::user()->region)->where("client_id",$request->client)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice","client")->get();
+            $cca = Versement::where("bank", env("COMPANIE_BANK_2"))->where("region", Auth::user()->region)->where("client_id",$request->client)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice","client")->get();
+            $caisse = Versement::where("bank", "CAISSE")->where("region", Auth::user()->region)->where("client_id",$request->client)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice","client")->get();
+           
+        }
             $pdf = Pdf::loadview("versementPdfAll", ["fromDate" => $fromDate, "toDate" => $toDate, "afb" => $afb, "cca" => $cca, "bank" => $request->bank, "caisse"=>$caisse])->setPaper("A4", 'landscape');
             
             $pdf->output();
@@ -427,9 +429,9 @@ class CommercialController extends Controller
             return $pdf->download(Auth::user()->role . "versementsglobal" . Auth::user()->region . $fromDate . $toDate . $request->bank . ".pdf");
         } else {
             if($request->client == "all"){
-            $deposit = Versement::where("bank", $request->bank)->where("client_id",$request->client)->with("Invoice","client")->where("region", Auth::user()->region)->where("service", Auth::user()->role)->whereBetween("created_at", [$fromDate, $toDate])->get();
+            $deposit = Versement::where("bank", $request->bank)->with("Invoice","client")->where("region", Auth::user()->region)->whereBetween("created_at", [$fromDate, $toDate])->get();
             }else{    
-            $deposit = Versement::where("bank", $request->bank)->where("client_id",$request->client)->with("Invoice","client")->where("region", Auth::user()->region)->where("service", Auth::user()->role)->whereBetween("created_at", [$fromDate, $toDate])->get();
+            $deposit = Versement::where("bank", $request->bank)->where("client_id",$request->client)->with("Invoice","client")->where("region", Auth::user()->region)->whereBetween("created_at", [$fromDate, $toDate])->get();
             }
             $pdf = Pdf::loadview("versementPdf", ["fromDate" => $fromDate, "toDate" => $toDate, "deposit" => $deposit, "bank" => $request->bank]);
 
@@ -444,6 +446,7 @@ class CommercialController extends Controller
     public function deleteVersement($id)
     {
         $versement = Versement::findOrFail($id);
+        dd($versement);
         $versement->delete();
         return response()->json(["message" => "versement supprime avec success"]);
     }
@@ -505,6 +508,7 @@ class CommercialController extends Controller
             "commentaire" => "string | nullable",
             "bordereau" => "string | required",
             "bank" => "string | required",
+            "montantcom"=>"numeric | nullable",
         ]);
         $versement = Versement::findOrFail($idVers);
         $versement->montant_gpl = $request->montant_gpl;
@@ -512,6 +516,7 @@ class CommercialController extends Controller
         $versement->commentaire = $request->commentaire;
         $versement->bordereau = $request->bordereau;
         $versement->bank = $request->bank;
+        $versement->montantcom = $request->montantcom;
         $versement->save();
         return back()->withSuccess("element modifie avec succes");
     }
