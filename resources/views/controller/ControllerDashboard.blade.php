@@ -8,11 +8,14 @@
             ?>
             <div class="relative w-7/12">
                 <div class="w-11/12 flex justify-between font-bold">
-                    <p>{{ env('COMPANIE_NAME') }} <span
-                            class="text-blue-400">{{ $stock->article->weight > 0 ? $stock->article->weight . 'kg' : '' }} </span>
-                        @if ($stock->type == 'bouteille-gaz')
-                            <span class="text-green-500">{{ $stock->article->state ? 'pleine' : 'vide' }}</span>
-                        @endif <span class="text-orange-500">{{ $stock->region }}
+                    <p> @if ($stock->type == 'bouteille-gaz')
+                        {{ env('COMPANIE_NAME') }} <span
+                            class="general">{{ $stock->article->weight > 0 ? $stock->article->weight . 'kg' : '' }} </span>
+                         
+                        <span class="text-green-500">{{ $stock->article->state ? 'pleine' : 'vide' }}</span>
+                       @else
+                       <p>{{$stock->article->title}}</p>
+                          @endif <span class="text-orange-500">{{ $stock->region }}
                             {{ $stock->category }}</span>
                     </p>
                     <p>{{ $stock->qty }}</p>

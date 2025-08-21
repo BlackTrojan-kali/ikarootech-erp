@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers as Controllers;
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\ClosureTimeMiddleware;
 use App\Http\Middleware\isCommercial;
 use App\Http\Middleware\isController;
 use App\Http\Middleware\IsDirector;
@@ -43,7 +44,7 @@ Route::group(["middleware" => "auth"], function () {
             Route::delete("/delete_stock/{id}",[Controllers\StockController::class,"delete_stock"])->name("delete_stock");
       }
 );
-      Route::middleware(isManager::class)->group(function () {
+      Route::middleware([isManager::class,ClosureTimeMiddleware::class])->group(function () {
             Route::get("/manager/dashboard", [Controllers\MagazinierController::class, "show"])->name("dashboard-manager");
             Route::post("manager/moveActioins/save/{action}/{state}", [Controllers\MagazinierController::class, "saveBottleMove"])->name("saveBottleMove");
             Route::post("manager/moveActioins/save/{action}", [Controllers\MagazinierController::class, "saveAccessoryMoves"])->name("saveAccessoryMove");
@@ -73,7 +74,7 @@ Route::group(["middleware" => "auth"], function () {
             Route::get("/manager/modifmove/{id}", [Controllers\MagazinierController::class, "modifyMove"])->name("modify-move");
             Route::post("/manager/modifmove/post/{id}", [Controllers\MagazinierController::class, "updateMove"])->name("update-move-man");
       });
-      Route::middleware(isProducer::class)->group(function () {
+      Route::middleware([isProducer::class,ClosureTimeMiddleware::class])->group(function () {
             Route::get("/producer/dashboard", [Controllers\ProducerController::class, "show"])->name("dashboard-producer");
             Route::post("/producer/gplMove", [Controllers\CiternController::class, "moveGpl"])->name("MoveGplPro");
             Route::get("/producer/releves", [Controllers\CiternController::class, "showReleve"])->name("showRelevePro");
@@ -96,7 +97,7 @@ Route::group(["middleware" => "auth"], function () {
             //historique des depotages
             Route::get("/producer/depotage/",[Controllers\ProducerController::class,"depotages_list"])->name("depotage_list");
       });
-      Route::middleware(isCommercial::class)->controller(Controllers\CommercialController::class)->group(
+      Route::middleware([isCommercial::class,ClosureTimeMiddleware::class])->controller(Controllers\CommercialController::class)->group(
             function () {
                   Route::get('/dashboardCom', "index")->name("dashboardCom");
                   Route::post("commercial/moveActioins/save/{action}/{state}", "saveBottleMove")->name("saveBottleMoveCom");
@@ -144,7 +145,9 @@ Route::group(["middleware" => "auth"], function () {
       });
       //routes du controller
       Route::middleware(isController::class)->group(function () {
-
+            Route::get("/controller/closures",[Controllers\ClosureController::class,"index"])->name("closures.index");
+            Route::get('/closures/{closure}/edit', [Controllers\ClosureController::class, 'edit'])->name('closures.edit');
+            Route::put('/closures/{closure}', [Controllers\ClosureController::class, 'update'])->name('closures.update');
             Route::get("/controller", [Controllers\BossController::class, "index"])->name("bossDashboard");
             Route::post("/controller/recieves-pdf", [Controllers\BossController::class, "generate_receive_pdf"])->name("receives_boss_pdf");
             Route::post("/controller/sales-state-pdf", [Controllers\BossController::class, "generate_sale_state"])->name("boss_sale_state_pdf");

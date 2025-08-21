@@ -67,12 +67,14 @@
             <div> <a href="{{ route('bossDashboard') }}"><i class="fa-solid fa-home"></i> ACCUEIL</a></div>
 
             <div><a href="{{ route('showCiterneCon') }}">CITERNES</a></div>
-            <div> <a href="{{ route('showReleveCon') }}">RECEPTION</a></div>
+            <div><a href="{{ route('closures.index') }}">PERIODES</a></div>
             <div class="dropdown cursor-pointer font-bold relative"> ETATS <i class="fa-solid fa-angle-down"></i>
                 <div class="drop-items">
 
 
                     <div class="text-center elem"><a href="{{ route('historique-rel-con') }}">ETAT DES RELEVES</a>
+                    </div>
+                    <div class="text-center elem"><a href="{{ route('showReleveCon') }}">RECEPTION</a>
                     </div>
                     <div class="drop-2 elem"><a href="{{ route('showConHist') }}">ETAT DES PRODUCTION</a></div>
                     <div class="drop-2 elem">
