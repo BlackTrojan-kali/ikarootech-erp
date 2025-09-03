@@ -18,9 +18,11 @@
     <main class="w-full max-w-md mx-auto"> {{-- Utilisation de main pour le contenu principal et centrage avec Tailwind --}}
 
         {{-- Section du logo et du titre --}}
-        <div class="bg-black/70 p-4 md:px-8 md:py-4 flex justify-between items-center rounded-t-md">
+        <div class="bg-black/10 p-4 md:px-8 md:py-4 flex justify-between items-center rounded-t-md">
             <div class="rounded-md">
+                <center>
                 <img src="/images/logo.png" class="w-24" alt="Logo de {{ env('COMPANIE_NAME') }}" aria-label="Logo de l'entreprise">
+                </center>
             </div>
         </div>
 
