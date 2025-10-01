@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Citerne;
 use App\Models\Client;
 use App\Models\Closure;
+use App\Models\Region;
 use App\Models\Stock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,43 @@ class ClosureController extends Controller
             "fixe" => $fixe
         ]);
     } 
+    public function create(){
+
+        // Les variables suivantes sont récupérées pour être utilisées dans la vue si nécessaire
+        $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
+        $mobile = Citerne::where("type", "mobile")->get();
+        $fixe  = Citerne::where("type", "fixe")->get();
+        $articles = Article::where("state", 1)->orWhere("type", "accessoire")->get();
+        $clients = Client::all();
+        $regions = Region::all();
+        // Retourner la vue 'closures.edit' en lui passant les données de la fermeture et les autres variables
+        return view('closures.create', [
+            "regions" => $regions,
+            "clientsList" => $clients,
+            "articlesList" => $articles,
+            "stocks" => $stocks,
+            "mobile" => $mobile,
+            "fixe" => $fixe
+        ]);
+    }
+    
+     public function store(Request $request)
+    {
+        // Validation des données du formulaire
+        $request->validate([
+            'starting_date' => 'required|date',
+            "region" =>"required|string",
+            'ending_date' => 'required|date|after_or_equal:starting_date',
+        ]);
+        Closure::create([
+            "starting_date"=>$request->starting_date,
+            "region"=>$request->region,
+            "ending_date"=>$request->ending_date,
+        ]);
+
+        // Redirection vers la liste des fermetures avec un message de succès
+        return back()->with('success', 'La fermeture a été mise à jour avec succès.');
+    }
     public function edit(Closure $closure)
     {
         // Les variables suivantes sont récupérées pour être utilisées dans la vue si nécessaire
@@ -44,8 +82,10 @@ class ClosureController extends Controller
         $articles = Article::where("state", 1)->orWhere("type", "accessoire")->get();
         $clients = Client::all();
 
+        $regions = Region::all();
         // Retourner la vue 'closures.edit' en lui passant les données de la fermeture et les autres variables
         return view('closures.edit', [
+            "regions" => $regions,
             "closure" => $closure,
             "clientsList" => $clients,
             "articlesList" => $articles,

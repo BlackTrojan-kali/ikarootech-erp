@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('closures', function (Blueprint $table) {
             $table->id();
+            $table->string("region")->nullable();
             $table->date("starting_date");
             $table->date("ending_date");
             $table->timestamps();

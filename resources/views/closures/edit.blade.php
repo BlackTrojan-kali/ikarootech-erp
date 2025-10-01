@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">Modifier une fermeture</h1>
+    <h1 class="text-2xl font-bold mb-4">Modifier une fermeture de la region {{$closure->region}}</h1>
     <form action="{{ route('closures.update', $closure->id) }}" method="POST">
         @csrf
         @method('PUT')

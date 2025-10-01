@@ -146,6 +146,8 @@ Route::group(["middleware" => "auth"], function () {
       //routes du controller
       Route::middleware(isController::class)->group(function () {
             Route::get("/controller/closures",[Controllers\ClosureController::class,"index"])->name("closures.index");
+            Route::get("/controller/closures/create",[Controllers\ClosureController::class,"create"])->name("closures.create");
+            Route::post('/closures/closures/store', [Controllers\ClosureController::class, 'store'])->name('closures.store');
             Route::get('/closures/{closure}/edit', [Controllers\ClosureController::class, 'edit'])->name('closures.edit');
             Route::put('/closures/{closure}', [Controllers\ClosureController::class, 'update'])->name('closures.update');
             Route::get("/controller", [Controllers\BossController::class, "index"])->name("bossDashboard");

@@ -266,7 +266,7 @@
                                 @if (isset($article['weight']) && $article['weight'] > 0)
                                     {{ $article['weight'] }} KG
                                 @endif
-                            @else
+                                @else
                                 {{ $article['name'] }}
                             @endif
                         </td>

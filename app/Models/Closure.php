@@ -9,6 +9,7 @@ class Closure extends Model
     //
     protected $fillable = [
         "starting_date",
+        "region",
         "ending_date"
     ];
 }
