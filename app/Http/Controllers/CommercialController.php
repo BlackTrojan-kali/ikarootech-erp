@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Client;
 use App\Models\Invoices;
+use App\Models\Region;
 
 class CommercialController extends Controller
 {
@@ -39,6 +40,7 @@ class CommercialController extends Controller
         $mobile = Citerne::where("type", "mobile")->get();
         $fixe  = Citerne::where("type", "fixe")->get();
         $clients = Client::all();
+        $regions = Region::all();
         $articles = Article::where("state", 1)->orWhere("type", "accessoire")->get();
         if ($type == "versements") {
             $versements1 = Versement::where("bank", "AFB")->where("region", "=", Auth::user()->region)->get();
@@ -46,9 +48,9 @@ class CommercialController extends Controller
             $versements3 = Versement::where("bank", "CAISSE")->where("region", "=", Auth::user()->region)->get();
             $invoices = Invoices::sansVersement()->with("client")->where("region",Auth::user()->region)->get();
             if (Auth::user()->role == 'controller') {
-                return view("controller.historique-versements", ["clientsList" => $clients,"clients"=>$clients, "articlesList" => $articles, "ventes" => $versements1, "ventes2" => $versements2, "ventes3" => $versements3, "type" => $type, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
+                return view("controller.historique-versements", ["regions"=>$regions,"clientsList" => $clients,"clients"=>$clients, "articlesList" => $articles, "ventes" => $versements1, "ventes2" => $versements2, "ventes3" => $versements3, "type" => $type, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             }
-            return view("commercial.historique-versements", ["invoices"=>$invoices,"clients"=>$clients,"clientsList" => $clients, "articlesList" => $articles, "stocks" => $stocks, "accessories" => $accessories, "ventes" => $versements1, "ventes3" => $versements3,  "ventes2" => $versements2, "type" => $type]);
+            return view("commercial.historique-versements", ["regions"=>$regions,"invoices"=>$invoices,"clients"=>$clients,"clientsList" => $clients, "articlesList" => $articles, "stocks" => $stocks, "accessories" => $accessories, "ventes" => $versements1, "ventes3" => $versements3,  "ventes2" => $versements2, "type" => $type]);
         } else {
             $ventes = Vente::where("type", $type)->where("region", Auth::user()->region)->get();
             //neo invoices
@@ -57,9 +59,9 @@ class CommercialController extends Controller
             $articlesAll = Article::where("state", 1)->orWhere("type", "accessoire")->get();
             $clients = Client::all();
             if (Auth::user()->role == 'controller') {
-                return view("controller.historique-ventes", ["clientsList" => $clients,"clients"=>$clients ,"articlesList" => $articlesAll, "ventes" => $ventes, "type" => $type, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
+                return view("controller.historique-ventes", ["regions"=>$regions,"clientsList" => $clients,"clients"=>$clients ,"articlesList" => $articlesAll, "ventes" => $ventes, "type" => $type, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             } else {
-                return view("commercial.historique-ventes", ["clientsList" => $clients,"clients"=>$clients ,"articlesList" => $articlesAll, "sales" => $sales, "articles" => $articles, "stocks" => $stocks, "accessories" => $accessories, "ventes" => $ventes, "type" => $type]);
+                return view("commercial.historique-ventes", ["regions"=>$regions,"clientsList" => $clients,"clients"=>$clients ,"articlesList" => $articlesAll, "sales" => $sales, "articles" => $articles, "stocks" => $stocks, "accessories" => $accessories, "ventes" => $ventes, "type" => $type]);
             }
         }
     }

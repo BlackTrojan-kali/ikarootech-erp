@@ -14,6 +14,7 @@ use App\Models\Relhistorie;
 use App\Models\Stock;
 use App\Models\Transmit;
 use App\Models\Depotage;
+use App\Models\Region;
 use App\Models\Vracmovement;
 use App\Models\Vracstock;
 use Illuminate\Http\Request;
@@ -32,7 +33,8 @@ class ProducerController extends Controller
         $allvrackstocks = Citerne::all();
         $vracstocks = Citerne::where("type", "mobile")->get();
         $fixe  = Citerne::where("type", "fixe")->get();
-        return view("producer.dashboard", ["vrac" => $vracstocks, "stocks" => $stocks, "fixe" => $fixe, "all" => $allvrackstocks]);
+        $regions = Region::all();
+        return view("producer.dashboard", ["regions"=>$regions,"vrac" => $vracstocks, "stocks" => $stocks, "fixe" => $fixe, "all" => $allvrackstocks]);
     }
 
     public function deleteMove($id)
@@ -87,6 +89,7 @@ class ProducerController extends Controller
         $stocks = Stock::where("category", "production")->where("region", Auth::user()->region)->get();
         $allvrackstocks = Citerne::all();
         $vracstocks = Citerne::where("type", "mobile")->get();
+        $regions = Region::all();
         $fixe  = Citerne::with(["Stock" => function ($query) {
             $query->where("region", Auth::user()->region);
         }])->where("type", "fixe")->get();
@@ -102,14 +105,14 @@ class ProducerController extends Controller
 
             $mobile = Citerne::where("type", "mobile")->get();
             $accessories = Article::where("type", "=", "accessoire")->get("title");
-            return view("manager.moveEntryMan", ["mobile" => $mobile, "vrac" => $vracstocks, "stocks" => $stocks, "accessories" => $accessories, "fixe" => $fixe, "all" => $allvrackstocks, "moves" => $moves, "moves2" => $moves2]);
+            return view("manager.moveEntryMan", ["regions"=>$regions,"mobile" => $mobile, "vrac" => $vracstocks, "stocks" => $stocks, "accessories" => $accessories, "fixe" => $fixe, "all" => $allvrackstocks, "moves" => $moves, "moves2" => $moves2]);
         } else if (Auth::user()->role == "commercial") {
 
             $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
             $accessories = Article::where("type", "=", "accessoire")->get("title");
-            return view("commercial.ComHistory", ["stocks" => $stocks, "accessories" => $accessories, "moves" => $moves, "moves2" => $moves2]);
+            return view("commercial.ComHistory", ["regions"=>$regions,"stocks" => $stocks, "accessories" => $accessories, "moves" => $moves, "moves2" => $moves2]);
         }
-        return view("producer.moveEntry", ["vrac" => $vracstocks, "stocks" => $stocks, "fixe" => $fixe, "all" => $allvrackstocks, "moves" => $moves, "moves2" => $moves2]);
+        return view("producer.moveEntry", ["regions"=>$regions,"vrac" => $vracstocks, "stocks" => $stocks, "fixe" => $fixe, "all" => $allvrackstocks, "moves" => $moves, "moves2" => $moves2]);
     }
 
     public function showCiterne()
@@ -120,20 +123,22 @@ class ProducerController extends Controller
         $fixe  =  Citerne::with(array('Stock' => function (Builder $query) {
             $query->where("region", Auth::user()->region);
         }))->where("type", "fixe")->get();
+        $regions = Region::all();
         $accessories = Article::where("type", "accessoire")->get("title");
 
         $allvrackstocks = Citerne::all();
         if (Auth::user()->role == "magasin") {
             $mobile = Citerne::where("type", "mobile")->get();
-            return  view("manager.citernes", ["mobile" => $mobile, "vrac" => $vracstocks, "stocks" => $stocks, "fixe" => $fixe, "accessories" => $accessories]);
+            return  view("manager.citernes", ["regions"=>$regions,"mobile" => $mobile, "vrac" => $vracstocks, "stocks" => $stocks, "fixe" => $fixe, "accessories" => $accessories]);
         }
-        return view("producer.citernes", ["vrac" => $vracstocks, "stocks" => $stocks, "fixe" => $fixe, "all" => $allvrackstocks]);
+        return view("producer.citernes", ["regions"=>$regions,"vrac" => $vracstocks, "stocks" => $stocks, "fixe" => $fixe, "all" => $allvrackstocks]);
     }
     public function makeRel($id)
     {
 
         $stocks = Stock::where("category", "production")->get();
         $vracstocks = Citerne::where("type", "mobile")->get();
+        $regions = Region::all();
         $fixe  = Citerne::with(["Stock" => function ($query) {
             $query->where("region", Auth::user()->region);
         }])->where("type", "fixe")->get();
@@ -144,7 +149,7 @@ class ProducerController extends Controller
         $accessories = Article::where("type", "accessoire")->get("title");
         $mobile = Citerne::where("type", "mobile")->get();
         $allvrackstocks = Citerne::all();
-        return view("producer.citerneRel", ["vrac" => $vracstocks, "stocks" => $stocks, "fixe" => $fixe, "mobile" => $mobile, "fixer" => $fixer, "id" => $id, "all" => $allvrackstocks, "accessories" => $accessories]);
+        return view("producer.citerneRel", ["regions"=>$regions,"vrac" => $vracstocks, "stocks" => $stocks, "fixe" => $fixe, "mobile" => $mobile, "fixer" => $fixer, "id" => $id, "all" => $allvrackstocks, "accessories" => $accessories]);
     }
     public function postRel(Request $request, $id)
     {
@@ -425,10 +430,11 @@ class ProducerController extends Controller
         $fixe  = Citerne::where("type", "fixe")->get();
         $datas = Producermove::where("region", Auth::user()->region)->get();
         $mobile = Citerne::where("type", "mobile")->get();
+        $regions = Region::all();
         if (Auth::user()->role == "controller") {
             $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
             $clients = Client::where("region",Auth::user()->region)->get();
-            return view("controller.ProdMoves", ["clientsList" => $clients,"articlesList" => $articles,"datas" => $datas, "mobile" => $mobile, "fixe" => $fixe, "vrac" => $vracstocks, "all" => $allvrackstocks, "stocks" => $stocks]);
+            return view("controller.ProdMoves", ["regions"=>$regions,"clientsList" => $clients,"articlesList" => $articles,"datas" => $datas, "mobile" => $mobile, "fixe" => $fixe, "vrac" => $vracstocks, "all" => $allvrackstocks, "stocks" => $stocks]);
         }
         return view("producer.ProdMoves", ["datas" => $datas, "fixe" => $fixe, "vrac" => $vracstocks, "all" => $allvrackstocks, "stocks" => $stocks]);
     }
@@ -473,7 +479,8 @@ class ProducerController extends Controller
         $vracstocks = Citerne::where("type", "mobile")->get();
         $fixe  = Citerne::where("type", "fixe")->get();
         $move = Movement::findOrFail($idMove);
-        return view("producer.modifMove", ["vrac" => $vracstocks, "stocks" => $stocks, "fixe" => $fixe, "all" => $allvrackstocks, "move" => $move]);
+        $regions = Region::all();
+        return view("producer.modifMove", ["regions"=>$regions,"vrac" => $vracstocks, "stocks" => $stocks, "fixe" => $fixe, "all" => $allvrackstocks, "move" => $move]);
     }
     public function updateMove($idMove, Request $request)
     {
@@ -498,7 +505,8 @@ class ProducerController extends Controller
         $fixe  = Citerne::where("type", "fixe")->get();
         $allvrackstocks = Citerne::all();
         $depotages = Depotage::with("citerne_mobile","citerne_fixe")->get();
-        return view("producer.depotages",["depotages"=>$depotages,"vrac" => $vracstocks,"all" => $allvrackstocks, "fixe" => $fixe,]);
+        $regions = Region::all();
+        return view("producer.depotages",["regions"=>$regions,"depotages"=>$depotages,"vrac" => $vracstocks,"all" => $allvrackstocks, "fixe" => $fixe,]);
     }
     public function delete_depotage($idDep){
         $dep = Depotage::findOrFail($idDep);

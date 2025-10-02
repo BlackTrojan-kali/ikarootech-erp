@@ -9,6 +9,7 @@ use App\Models\Citerne;
 use App\Models\Stock;
 use App\Models\Movement;
 use App\Models\Receive;
+use App\Models\Region;
 use App\Models\Vracstock;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -26,10 +27,11 @@ class MagazinierController extends Controller
         $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "=", $categorie)->with("article")->get();
         $accessories = Article::where("type", "=", "accessoire")->get("title");
         $vracstocks = Citerne::where("type", "mobile")->get();
+        $regions = Region::all();
 
         $mobile = Citerne::where("type", "mobile")->get();
         $fixe  = Citerne::where("type", "fixe")->get();
-        return view('manager.dashboard', ["stocks" => $stocks, "accessories" => $accessories, "vrac" => $vracstocks, "fixe" => $fixe, "mobile" => $mobile]);
+        return view('manager.dashboard', ["regions"=>$regions,"stocks" => $stocks, "accessories" => $accessories, "vrac" => $vracstocks, "fixe" => $fixe, "mobile" => $mobile]);
     }
     public function showmove(Request $request)
     {
@@ -63,7 +65,8 @@ class MagazinierController extends Controller
         $vracstocks = Citerne::where("type", "mobile")->get();
         $mobile = Citerne::where("type", "mobile")->get();
         $fixe  = Citerne::where("type", "fixe")->get();
-        return view("manager.history", ["accessories" => $accessories, "allMoves" => $allMoves, "allMovesOut" => $allMovesOut, "vrac" => $vracstocks, "fixe" => $fixe, "mobile" => $mobile]);
+        $regions = Region::all();
+        return view("manager.history", ["regions"=>$regions,"accessories" => $accessories, "allMoves" => $allMoves, "allMovesOut" => $allMovesOut, "vrac" => $vracstocks, "fixe" => $fixe, "mobile" => $mobile]);
     }
     public function showfilteredHistory(Request $request)
     {
@@ -305,10 +308,10 @@ class MagazinierController extends Controller
         $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "=", $categorie)->with("article")->get();
         $accessories = Article::where("type", "=", "accessoire")->get("title");
         $vracstocks = Citerne::where("type", "mobile")->get();
-
+        $regions = Region::all();
         $mobile = Citerne::where("type", "mobile")->get();
         $fixe  = Citerne::where("type", "fixe")->get();
-        return view("manager.list-broute", ["broutes" => $broutes, "stocks" => $stocks, "accessories" => $accessories, "vrac" => $vracstocks, "fixe" => $fixe, "mobile" => $mobile]);
+        return view("manager.list-broute", ["regions"=>$regions,"broutes" => $broutes, "stocks" => $stocks, "accessories" => $accessories, "vrac" => $vracstocks, "fixe" => $fixe, "mobile" => $mobile]);
     }
     public function BroutePDF(Request $request, $idRoute)
     {

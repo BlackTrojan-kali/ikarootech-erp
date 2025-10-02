@@ -40,7 +40,7 @@
                                             Nouveau relevé
                                         </button>
                                     </a>
-                                    <b {{ /*href="route('modif', ['id' => $fix->id])"*/ }} class="block">
+                                    <b class="block">
                                         <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"> {{-- Couleur différente pour distinguer les actions --}}
                                             Modifier Stock Théo.
                                         </button>

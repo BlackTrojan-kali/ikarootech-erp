@@ -827,6 +827,18 @@
                         @endif
                     </div>
                     <div class="modal-champs">
+                        <label for="">Destination (optionnel) :</label><br>
+                            
+                        <select name="origin" id="">
+                            <option value="">Toutes</option>
+                        @foreach ($regions as $region )
+
+                            <option value={{$region->$region}}>{{$region->region}}</option>
+
+                        @endforeach
+                        </select>
+                    </div>
+                    <div class="modal-champs">
                         <label for="">etat :</label><br>
 
                         <input type="radio" value="1" name="state"> pleine

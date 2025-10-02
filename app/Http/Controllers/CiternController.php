@@ -36,12 +36,13 @@ class CiternController extends Controller
         $mobile = Citerne::where("type", "mobile")->get();
         $fixe  = Citerne::where("type", "fixe")->get();
         $depotages = Relhistorie::all();
+        $regions  = Region::all();
         if (Auth::user()->role == "controller") {
             $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
             $clients = Client::where("region",Auth::user()->region)->get();
-            return view("controller.history-transmit", ["clientsList" => $clients,"articlesList" => $articles,"depotages" => $depotages, "stocks" => $stocks, "fixe" => $fixe, "mobile" => $mobile]);
+            return view("controller.history-transmit", ["regions"=>$regions,"clientsList" => $clients,"articlesList" => $articles,"depotages" => $depotages, "stocks" => $stocks, "fixe" => $fixe, "mobile" => $mobile]);
         }
-        return view("manager.history-transmit", ["depotages" => $depotages, "stocks" => $stocks, "accessories" => $accessories, "vrac" => $vracstocks, "fixe" => $fixe, "mobile" => $mobile]);
+        return view("manager.history-transmit", ["regions"=>$regions,"depotages" => $depotages, "stocks" => $stocks, "accessories" => $accessories, "vrac" => $vracstocks, "fixe" => $fixe, "mobile" => $mobile]);
     }
     public function showReleve(Request $request)
     {
@@ -52,16 +53,17 @@ class CiternController extends Controller
         $stocks = Stock::where("category", Auth::user()->role)->where("region", Auth::user()->region)->get();
         $mobile = Citerne::where("type", "mobile")->get();
         $allvrackstocks = Citerne::all();
+        $regions = Region::all();
         if (Auth::user()->role == "magasin") {
-            return view("manager.reception", ["mobile" => $mobile, "accessories" => $accessories, "vrac" => $vracstocks, "receptions" => $receptions, "fixe" => $fixe, "all" => $allvrackstocks]);
+            return view("manager.reception", ["regions"=>$regions,"mobile" => $mobile, "accessories" => $accessories, "vrac" => $vracstocks, "receptions" => $receptions, "fixe" => $fixe, "all" => $allvrackstocks]);
         } else if (Auth::user()->role == "controller") {
             
             $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
             $clients = Client::where("region",Auth::user()->region)->get();
-            return view("controller.citerneRel", ["clientsList" => $clients,"articlesList" => $articles,"receptions" => $receptions, "stocks" => $stocks, "fixe" => $fixe, "mobile" => $mobile]);
+            return view("controller.citerneRel", ["regions"=>$regions,"clientsList" => $clients,"articlesList" => $articles,"receptions" => $receptions, "stocks" => $stocks, "fixe" => $fixe, "mobile" => $mobile]);
         } 
         else {
-            return view("producer.reception", ["receptions" => $receptions, "vrac" => $vracstocks, "fixe" => $fixe, "all" => $allvrackstocks]);
+            return view("producer.reception", ["regions"=>$regions,"receptions" => $receptions, "vrac" => $vracstocks, "fixe" => $fixe, "all" => $allvrackstocks]);
         }
     }
     public function showFormAddCitern(Request $request)

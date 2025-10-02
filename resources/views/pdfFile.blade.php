@@ -85,6 +85,8 @@
                 <th colspan="3">MVT DU STOCK TOTAL</th>
                 <th>DATES</th>
                 <th>LIBELLES</th>
+                {{-- NOUVELLE COLONNE AJOUTÉE ICI --}}
+                <th>ORIGINE</th> 
                 <th colspan="3">MVT EN MAGASIN DES BOUTEILLES
                     {{ $first->state ? 'PLEINES' : 'VIDES' }}</th>
 
@@ -96,6 +98,8 @@
                 <td>
 
                 </td>
+                <td> </td>
+                {{-- CELLULE AJOUTÉE POUR L'ORIGINE --}}
                 <td> </td>
                 <td>ENTREES</td>
                 <td>SORTIES</td>
@@ -109,6 +113,8 @@
 
                 </td>
                 <td> </td>
+                {{-- CELLULE AJOUTÉE POUR L'ORIGINE --}}
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -127,6 +133,8 @@
                             {{ $data->origin == 'pertes' ? $data->qty : 0 }}</td>
                         <td>{{ $data->created_at }}</td>
                         <td>{{ $data->label }}</td>
+                        {{-- AFFICHAGE DE L'ORIGINE ICI --}}
+                        <td>{{ $data->origin }}</td> 
                         <?php
                         if ($data->entree) {
                             $sommeEntry += $data->qty;
@@ -140,7 +148,8 @@
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="5"> <b>Total Mouvements</b></td>
+                    {{-- MISE À JOUR DU COLSPAN À 6 (anciennement 5) --}}
+                    <td colspan="6"> <b>Total Mouvements</b></td> 
                     <td><b>{{ $sommeEntry }}</b></td>
                     <td><b>{{ $sommeOutcome }}</b></td>
                     <td>/</td>

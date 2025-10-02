@@ -25,10 +25,12 @@ class ClosureController extends Controller
         $fixe  = Citerne::where("type", "fixe")->get();
         $articles = Article::where("state", 1)->orWhere("type", "accessoire")->get();
         $clients = Client::all();
+        $regions = Region::all();
 
         // Retourner la vue 'closures.index' en lui passant toutes les données
         return view('closures.index', [
             "closures" => $closures,
+            "regions"=>$regions,
             "clientsList" => $clients, 
             "articlesList" => $articles,
             "stocks" => $stocks, 

@@ -832,7 +832,9 @@
                     <div class="modal-champs">
                         <label for="origin_outcome_pleine">Type d'opération:</label>
                         <select name="origin" id="origin_outcome_pleine">
-                            <option value="region">Région</option>
+                            @foreach ($regions as $region )
+                                <option value={{$region->region}}>{{$region->region}}</option>
+                            @endforeach
                             <option value="pertes">Pertes</option>
                             @if (Auth::user()->region != 'central')
                                 <option value="magasin central">MAGASIN CENTRAL</option>

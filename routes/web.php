@@ -142,7 +142,7 @@ Route::group(["middleware" => "auth"], function () {
       );
       Route::middleware(isCommercial::class)->group(function () {
             Route::get("/commercial/moveEntryCom/{state}/{type}/{weight}", [Controllers\ProducerController::class, "showEntry"])->name("moveEntryCom");
-      });
+      }); 
       //routes du controller
       Route::middleware(isController::class)->group(function () {
             Route::get("/controller/closures",[Controllers\ClosureController::class,"index"])->name("closures.index");

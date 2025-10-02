@@ -137,15 +137,16 @@ class ArticleController extends Controller
         $allvrackstocks = Citerne::all();
         $fixe  = Citerne::where("type", "fixe")->get();
         $mobile = Citerne::where("type", "mobile")->get();
+        $regions = Region::all();
         switch (Auth::user()->role) {
             case "commercial":
-                return view("commercial.moveGlobalCom", ["bouteille_pleines" => $articles, "bouteille_vides" => $articles1, "accessories" => $accessories, "stocks" => $stocks, "weight" => $weight]);
+                return view("commercial.moveGlobalCom", ["regions"=>$regions,"bouteille_pleines" => $articles, "bouteille_vides" => $articles1, "accessories" => $accessories, "stocks" => $stocks, "weight" => $weight]);
                 break;
             case "production":
-                return view("producer.moveGlobalPro", ["bouteille_pleines" => $articles, "bouteille_vides" => $articles1, "vrac" => $vracstocks, "stocks" => $stocks, "fixe" => $fixe, "all" => $allvrackstocks, "weight" => $weight]);
+                return view("producer.moveGlobalPro", ["regions"=>$regions,"bouteille_pleines" => $articles, "bouteille_vides" => $articles1, "vrac" => $vracstocks, "stocks" => $stocks, "fixe" => $fixe, "all" => $allvrackstocks, "weight" => $weight]);
                 break;
             case "magasin":
-                return view("manager.moveGlobalMan", ["mobile" => $mobile, "bouteille_pleines" => $articles, "bouteille_vides" => $articles1, "accessories" => $accessories, "stocks" => $stocks, "vrac" => $vracstocks, "fixe" => $fixe, "weight" => $weight]);
+                return view("manager.moveGlobalMan", ["regions"=>$regions,"mobile" => $mobile, "bouteille_pleines" => $articles, "bouteille_vides" => $articles1, "accessories" => $accessories, "stocks" => $stocks, "vrac" => $vracstocks, "fixe" => $fixe, "weight" => $weight]);
                 break;
         }
     }
@@ -318,7 +319,8 @@ class ArticleController extends Controller
         $fixe  = Citerne::where("type", "fixe")->get();
         $citerne = Citerne::where("id", $id)->with("stock")->first();
         $mobile = Citerne::where("type", "mobile")->get();
-        return view("ModifStock", ["mobile" => $mobile, "citerne" => $citerne, "accessories" => $accessories, "allMoves" => $allMoves, "allMovesOut" => $allMovesOut, "vrac" => $vracstocks, "fixe" => $fixe, "citerne" => $citerne]);
+        $regions= Region::all();
+        return view("ModifStock", ["regions"=>$regions,"mobile" => $mobile, "citerne" => $citerne, "accessories" => $accessories, "allMoves" => $allMoves, "allMovesOut" => $allMovesOut, "vrac" => $vracstocks, "fixe" => $fixe, "citerne" => $citerne]);
     }
     public function postModif(Request $request, $id)
     {
