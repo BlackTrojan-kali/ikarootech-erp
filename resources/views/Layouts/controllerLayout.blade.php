@@ -829,11 +829,11 @@
                     <div class="modal-champs">
                         <label for="">Destination (optionnel) :</label><br>
                             
-                        <select name="origin" id="">
+                        <select name="origin" >
                             <option value="">Toutes</option>
                         @foreach ($regions as $region )
 
-                            <option value={{$region->$region}}>{{$region->region}}</option>
+                            <option value={{$region->region}}>{{$region->region}}</option>
 
                         @endforeach
                         </select>

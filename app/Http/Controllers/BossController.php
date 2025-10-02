@@ -141,171 +141,132 @@ class BossController extends Controller
             return $pdf->download(Auth::user()->role . "versements" . Auth::user()->region . $fromDate . $toDate . $request->bank . ".pdf");
         }
     }
-public function generatePdf(Request $request)
+    public function generatePdf(Request $request)
 {
+    // ✅ Validation
     $request->validate([
-        "depart" => "date | required",
-        "fin" => "date | required",
-        "state" => "string | required",
-        "move" => "string| required",
-        "type" => "string | required",
-        "service" => "required | string",
-        "origin" => "nullable |string",
+        'depart' => 'required|date',
+        'fin' => 'required|date',
+        'state' => 'required|string',
+        'move' => 'required|string',
+        'type' => 'required|string',
+        'service' => 'required|string',
+        'origin' => 'nullable|string',
     ]);
 
     $fromdate = Carbon::parse($request->depart)->startOfDay();
     $todate = Carbon::parse($request->fin)->endOfDay();
-    $first = null;
     $region = Auth::user()->region;
     $service = $request->service;
     $data = collect();
-    $data2 = collect(); // Initialisation
-    // Initialisation du filtre 'origin' (closure pour la réutilisation)
+    $data2 = collect();
+    $first = null;
+    // ✅ Filtrage par origin (si non vide)
     $applyOriginFilter = function ($query) use ($request) {
-        if ($request->origin) {
-            $query->where("movements.origin", $request->origin);
+        if (!empty($request->origin)) {
+            $query->where('movements.origin',$request->origin);
         }
         return $query;
     };
-    // ---
 
-    // CAS ACCESSOIRE ("777")
-    if ($request->type == "777") {
-        
-        $baseAccessoryQuery = Movement::join("articles", "movements.article_id", "articles.id")
-                                      ->join("stocks", "movements.stock_id", "stocks.id")
-                                      ->where("movements.service", $service)
-                                      ->where("stocks.region", $region)
-                                      ->where("articles.type", "accessoire")
-                                      ->with("fromArticle")
-                                      ->select("movements.*");
+    // 📦 ACCESSOIRES
+    if ($request->type === "777") {
+        $baseAccessoryQuery = Movement::join('articles', 'movements.article_id', '=', 'articles.id')
+            ->join('stocks', 'movements.stock_id', '=', 'stocks.id')
+            ->where('movements.service', $service)
+            ->where('stocks.region', $region)
+            ->where('articles.type', 'accessoire')
+            ->with('fromArticle')
+            ->select('movements.*');
 
-        if ($request->move == "777") {
-            // Requête data: sans filtre de date (historique initial) - Logique maintenue
+        if ($request->move === "777") {
             $queryData = clone $baseAccessoryQuery;
-            
-            // Requête data2: avec filtre de date
-            $queryData2 = clone $baseAccessoryQuery;
-            $queryData2->whereBetween("movements.created_at", [$fromdate, $todate]);
-            
-            // FILTRAGE CONDITIONNEL PAR ORIGIN (Appliqué après le clonage)
-            $queryData = $applyOriginFilter($queryData);
-            $queryData2 = $applyOriginFilter($queryData2);
-            
-            $data = $queryData->orderBy("id")->get();
-            $data2 = $queryData2->orderBy("id")->get();
+            $queryData2 = clone $baseAccessoryQuery->whereBetween('movements.created_at', [$fromdate, $todate]);
 
+            $data = $applyOriginFilter($queryData)->orderBy('id')->get();
+            $data2 = $applyOriginFilter($queryData2)->orderBy('id')->get();
         } else {
-            // Cas où move est spécifié (pas "777")
-            $queryData = clone $baseAccessoryQuery;
-            $queryData->whereBetween("movements.created_at", [$fromdate, $todate])
-                      ->where("movements.entree", $request->move);
-            
-            // FILTRAGE CONDITIONNEL PAR ORIGIN
-            $queryData = $applyOriginFilter($queryData);
+            $queryData = clone $baseAccessoryQuery
+                ->whereBetween('movements.created_at', [$fromdate, $todate])
+                ->where('movements.entree', $request->move);
 
-            $data = $queryData->orderBy("id")->get();
+            $data = $applyOriginFilter($queryData)->orderBy('id')->get();
         }
-    } 
-    
-    // ---
+    }
 
-    // CAS BOUTEILLE-GAZ (type != "777")
+    // 🧯 BOUTEILLES GAZ
     else {
-        // Base de la requête pour les bouteilles-gaz
-        $queryGasBase = Movement::leftJoin("articles", "movements.article_id", "articles.id")
-                                ->leftJoin("stocks", "movements.stock_id", "stocks.id")
-                                ->whereBetween("movements.created_at", [$fromdate, $todate])
-                                ->where("movements.service", $service)
-                                ->where("stocks.region", $region)
-                                ->where("articles.type", "bouteille-gaz")
-                                ->where("articles.weight", floatval($request->type))
-                                ->with("fromArticle")
-                                ->select("movements.*");
-        
-        if ($request->move == "777") {
-            // Tous les mouvements de bouteilles-gaz (pleines et vides)
-            
-            // Requête data: Pleines (articles.state = 1)
-            $queryData = clone $queryGasBase;
-            $queryData->where("articles.state", 1);
+        $queryGasBase = Movement::leftJoin('articles', 'movements.article_id', '=', 'articles.id')
+            ->leftJoin('stocks', 'movements.stock_id', '=', 'stocks.id')
+            ->whereBetween('movements.created_at', [$fromdate, $todate])
+            ->where('movements.service', $service)
+            ->where('stocks.region', $region)
+            ->where('articles.type', 'bouteille-gaz')
+            ->where('articles.weight', floatval($request->type))
+            ->with('fromArticle')
+            ->select('movements.*');
 
-            // Requête data2: Vides (articles.state = 0)
-            $queryData2 = clone $queryGasBase;
-            $queryData2->where("articles.state", 0);
-            
-            // FILTRAGE CONDITIONNEL PAR ORIGIN
-            $queryData = $applyOriginFilter($queryData);
-            $queryData2 = $applyOriginFilter($queryData2);
+        if ($request->move === "777") {
+            $queryData = clone $queryGasBase->where('articles.state', 1);
+            $queryData2 = clone $queryGasBase->where('articles.state', 0);
 
-            $data = $queryData->orderBy("id")->get();
-            $data2 = $queryData2->orderBy("id")->get();
+            $data = $applyOriginFilter($queryData)->orderBy('id')->get();
+            $data2 = $applyOriginFilter($queryData2)->orderBy('id')->get();
 
             if ($data->isEmpty() && $data2->isEmpty()) {
-                return back()->withErrors("aucune donnee disponible");
-            }
-            // Utiliser $data->first() ou $data2->first() pour obtenir $first
-            if (!$data->isEmpty()) {
-                $first = $data->first()->fromArticle;
-            } elseif (!$data2->isEmpty()) {
-                $first = $data2->first()->fromArticle;
+                return back()->withErrors("Aucune donnée disponible.");
             }
 
+            $first = !$data->isEmpty() ? $data->first()->fromArticle : $data2->first()->fromArticle;
         } else {
-            // Mouvements spécifiques (entree ou sortie)
-            $queryData = clone $queryGasBase;
-            $queryData->where("articles.state", $request->state) // state (pleine/vide)
-                      ->where("movements.entree", intval($request->move)); // move (entree/sortie)
-            
-            // FILTRAGE CONDITIONNEL PAR ORIGIN
-            $queryData = $applyOriginFilter($queryData);
+            $queryData = clone $queryGasBase
+                ->where('articles.state', $request->state)
+                ->where('movements.entree', intval($request->move));
 
-            $data = $queryData->orderBy("id")->get();
-            
+            $data = $applyOriginFilter($queryData)->orderBy('id')->get();
+
             if ($data->isEmpty()) {
-                return back()->withErrors("aucune donnee disponible");
+                return back()->withErrors("Aucune donnée disponible.");
             }
+
             $first = $data->first()->fromArticle;
         }
     }
 
-    // ---
-    // GÉNÉRATION PDF (inchangée)
-    if ($request->move == "777") {
-        $pdf = Pdf::loadview("pdfGlobalFile", [
-            "bouteille_vides" => $data2, 
-            "bouteille_pleines" => $data, 
-            "service" => $service, 
-            "region" => $region, 
-            "first" => $first, 
-            "fromdate" => $fromdate, 
-            "todate" => $todate,
-        ])->setPaper("A4", 'landscape');
+    // 🧾 PDF GÉNÉRATION
+    if ($request->move === "777") {
+        $pdf = Pdf::loadView("pdfGlobalFile", [
+            'bouteille_vides' => $data2,
+            'bouteille_pleines' => $data,
+            'service' => $service,
+            'region' => $region,
+            'first' => $first,
+            'fromdate' => $fromdate,
+            'todate' => $todate,
+        ])->setPaper('A4', 'landscape');
 
-        $pdf->output();
-        $dom_pdf = $pdf->getDomPDF();
+        $canvas = $pdf->getDomPDF()->get_canvas();
+        $canvas->page_text(720, 550, "[{PAGE_NUM} sur {PAGE_COUNT}]", null, 15, [0, 0, 0]);
 
-        $canvas = $dom_pdf->get_canvas();
-        $canvas->page_text(720, 550, "[{PAGE_NUM} sur {PAGE_COUNT}]", null, 15, array(0, 0, 0));
-        return $pdf->download($service . $region . $fromdate->toDateString() . $todate->toDateString() . "GLOBAL.pdf");
+        return $pdf->download("{$service}{$region}{$fromdate->toDateString()}{$todate->toDateString()}GLOBAL.pdf");
     } else {
-        $pdf = Pdf::loadview("pdfFile", [
-            "data" => $data, 
-            "fromdate" => $fromdate, 
-            "todate" => $todate, 
-            "first" => $first, 
-            "service" => $service, 
-            "region" => $region
+        $pdf = Pdf::loadView("pdfFile", [
+            'data' => $data,
+            'fromdate' => $fromdate,
+            'todate' => $todate,
+            'first' => $first,
+            'service' => $service,
+            'region' => $region,
         ]);
 
-        $pdf->output();
-        $dom_pdf = $pdf->getDomPDF();
+        $canvas = $pdf->getDomPDF()->get_canvas();
+        $canvas->page_text(510, 800, "[{PAGE_NUM} sur {PAGE_COUNT}]", null, 15, [0, 0, 0]);
 
-        $canvas = $dom_pdf->get_canvas();
-        $canvas->page_text(510, 800, "[{PAGE_NUM} sur {PAGE_COUNT}]", null, 15, array(0, 0, 0));
-        return $pdf->download($service . $region . $fromdate->toDateString() . $todate->toDateString() . ".pdf");
+        return $pdf->download("{$service}{$region}{$fromdate->toDateString()}{$todate->toDateString()}.pdf");
     }
 }
+
+
     public function show_broute_list()
     {
         $broutes = Broute::where("region", Auth::user()->region)->get();
