@@ -140,8 +140,7 @@ class BossController extends Controller
             $canvas->page_text(510, 800, "[{PAGE_NUM} sur {PAGE_COUNT}]", null, 15, array(0, 0, 0));
             return $pdf->download(Auth::user()->role . "versements" . Auth::user()->region . $fromDate . $toDate . $request->bank . ".pdf");
         }
-    }
-    public function generatePdf(Request $request)
+    }public function generatePdf(Request $request)
 {
     // ✅ Validation
     $request->validate([
@@ -158,13 +157,15 @@ class BossController extends Controller
     $todate = Carbon::parse($request->fin)->endOfDay();
     $region = Auth::user()->region;
     $service = $request->service;
+
     $data = collect();
     $data2 = collect();
     $first = null;
+
     // ✅ Filtrage par origin (si non vide)
     $applyOriginFilter = function ($query) use ($request) {
         if (!empty($request->origin)) {
-            $query->where('movements.origin',$request->origin);
+            $query->where('movements.origin', $request->origin);
         }
         return $query;
     };
@@ -180,15 +181,18 @@ class BossController extends Controller
             ->select('movements.*');
 
         if ($request->move === "777") {
+            // Cloner les deux versions
             $queryData = clone $baseAccessoryQuery;
-            $queryData2 = clone $baseAccessoryQuery->whereBetween('movements.created_at', [$fromdate, $todate]);
+            $queryData2 = clone $baseAccessoryQuery;
+
+            $queryData2->whereBetween('movements.created_at', [$fromdate, $todate]);
 
             $data = $applyOriginFilter($queryData)->orderBy('id')->get();
             $data2 = $applyOriginFilter($queryData2)->orderBy('id')->get();
         } else {
-            $queryData = clone $baseAccessoryQuery
-                ->whereBetween('movements.created_at', [$fromdate, $todate])
-                ->where('movements.entree', $request->move);
+            $queryData = clone $baseAccessoryQuery;
+            $queryData->whereBetween('movements.created_at', [$fromdate, $todate])
+                      ->where('movements.entree', $request->move);
 
             $data = $applyOriginFilter($queryData)->orderBy('id')->get();
         }
@@ -196,8 +200,8 @@ class BossController extends Controller
 
     // 🧯 BOUTEILLES GAZ
     else {
-        $queryGasBase = Movement::leftJoin('articles', 'movements.article_id', '=', 'articles.id')
-            ->leftJoin('stocks', 'movements.stock_id', '=', 'stocks.id')
+        $queryGasBase = Movement::join('articles', 'movements.article_id', '=', 'articles.id')
+            ->join('stocks', 'movements.stock_id', '=', 'stocks.id')
             ->whereBetween('movements.created_at', [$fromdate, $todate])
             ->where('movements.service', $service)
             ->where('stocks.region', $region)
@@ -207,21 +211,27 @@ class BossController extends Controller
             ->select('movements.*');
 
         if ($request->move === "777") {
-            $queryData = clone $queryGasBase->where('articles.state', 1);
-            $queryData2 = clone $queryGasBase->where('articles.state', 0);
+            // ✅ Cloner avant de mettre la condition
+            $queryData = clone $queryGasBase;
+            $queryData2 = clone $queryGasBase;
+
+            $queryData->where('articles.state', 1); // pleines
+            $queryData2->where('articles.state', 0); // vides
 
             $data = $applyOriginFilter($queryData)->orderBy('id')->get();
             $data2 = $applyOriginFilter($queryData2)->orderBy('id')->get();
 
             if ($data->isEmpty() && $data2->isEmpty()) {
-                return back()->withErrors("Aucune donnée disponible.");
+                return back()->withErrors("Aucune donnée disponible pour les bouteilles gaz.");
             }
 
-            $first = !$data->isEmpty() ? $data->first()->fromArticle : $data2->first()->fromArticle;
+            $first = !$data->isEmpty() ? $data->first()->fromArticle : 
+                     (!$data2->isEmpty() ? $data2->first()->fromArticle : null);
+
         } else {
-            $queryData = clone $queryGasBase
-                ->where('articles.state', $request->state)
-                ->where('movements.entree', intval($request->move));
+            $queryData = clone $queryGasBase;
+            $queryData->where('articles.state', $request->state)
+                      ->where('movements.entree', intval($request->move));
 
             $data = $applyOriginFilter($queryData)->orderBy('id')->get();
 

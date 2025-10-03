@@ -647,7 +647,10 @@
                                 <option value="achat">Achat</option>
                                 <option value="retour reepreuve">Retour sur réépreuve</option> {{-- Corrected spelling --}}
                             @endif
-                            <option value="region">Région</option>
+                            @foreach ($regions  as $region )
+                                
+                            <option value={{$region->region}}>{{$region->region}}</option>
+                            @endforeach
                             <option value="production">Production</option>
                             <option value="stock_initial">Stock initial</option>
                         </select>

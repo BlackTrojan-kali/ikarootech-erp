@@ -66,7 +66,7 @@
     <br><br><br>
     <br><br>
     <div class="logo-section">
-        <img src="{{ 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('images/logo.png'))) }}"
+        <img src="{{public_path('images/logo.png')}}"
             width="100px">
         <p>
             <b>{{ env('COMPANIE_NAME') }}</b><br>
@@ -86,7 +86,7 @@
                 <th>DATES</th>
                 <th>LIBELLES</th>
                 {{-- NOUVELLE COLONNE AJOUTÉE ICI --}}
-                <th>ORIGINE</th> 
+                <th>DESTINATION</th> 
                 <th colspan="3">MVT EN MAGASIN DES BOUTEILLES
                     {{ $first->state ? 'PLEINES' : 'VIDES' }}</th>
 

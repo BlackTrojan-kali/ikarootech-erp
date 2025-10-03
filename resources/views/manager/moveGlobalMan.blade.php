@@ -24,7 +24,7 @@
                         <th>Ventes</th>
                         <th>Pertes</th>
                         <th>
-
+                            
                         </th>
                         <th> </th>
                         <th>ENTREES</th>

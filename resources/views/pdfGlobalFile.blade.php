@@ -76,7 +76,7 @@
     <br><br><br>
     <br><br>
     <div class="logo-section">
-        <img src="{{ 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('images/logo.png'))) }}"
+        <img src="{{ public_path('images/logo.png') }}"
             width="100px">
             <p>
                 <b>{{ env('COMPANIE_NAME') }}</b><br>
@@ -101,7 +101,7 @@
                 <th><b>DATES</b></th>
                 <th><b>LIBELLES</b></th>
                 {{-- AJOUT DE LA COLONNE ORIGINE --}}
-                <th><b>ORIGINE</b></th> 
+                <th><b>DESTINATION</b></th> 
                 <th colspan="3">MVT EN MAGASIN DES BOUTEILLES VIDES</th>
             </tr>
             <tr>
@@ -202,7 +202,7 @@
                 <th><b>DATES</b></th>
                 <th><b>LIBELLES</b></th>
                 {{-- AJOUT DE LA COLONNE ORIGINE --}}
-                <th><b>ORIGINE</b></th> 
+                <th><b>DESTINATION</b></th> 
                 <th colspan="3">MVT EN MAGASIN DES BOUTEILLES PLEINES</th>
             </tr>
             <tr>
