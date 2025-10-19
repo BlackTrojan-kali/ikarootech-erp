@@ -22,7 +22,8 @@ class CiternController extends Controller
     //new manage citernes
     public function manage_citernes(){
         $citernes = Citerne::all();
-        return view("super.citernelist",["citernes"=>$citernes]);
+        $regions   = Region::all();
+        return view("super.citernelist",["regions"=>$regions,"citernes"=>$citernes]);
     }
     public function show(Request $request)
     {

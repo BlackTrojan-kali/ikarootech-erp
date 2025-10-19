@@ -22,7 +22,7 @@
                             <td>{{ $data->citerne->name }} ({{ $data->citerne->type }})</td>
                             <td>{{ $data->type }}</td>
                             <td>{{ $data->qty }}</td>
-                            <td>{{$data->remains > 0 ? $data->remains:"null"}}</td>
+                            <td>{{$data->remains }}</td>
                             <td>{{ $data->bordereau }}</td>
                             <td>{{ $data->created_at }}</td>
                         </tr>

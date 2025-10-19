@@ -11,12 +11,14 @@
 
             <h2 class="text-lg font-bold mt-6 mb-4 text-gray-700">Liste des éléments</h2> {{-- Title for the list of items --}}
             <div class="flex flex-col gap-3 w-full p-2"> {{-- Space between list items --}}
-                @forelse (Cart::content() as $row) {{-- Using @forelse to handle empty cart --}}
-                    <div class="font-semibold w-full flex flex-col md:flex-row items-center justify-between gap-4 p-3 shadow-md rounded-lg bg-slate-200 border border-gray-200"> {{-- Original background color --}}
+                @forelse (Cart::content() as $row) {{-- Using @forelse to han
+                dle empty cart --}}
+                
+                <div class="font-semibold w-full flex flex-col md:flex-row items-center justify-between gap-4 p-3 shadow-md rounded-lg bg-slate-200 border border-gray-200"> {{-- Original background color --}}
                         <h3 class="text-gray-800 text-base md:text-lg mb-2 md:mb-0">
                             {{ $row->name == 'stargas' ? 'Bouteille-gaz' : $row->name }}
-                            @if (isset($row->options['weight']) && $row->options['weight'] > 0)
-                                <span class="text-gray-700">{{ $row->options['weight'] }} kg</span> {{-- Access weight via options --}}
+                            @if (isset($row->weight ) && $row->weight > 0)
+                                <span class="text-gray-700">{{ $row->weight }} kg</span> {{-- Access weight via options --}}
                             @endif
                         </h3>
                         <form class="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto" method="POST" action="{{ route('updateCart', [$row->rowId]) }}">
