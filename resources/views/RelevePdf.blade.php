@@ -55,7 +55,7 @@
 <br><br><br>
 <br><br>
 <div class="logo-section">
-    <img src="{{'data:image/png;base64,'.base64_encode(file_get_contents(public_path('images/logo.png')))}}" width="100px"> 
+    <img src="{{public_path('images/logo.png')}}" width="100px"> 
     <p>
         <b>{{ env('COMPANIE_NAME') }}</b><br>
         <b>B.P:</b>{{ env('COMPANIE_ADDRESS') }} <br>
