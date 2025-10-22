@@ -131,7 +131,7 @@ class BossController extends Controller
             return $pdf->download($request->role . "versementsglobal" . Auth::user()->region . $fromDate . $toDate . $request->bank . ".pdf");
         } else {
             $deposit = Versement::where("bank", $request->bank)->where("region", Auth::user()->region)->where("service", $request->service)->whereBetween("created_at", [$fromDate, $toDate])->get();
-            $pdf = Pdf::loadview("versementPdf", ["fromDate" => $fromDate, "toDate" => $toDate, "deposit" => $deposit, "bank" => $request->bank]);
+            $pdf = Pdf::loadview("versementPdf", ["fromDate" => $fromDate, "toDate" => $toDate, "deposit" => $deposit, "bank" => $request->bank])->setPaper("A4", 'landscape');
 
             $pdf->output();
             $dom_pdf = $pdf->getDomPDF();

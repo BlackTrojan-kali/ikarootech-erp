@@ -435,7 +435,7 @@ class CommercialController extends Controller
             }else{    
             $deposit = Versement::where("bank", $request->bank)->where("client_id",$request->client)->with("Invoice","client")->where("region", Auth::user()->region)->whereBetween("created_at", [$fromDate, $toDate])->get();
             }
-            $pdf = Pdf::loadview("versementPdf", ["fromDate" => $fromDate, "toDate" => $toDate, "deposit" => $deposit, "bank" => $request->bank]);
+            $pdf = Pdf::loadview("versementPdf", ["fromDate" => $fromDate, "toDate" => $toDate, "deposit" => $deposit, "bank" => $request->bank])->setPaper("A4", 'landscape');
 
             $pdf->output();
             $dom_pdf = $pdf->getDomPDF();
