@@ -16,11 +16,12 @@
                         <input type="text" name="nom"
                             value="{{ $price->client->name }}" disabled>
                     </div>
-                    <div class="modal-champs">
+<div class="modal-champs">
                         <label for="">Article:</label>
+                      
                         @if ($price->article->type == 'accessoire')
                             <input type="text" name="article" value="{{ $price->article->title }}" disabled>
-                        @else
+                        @e                    lse
                             <input type="text" name="article"
                                 value="{{ $price->article->type . ' ' . $price->article->weight . ' kg' }}" disabled>
                         @endif

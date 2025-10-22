@@ -64,6 +64,7 @@
                 <div class="mb-4">
                     <label for="currency" class="block text-gray-700 text-sm font-bold mb-2">Mode de paiement:</label>
                     <select name="currency" id="currency" class="w-full p-2 border border-black rounded-md focus:outline-none focus:ring focus:border-blue-300"> {{-- Black border preserved --}}
+                       
                         <option value="Cash">Cash</option>
                         <option value="Virement">Virement</option>
                     </select>
@@ -74,6 +75,9 @@
                 <div class="mb-6"> {{-- Larger margin for the last field before buttons --}}
                     <label for="operation_type" class="block text-gray-700 text-sm font-bold mb-2">Type d'opération:</label>
                     <select name="type" id="operation_type" class="w-full p-2 border border-black rounded-md focus:outline-none focus:ring focus:border-blue-300"> {{-- Black border preserved --}}
+                     
+                       <option value="
+                       " disabled>Choisir un type d'operation</option>
                         <option value="vente">Vente</option>
                         <option value="consigne">Consigne</option>
                     </select>

@@ -24,7 +24,7 @@
                             <input type="text" name="article" value="{{ $price->article->title }}" disabled>
                         @else
                             <input type="text" name="article"
-                                value="{{ $price->article->type . ' ' . $price->article->wieght . ' kg' }}" disabled>
+                                value="{{ $price->article->type . ' ' . $price->article->weight . ' kg' }}" disabled>
                         @endif
                     </div>
                     <div class="modal-champs">
