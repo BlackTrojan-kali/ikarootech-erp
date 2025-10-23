@@ -365,35 +365,63 @@ class CommercialController extends Controller
         return $pdf->download(Auth::user()->role . "" . Auth::user()->region . $fromDate . $toDate . ".pdf");
     }
 
-    public function generate_new_sale_state(Request $request)
+        public function generate_new_sale_state(Request $request)
     {
-        $request->validate(
-            [
-                "depart" => "date | required",
-                "fin" => "date | required",
-                "name" => "string | nullable",
-                "sale" => "string |required",
-                "client" => "string | required",
-                "article" => "string | required",
-            ]
-        );
+        // 1. Validation (simplifiée pour la convention)
+        $request->validate([
+            "depart" => "required|date",
+            "fin" => "required|date",
+            "name" => "nullable|string",
+            "sale" => "required|string",
+            "client" => "required|string", // Gardé string car peut être "all"
+            "article" => "required|string",
+        ]);
+
+        // 2. Préparation des dates et des IDs
         $fromDate = Carbon::parse($request->depart)->startOfDay();
         $toDate = Carbon::parse($request->fin)->endOfDay();
+        $articleId = intval($request->article);
+        $region = Auth::user()->region;
 
-        if ($request->client != "all") {
-
-            $sales = Invoicetrace::join("invoices", "invoices.id", "invoicetraces.id_invoice")->leftJoin("clients", "clients.id", "invoices.id_client")->where("invoices.id_client", intval($request->client))->whereBetween("invoicetraces.created_at", [$fromDate, $toDate])->where("invoicetraces.type", $request->sale)->where("invoicetraces.region", Auth::user()->region)->where("id_article", intval($request->article))->with("article")->get();
+        // 3. Construction de la requête (utilisation d'Eloquent)
+        $salesQuery = Invoicetrace::query()
+            // Filtres directs sur Invoicetrace
+            ->whereBetween("created_at", [$fromDate, $toDate])
+            ->where("type", $request->sale)
+            ->where("region", $region)
+            ->where("id_article", $articleId)
             
-        } else {
-            $sales = Invoicetrace::join("invoices", "invoices.id", "invoicetraces.id_invoice")->leftJoin("clients", "clients.id", "invoices.id_client")->whereBetween("invoicetraces.created_at", [$fromDate, $toDate])->where("invoicetraces.type", $request->sale)->where("invoicetraces.region", Auth::user()->region)->where("id_article", intval($request->article))->with("article")->get();
-        }
-        $pdf = Pdf::loadview("NewSalesPdf", ["fromDate" => $fromDate, "toDate" => $toDate, "sales" => $sales, "type" => $request->sale]);
-        $pdf->output();
-        $dom_pdf = $pdf->getDomPDF();
+            // Eager loading pour éviter N+1 queries dans le PDF
+            ->with("article");
 
+        // 4. Filtre conditionnel sur le client (via la relation 'invoice')
+        if ($request->client != "all") {
+            $clientId = intval($request->client);
+            
+            // whereHas filtre les Invoicetraces dont la facture associée correspond au client.
+            $salesQuery->whereHas('invoice', function ($query) use ($clientId) {
+                $query->where('id_client', $clientId);
+            });
+        }
+        
+        // 5. Exécution de la requête
+        $sales = $salesQuery->get();
+        
+        // 6. Génération du PDF
+        $pdf = Pdf::loadview("NewSalesPdf", [
+            "fromDate" => $fromDate, 
+            "toDate" => $toDate, 
+            "sales" => $sales, 
+            "type" => $request->sale
+        ]);
+        
+        // Configuration du pied de page
+        $dom_pdf = $pdf->getDomPDF();
         $canvas = $dom_pdf->get_canvas();
         $canvas->page_text(510, 800, "[{PAGE_NUM} sur {PAGE_COUNT}]", null, 15, array(0, 0, 0));
-        return $pdf->download(Auth::user()->role . "" . Auth::user()->region . $fromDate . $toDate . ".pdf");
+        
+        // 7. Téléchargement du PDF
+        return $pdf->download(Auth::user()->role . "-" . Auth::user()->region . "-" . $fromDate->format('Ymd') . "-" . $toDate->format('Ymd') . ".pdf");
     }
 
     public function generate_versements_state(Request $request)
