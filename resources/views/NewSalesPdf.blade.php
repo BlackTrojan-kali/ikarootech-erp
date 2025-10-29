@@ -102,11 +102,11 @@
                     </th>
             </thead>
             <tbody>
-<?php $total_unit_total =0; $total_price_total = 0; $total_received =0;?>
+<?php $total_unit_total =0; $total_price_total = 0; $total_received =0; $total_qty = 0;?>
                 @foreach ($sales as $sale)
                     <tr id="{{ $sale->invoice->id }}" class="hover:text-white hover:bg-blue-400 hover:cursor-pointer">
                         <?php $total_unit = 0; ?>
-                        <td class="border  border-black">{{ $sale->nom . ' ' . $sale->prenom }}</td>
+                        <td class="border  border-black">{{ $sale->invoice->client->nom . ' ' . $sale->invoice->client->prenom }}</td>
                         <td class="border  border-black">
                             {{ $sale->article->type == 'accessoire' ? $sale->article->title : $sale->article->weight . ' KG' }}
                         </td>
@@ -114,7 +114,9 @@
                         <td class="border  border-black">{{ $sale->qty }}</td>
                         <td class="border  border-black">
                             <?php $total_unit = $sale->unit_price * $sale->qty; 
+                            
                             $total_unit_total += $total_unit;
+                            $total_qty += $sale->qty;
                             $total_price_total += $sale->invoice->total_price;
                             $total_received += $sale->recieved;
                             ?>
@@ -130,7 +132,8 @@
                 @endforeach
                 <tfoot>
                     <tr>
-                        <td colspan="4">Totaux</td>
+                        <td colspan="3">Totaux</td>
+                        <td>{{$total_qty}}</td>
                         <td>{{$total_unit_total}}</td>
                         <td>{{$total_price_total}}</td>
                         <td></td>

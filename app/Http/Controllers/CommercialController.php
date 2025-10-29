@@ -392,7 +392,7 @@ class CommercialController extends Controller
             ->where("id_article", $articleId)
             
             // Eager loading pour éviter N+1 queries dans le PDF
-            ->with("article");
+            ->with("article","invoice.client");
 
         // 4. Filtre conditionnel sur le client (via la relation 'invoice')
         if ($request->client != "all") {
@@ -406,7 +406,6 @@ class CommercialController extends Controller
         
         // 5. Exécution de la requête
         $sales = $salesQuery->get();
-        
         // 6. Génération du PDF
         $pdf = Pdf::loadview("NewSalesPdf", [
             "fromDate" => $fromDate, 
@@ -421,7 +420,7 @@ class CommercialController extends Controller
         $canvas->page_text(510, 800, "[{PAGE_NUM} sur {PAGE_COUNT}]", null, 15, array(0, 0, 0));
         
         // 7. Téléchargement du PDF
-        return $pdf->download(Auth::user()->role . "-" . Auth::user()->region . "-" . $fromDate->format('Ymd') . "-" . $toDate->format('Ymd') . ".pdf");
+       return $pdf->download(Auth::user()->role . "-" . Auth::user()->region . "-" . $fromDate->format('Ymd') . "-" . $toDate->format('Ymd') . ".pdf");
     }
 
     public function generate_versements_state(Request $request)

@@ -125,6 +125,7 @@ Route::group(["middleware" => "auth"], function () {
                   Route::get("/commercial/CartList/", [Controllers\cartController::class, "cartlist"])->name("cartlist");
                   Route::post("/commercial/CartList/Update/{id}", [Controllers\cartController::class, "updateCart"])->name("updateCart");
                   Route::get("/commercial/CartList/delete/{id}", [Controllers\cartController::class, "deleteItem"])->name("deleteItem");
+                  Route::get('/commercial/CartList/destroy', [Controllers\CartController::class, 'destroy'])->name('destroyCart');
                   Route::post("/commercial/CartList/validate", [Controllers\cartController::class, "validate"])->name("validateCart");
                   Route::get("/commercial/CartList/print/{id}", [Controllers\cartController::class, "printInvoice"])->name("printNeoInvoice");
                   Route::get("/commercial/modifyInvoice/{id}", [Controllers\cartController::class, "modifySales"])->name("modifyInvoice");

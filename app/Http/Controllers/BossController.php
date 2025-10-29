@@ -134,7 +134,7 @@ class BossController extends Controller
             $pdf = Pdf::loadview("versementPdf", ["fromDate" => $fromDate, "toDate" => $toDate, "deposit" => $deposit, "bank" => $request->bank])->setPaper("A4", 'landscape');
 
             $pdf->output();
-            $dom_pdf = $pdf->getDomPDF();
+            $dom_pdf = $pdf->getDomPDF(); 
 
             $canvas = $dom_pdf->get_canvas();
             $canvas->page_text(510, 800, "[{PAGE_NUM} sur {PAGE_COUNT}]", null, 15, array(0, 0, 0));
