@@ -36,6 +36,6 @@ class Client extends Model
      */
     public function clientCat(): BelongsTo
     {
-        return $this->belongsTo(ClientCat::class, 'id_clientcat', 'id');
+        return $this->belongsTo(Clientcat::class, 'id_clientcat', 'id');
     }
 }

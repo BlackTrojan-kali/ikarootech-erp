@@ -35,7 +35,7 @@ class ClientPrice extends Model
     public function client(): BelongsTo
     {
         // Renommé en clientCategory pour plus de clarté
-        return $this->belongsTo(ClientCat::class, "id_cat", "id");
+        return $this->belongsTo(Clientcat::class, "id_cat", "id");
     }
 
     /**
