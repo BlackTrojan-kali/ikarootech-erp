@@ -22,12 +22,13 @@
                     <label for="client_select" class="block text-gray-700 text-sm font-bold mb-2">Client:</label>
                     
                     @php
-                        $isCartNotEmpty = Cart::count() > 0;
+                        // Remplacez cette ligne par la fonction réelle de votre application (si elle est différente)
+                        $isCartNotEmpty = Cart::count() > 0; 
                     @endphp
                     
                     {{-- DÉSACTIVATION CONDITIONNELLE DU SELECT --}}
                     <select name="client_select" id="client_select" class="clients w-full p-2 border border-black rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                            @if($isCartNotEmpty) disabled @endif>
+                                @if($isCartNotEmpty) disabled @endif>
                         <option value=""></option> 
                         @foreach ($clients as $client)
                             <option value="{{ $client->id }}">{{ $client->nom . ' ' . $client->prenom }}</option>
@@ -50,7 +51,7 @@
 
             <h2 class="text-lg font-bold mt-6 mb-4 text-gray-700">Liste des éléments (Prix unitaire inclus)</h2>
             
-            {{-- Début du Tableau pour les Articles (Identique) --}}
+            {{-- Début du Tableau pour les Articles (Non modifié) --}}
             <div class="overflow-x-auto w-full">
                 <table class="min-w-full divide-y divide-gray-200 shadow-md rounded-lg">
                     <thead class="bg-gray-100">
@@ -220,17 +221,18 @@
             var clientSelect = $('#client_select');
             var modalClientId = $('#modal_client_id');
             var hiddenClientId = $('#hidden_client_id');
-            var clientLockedValue = $('#client_locked_value'); // Nouveau champ pour le client verrouillé
+            var clientLockedValue = $('#client_locked_value'); 
             var addProductsButton = $('#add-products-form-button');
             var validateCartButton = $('#validate-cart-button');
             var persistedClientId = localStorage.getItem('selected_client_id');
-            var isCartLocked = clientSelect.prop('disabled'); // Vérifie l'état désactivé/verrouillé du Blade
+            var isCartLocked = clientSelect.prop('disabled'); 
 
-            // Select2 initialization
+            // **MODIFICATION CLÉ : Select2 initialization SANS AJAX**
             $(".clients").select2({
                 placeholder: "Sélectionnez un client",
                 allowClear: true,
-                minimumResultsForSearch: 10,
+                // **MODIFICATION : Affiche la barre de recherche même s'il y a peu de résultats, pour la recherche front-end**
+                minimumResultsForSearch: 0, 
                 dropdownParent: clientSelect.parent()
             });
 
@@ -241,14 +243,16 @@
             }
 
             // Mettre à jour les valeurs initiales pour les champs cachés
-            var initialClientId = clientSelect.val();
+            // Utiliser la valeur du Select2 APRES l'initialisation et le chargement de la valeur persistante
+            var initialClientId = clientSelect.val(); 
+            // Ces deux lignes sont cruciales pour l'état initial des champs cachés et verrouillés
             modalClientId.val(initialClientId);
             hiddenClientId.val(initialClientId);
-            clientLockedValue.val(initialClientId); // Mis à jour pour le champ verrouillé
+            clientLockedValue.val(initialClientId);
 
             // 2. Fonction pour synchroniser et contrôler l'état des boutons
             function updateClientState(clientId) {
-                // Mettre à jour le localStorage (seulement si le champ n'est pas verrouillé, sinon on travaille avec la valeur persistante)
+                // Mettre à jour le localStorage (seulement si le champ n'est pas verrouillé)
                 if (!isCartLocked) {
                     if (clientId) {
                         localStorage.setItem('selected_client_id', clientId);
@@ -257,7 +261,7 @@
                     }
                 }
                 
-                // Mettre à jour les champs cachés
+                // Mettre à jour les champs cachés pour les formulaires
                 modalClientId.val(clientId);
                 hiddenClientId.val(clientId);
                 clientLockedValue.val(clientId); // Si verrouillé, cette valeur sera envoyée
@@ -276,6 +280,7 @@
                 }
 
                 // S'assurer que Select2 affiche correctement la valeur chargée/verrouillée
+                // Note: Cette ligne est maintenue pour garantir que l'affichage est synchro même en cas de modification
                 clientSelect.val(clientId).trigger('change.select2');
             }
 
@@ -287,9 +292,10 @@
             }
 
             // 4. Mettre à jour l'état initial après chargement de la valeur persistante (ou non)
+            // C'est essentiel pour activer les boutons Valider/Ajouter si un client est déjà sélectionné/persistant.
             updateClientState(initialClientId);
             
-            // --- GESTION DES MODALES ET AJAX (Identique ou ajustée pour le nouveau nom de champ client_locked_value) ---
+            // --- GESTION DES MODALES ET AJAX (Non Modifiée, elle dépend du back-end) ---
 
             function openModal(modalId) {
                 $('#' + modalId).removeClass('hidden');
@@ -306,7 +312,7 @@
 
             $("#add-products-form-button").on("click", function(e) {
                 e.preventDefault();
-                // Assurez-vous que le modal prend la valeur actuelle, qu'elle soit dans client_select ou dans client_locked_value (qui sont synchronisés)
+                // Assurez-vous que le modal prend la valeur actuelle
                 modalClientId.val(clientSelect.val()); 
                 openModal('add-products');
             });
@@ -325,7 +331,6 @@
             // Soumission du formulaire d'ajout au panier via AJAX
             $('#add-to-cart-form').on('submit', function(e) {
                 e.preventDefault(); 
-                // ... (Logique AJAX non modifiée)
                 var form = $(this);
                 var url = form.attr('action');
                 var data = form.serialize();
@@ -346,7 +351,7 @@
                             $('.success').text(response.success);
                             setTimeout(function() {
                                 closeModals(); 
-                                location.reload(); // Rechargement pour voir le nouveau panier (et verrouiller le client)
+                                location.reload(); 
                             }, 1000); 
                         }
                     },
@@ -372,7 +377,6 @@
             // Soumission du formulaire de validation du panier via AJAX
             $('#validate-cart-form').on('submit', function(e) {
                 e.preventDefault();
-                // ... (Logique AJAX non modifiée)
                 var form = $(this);
                 var url = form.attr('action');
                 var data = form.serialize(); 

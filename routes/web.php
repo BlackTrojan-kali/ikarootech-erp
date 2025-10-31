@@ -113,7 +113,7 @@ Route::group(["middleware" => "auth"], function () {
                   Route::get("/commercial/printInvoice/{id}", "print_invoice")->name("printInvoice");
                   Route::get("/commercial/moveGlobalPro/{type}/{weight}", [Controllers\ArticleController::class, "MoveGlobal"])->name("moveGlobalCom");
                   Route::post("/commercial/createAccessoriePDf/{type}", "makeAcSales")->name("makeAcSales");
-                  Route::delete("/commercial/deleteVersemment/{id}", "deleteVersement")->name("deleteVersement");
+                  Route::delete("/commercial/deleteVersement/{id}", "deleteVersement")->name("deleteVersement");
                   //modifier les ventes
                   Route::get("/commercial/modify/{id}", "modifySales")->name("modifySale");
                   Route::post("/commercial/modify/post/{id}", "updateSales")->name("updateSale");

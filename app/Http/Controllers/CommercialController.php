@@ -315,7 +315,8 @@ class CommercialController extends Controller
             "commentaire" => "string | nullable",
             "bordereau" => "string | required",
             "bank" => "string | required",
-            "montant_com"=>"string| nullable"
+            "montant_com"=>"string| nullable",
+            "complement"=>"nullable"
         ]);
         $nullVersements = Versement::where("is_associated","not_associated")->first();
         if($nullVersements){
@@ -329,10 +330,12 @@ class CommercialController extends Controller
         $versement->client_id = $request->client_id;
         $versement->region = Auth::user()->region;
         $versement->service = Auth::user()->role;
+        if($request->complement !== "on"){
+
         $versement->is_associated = "not_associated";
+        }
         $versement->montantcom = $request->montant_com;
         $versement->bank = $request->bank;
-        
         $versement->save();
         return response()->json(["success" => "versement enregistre avec succes","idVer"=>$versement->id]);
     }
@@ -475,7 +478,7 @@ class CommercialController extends Controller
     public function deleteVersement($id)
     {
         $versement = Versement::findOrFail($id);
-        dd($versement);
+    
         $versement->delete();
         return response()->json(["message" => "versement supprime avec success"]);
     }

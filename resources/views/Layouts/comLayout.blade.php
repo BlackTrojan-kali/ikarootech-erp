@@ -519,6 +519,9 @@
                         <label for="">Montant Commentaire:</label>
                         <input type="text" name="montant_com" required>
                     </div>
+                    <div class="">
+                        <input type="checkbox" name="complement"  > versement complementaire
+                    </div>
                     <div class="modal-validation">
                         <button type="reset">annuler</button>
                         <button type="submit" id="submitForm">creer</button>
