@@ -249,7 +249,6 @@
         <table>
             <thead>
                 <tr>
-                    <td>No</td>
                     <td>Désignation <br><span class="english-translation">Item</span></td>
                     <td>Quantité <br> <span class="english-translation">Quantity</span></td>
                     <td>PU(XAF) <br><span class="english-translation">Unit Price</span></td>
@@ -259,7 +258,6 @@
             <tbody>
                 @foreach (json_decode($invoice->articles, true) as $article)
                     <tr>
-                        <td>{{ $article['id'] }}</td>
                         <td>
                             @if ($article['name'] == 'stargas')
                                 Bouteille-gaz

@@ -9,7 +9,7 @@
             {{-- MODIFICATION ICI : Utilisation de justify-between pour aligner à gauche et à droite --}}
             <div class="flex justify-between items-center mb-4">
                 {{-- Bouton "Fermer" à gauche --}}
-                <a href="{{ route("showVentes","versements") }}" class="secondary text-white p-2 rounded-md">Fermer</a>
+                <a href="{{ route("dashboardCom") }}" class="secondary text-white p-2 rounded-md">Fermer</a>
                 {{-- Bouton "Associer" à droite --}}
                 <button class="primary text-white p-2 rounded-md" id="associate-button">Associer</button>
             </div>
@@ -53,7 +53,12 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-5 py-5 border-b border-gray-200 text-sm text-center text-gray-500">Aucune vente disponible pour l'association.</td>
+                                    <td  class="px-5 py-5 border-b border-gray-200 text-sm text-center text-gray-500">Aucune vente disponible pour l'association.</td>
+                                    <td>/</td>
+                                    <td>/</td>
+                                    <td>/</td>
+                                    <td>/</td>
+                                    <td>/</td>
                                 </tr>
                             @endforelse
                         </tbody>

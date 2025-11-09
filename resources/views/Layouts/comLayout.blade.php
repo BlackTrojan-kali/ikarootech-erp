@@ -456,10 +456,10 @@
         </center>
     </div>
     <!--FORMULAIRE DE VERSEMENTS-->
-    <div id="versement" class="modals">
+    <div id="versement" class="modals overflow-y-scroll">
         <center>
 
-            <div class="modal-active">
+            <div class="modal-active ">
                 <div class="modal-head">
                     <h1>Faire un Versement</h1>
                     <b class="close-modal">X </b>
@@ -1802,6 +1802,7 @@
                             $('#loading').hide();
                             $(".success").text(response.success);
                             var idVer = response.idVer;
+                            var idCli = response.idCli;
                             setTimeout(() => {
                                 $(".success").text("");
 
@@ -1809,7 +1810,7 @@
                             $("#submitForm").prop("disabled", false);
                             $("table").load(location.href + " table")
                             $(".info").load(location.href + " .info")
-                            window.location.href="/commmercial/assoc-by-save/"+idVer
+                            window.location.href="/commmercial/assoc-by-save/"+idVer+"/"+idCli
                         }
                     }
                 })

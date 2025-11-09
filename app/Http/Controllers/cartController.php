@@ -56,7 +56,7 @@ class cartController extends Controller
             $basePrice = $articlePriceEntry->unite_price;
 
             // Le poids sera probablement stocké comme une propriété directe de CartItem
-            $weight = property_exists($article, 'weight') ? (float) $article->weight : 0;
+            $weight = $article->weight?$article->weight  : 0;
             
             // 2. Ajouter l'article au panier avec le prix unitaire.
             // Nous stockons aussi le prix de consigne et l'ID du client en options pour la validation finale
@@ -71,7 +71,6 @@ class cartController extends Controller
                     'client_id' => $client->id,                         // ID du client sélectionné
                 ]
             );
-
             return response()->json(['success' => "Article ajouté au panier avec succès !"]);
 
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
