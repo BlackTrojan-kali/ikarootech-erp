@@ -82,7 +82,7 @@
         <table>
             <thead>
                 <th colspan="3">VENTES Associees</th>
-                <th colspan="6">VERSEMENTS AFB</th>
+                <th colspan="7">VERSEMENTS AFB</th>
                 <tr>
                     <th><b>DATES</b></th>
                     <th><b>Factures Associées</b></th>
@@ -90,6 +90,7 @@
                     <th><b>GPL</b></th>
                     <th><b>Consigne</b></th>
                     <th><b>Total</b></th>
+                    <th><b>Bordereau</b></th>
                     <th><b>Commentaire</b></th>
                     <th><b>Total Commentaire</b></th>
                     <th><b>Écart</b></th>
@@ -144,6 +145,7 @@
                         $total_com1 += $data->montantcom;
                         ?>
                         <td>{{ $data->montant_gpl + $data->montant_consigne }}</td>
+                        <td>{{$data->bordereau}}</td>
                         <td>{{ $data->commentaire }}</td>
                         <td>{{$data->montantcom}}</td>
                         <td style="{{ $ecart < 0 ? 'color: red;' : 'color: green;' }}">
@@ -158,6 +160,7 @@
                     <td>{{ $total_gpl1 }}</td>
                     <td>{{ $total_consigne1 }}</td>
                     <td>{{ number_format($total1, 2, ',', ' ') }}</td>
+                    <td>/</td>
                     <td>/</td>
                     <td>{{ number_format($total_com1, 2, ',', ' ') }}</td>
                     <td>{{ number_format($total_ecart1, 2, ',', ' ') }}</td>

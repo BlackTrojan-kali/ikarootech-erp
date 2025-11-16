@@ -313,6 +313,14 @@ class ProducerController extends Controller
             $citerne->stock[0]->stock_theo = 30000;
             $citerne->stock[0]->stock_rel = 30000;
             $citerne->stock[0]->save();
+              if ($article->hasStock[0]->qty < $request->qty) {
+                return response()->json(["error" => "stock insufisant bouteilles vides"]);
+            } else {
+                $article->hasStock[0]->qty -= $request->qty;
+                $article->hasStock[0]->save();
+                $article2->hasStock[0]->qty += $request->qty;
+                $article2->hasStock[0]->save();
+            }
             $article->hasStock[0]->qty -= $request->qty;
             $article->hasStock[0]->save();
             $article2->hasStock[0]->qty += $request->qty;

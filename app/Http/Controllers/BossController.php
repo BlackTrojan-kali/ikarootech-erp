@@ -120,9 +120,9 @@ class BossController extends Controller
             $afb = Versement::where("bank", env("COMPANIE_BANK_1"))->where("region", Auth::user()->region)->where("service", $request->service)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice")->get();
             $cca = Versement::where("bank", env("COMPANIE_BANK_2"))->where("region", Auth::user()->region)->where("service", $request->service)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice")->get();
             $caisse = Versement::where("bank", "CAISSE")->where("region", Auth::user()->region)->where("service", Auth::user()->role)->whereBetween("created_at", [$fromDate, $toDate])->with("Invoice")->get();
-          
+
             $pdf = Pdf::loadview("versementPdfAll", ["fromDate" => $fromDate, "toDate" => $toDate, "afb" => $afb, "cca" => $cca, "bank" => $request->bank,"caisse"=>$caisse])->setPaper("A4", 'landscape');
-          
+          dd($afb);
             $pdf->output();
             $dom_pdf = $pdf->getDomPDF();
 
@@ -132,7 +132,7 @@ class BossController extends Controller
         } else {
             $deposit = Versement::where("bank", $request->bank)->where("region", Auth::user()->region)->where("service", $request->service)->whereBetween("created_at", [$fromDate, $toDate])->get();
             $pdf = Pdf::loadview("versementPdf", ["fromDate" => $fromDate, "toDate" => $toDate, "deposit" => $deposit, "bank" => $request->bank])->setPaper("A4", 'landscape');
-
+                dd($deposit);
             $pdf->output();
             $dom_pdf = $pdf->getDomPDF(); 
 

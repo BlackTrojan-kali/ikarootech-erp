@@ -109,9 +109,9 @@
     <br><br><br>
     <br><br>
     <div class="logo-section">
-        <img src="{{ 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('images/logo.png'))) }}"
-            width="100px">
-        <p>
+   
+        <img src="{{ public_path('images/logo.png') }}"
+            width="100px">   <p>
         </p>
     </div>
     <div class="date">
