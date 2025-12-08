@@ -172,7 +172,7 @@ Route::group(["middleware" => "auth"], function () {
             Route::post("/controller/versement/excel", [Controllers\ExcelController::class, "exportVersement"])->name("boss_versementexcel");
             Route::post("/releves-excel", [Controllers\ExcelController::class, "exportReleves"])->name("releves_excel");
             Route::post("/producer/genProdHistConExcel", [Controllers\ExcelController::class, "exportProduction"])->name("genProdHistConExcel");
-       
+            Route::get('/prices/generate-pdf', [Controllers\ClientController::class, 'generatePricePDF'])->name('generate-price-pdf');
       });
       //DIRECTOR INTERFACES
       Route::middleware(IsDirector::class)->group(

@@ -108,51 +108,74 @@
 
             <tbody>
                 @foreach ($deposit as $data)
+                    
+                    {{-- Calcul des totaux et de l'écart AVANT l'affichage de la ligne --}}
+                    <?php 
+                    $total_factures= 0;
+                    foreach ($data->Invoice as $facture) {
+                        $total_factures += $facture->total_price;
+                    }
+
+                    $versement_total = $data->montant_gpl + $data->montant_consigne;
+
+                    // Formule corrigée selon votre demande : Total Factures - Total Versement - Total Commentaire
+                    $ecart = $total_factures - $versement_total - $data->montantcom; // MODIFIÉ
+                    
+                    // Mise à jour des totaux globaux
+                    $total1 += $versement_total;
+                    $total_gpl1 += $data->montant_gpl;
+                    $total_consigne1 += $data->montant_consigne;
+                    $total_com1 += $data->montantcom;
+                    
+                    $total_ecart1 += $ecart;
+                    $total_invoices1 +=$total_factures;
+                    ?>
+                    
                     <tr class="hover:bg-blue-400 hover:text-white hover:cursor-pointer">
+                        {{-- DATES --}}
                         <td>
                             {{ $data->created_at }}
                         </td>
+                        
+                        {{-- Factures Associées --}}
                         <td>
                             <ul>
-                                <?php $total_factures= 0?>
                                 @foreach ($data->Invoice as $facture)
                                     <li>Facture N°: {{ $facture->region."-".$facture->id."/".$facture->client->nom." ".$facture->client->prenom}} ({{ $facture->total_price }})</li>
-                                    <?php $total_factures += $facture->total_price;?>
-                                    {{-- Adaptez l'affichage des informations de la facture selon vos besoins --}}
                                 @endforeach
                             </ul>
                         </td>
-                        <td>{{ $total_factures }}
+                        
+                        {{-- Total Factures --}}
+                        <td>{{ $total_factures }}</td>
 
-                            <?php 
-                                // NOUVEAU CALCUL DE L'ÉCART
-                                $ecart = ($data->montant_gpl + $data->montant_consigne + $data->montantcom) - $total_factures;
-                                
-                                $total_ecart1 += $ecart;
-                                $total_invoices1 +=$total_factures;
-                                ?>
-                        </td>
-
+                        {{-- GPL --}}
                         <td>
                             {{ $data->montant_gpl }}
                         </td>
+                        
+                        {{-- Consigne --}}
                         <td>{{ $data->montant_consigne }}</td>
-
-                        <?php
-                        $total1 += $data->montant_gpl + $data->montant_consigne;
-                        $total_gpl1 += $data->montant_gpl;
-                        $total_consigne1 += $data->montant_consigne;
-                        $total_com1 += $data->montantcom;
-                        ?>
-                        <td>{{ $data->montant_gpl + $data->montant_consigne }}</td>
+                        
+                        {{-- Total Versement --}}
+                        <td>{{ $versement_total }}</td>
+                        
+                        {{-- Bordereau --}}
                         <td>{{$data->bordereau}}</td>
+                        
+                        {{-- Commentaire --}}
                         <td>{{ $data->commentaire }}</td>
+                        
+                        {{-- Total Commentaire --}}
                         <td>{{$data->montantcom}}</td>
+                        
+                        {{-- Écart (Affichage) --}}
                         <td style="{{ $ecart < 0 ? 'color: red;' : 'color: green;' }}">
                             {{ $ecart }}
                         </td>
                     </tr>
                 @endforeach
+                {{-- Ligne de totaux --}}
                 <tr style="font-weight: bold;">
                     <td>/</td>
                     <td>/</td>

@@ -10,8 +10,11 @@ use App\Models\Clientcat;
 use App\Models\Clientprice;
 use App\Models\Region;
 use App\Models\Stock;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 
 use function Ramsey\Uuid\v1;
 
@@ -129,7 +132,7 @@ class ClientController extends Controller
                 $clients = Client::with("Clientcat")->get();
                 return view("super.list-clients", ["clients" => $clients]);
             case "controller":
-                $clients = Client::with("Clientcat")->get();
+                $clients = Client::where("region",Auth::user()->region)->with("Clientcat")->get();
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
                 $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
                 $mobile = Citerne::where("type", "mobile")->get();
@@ -160,7 +163,7 @@ class ClientController extends Controller
                 $stocks = Stock::with("article")->where("region", Auth::user()->region)->get();
                 $mobile = Citerne::where("type", "mobile")->get();
                 $fixe  = Citerne::where("type", "fixe")->get();
-                $regions = Region::all();
+                $regions = Region::where("region",Auth::user()->region)->get();
                 return view("controller.create_client", ["regions"=>$regions,"clientsList" => $clients, "articlesList" => $articles,"categories" => $categories, "regions" => $regions, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             case "commercial":
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
@@ -211,7 +214,7 @@ class ClientController extends Controller
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
                 $clients = Client::where("region",Auth::user()->region)->get();
                 $fixe  = Citerne::where("type", "fixe")->get();
-                $regions = Region::all();
+                $regions = Region::where("region",Auth::user()->region)->get();
                 return view("controller.modif_client", ["regions"=>$regions,"clientsList" => $clients, "articlesList" => $articles,"client" => $client, "categories" => $categories, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             case "commercial":
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
@@ -268,9 +271,10 @@ class ClientController extends Controller
                 $fixe  = Citerne::where("type", "fixe")->get();
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
                 $clients = Client::where("region",Auth::user()->region)->get();
-                $prices = Clientprice::with("client", "article")->get();
+                $prices = Clientprice::where("region",Auth::user()->region)->with("client", "article")->get();
                 $regions = Region::all();
-                return view("controller.prix-client", ["regions"=>$regions,"clientsList" => $clients, "articlesList" => $articles,"prices" => $prices, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
+                $clientCats  = Clientcat::all();
+                return view("controller.prix-client", ["clientCats"=>$clientCats,"regions"=>$regions,"clientsList" => $clients, "articlesList" => $articles,"prices" => $prices, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             case "commercial":
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
                 $clients = Client::where("region",Auth::user()->region)->get();
@@ -296,7 +300,8 @@ class ClientController extends Controller
                 $fixe  = Citerne::where("type", "fixe")->get();
                 $articles = Article::where("state", 1)->orwhere("type", "accessoire")->get();
                 $clients = Client::where("region",Auth::user()->region)->get();
-                $regions = Region::all();
+            
+                $regions = Region::where("region",Auth::user()->region)->get();
                 return view("controller.create-client-price", ["regions"=>$regions,"clientsList" => $clients, "articlesList" => $articles,"clients" => $cats, "articles" => $articles, "mobile" => $mobile, "fixe" => $fixe, "stocks" => $stocks]);
             case "commercial":
                 $stocks = Stock::where("region", "=", Auth::user()->region)->where("category", "commercial")->with("article")->get();
@@ -372,4 +377,89 @@ class ClientController extends Controller
         $price->save();
         return back()->withSuccess("price modified successfully");
     }
+
+  public function generatePricePDF(Request $request)
+{
+    $categoryId = $request->input('id_cat');
+    $articleId = $request->input('id_article'); // <-- Récupération du nouvel ID d'article
+
+    // 1. Validation de base (S'assurer qu'une catégorie est toujours sélectionnée)
+    if (empty($categoryId)) {
+        return back()->withErrors(['id_cat' => 'Veuillez sélectionner une catégorie client.']);
+    }
+
+    // 2. Récupération et filtrage des données
+    // J'utilise 'clientCategory' ici, veuillez le remplacer par 'client' si vous n'avez pas renommé la relation.
+    $query = ClientPrice::with(['client', 'article'])
+                       ->where('id_cat', $categoryId)->where("region",Auth::user()->region);
+
+    // Filtrage par ID d'article (si un article est sélectionné)
+    if (!empty($articleId)) {
+        $query->where('id_article', $articleId);
+    }
+
+    $prices = $query->get();
+    
+    // Si aucune donnée n'est trouvée
+    if ($prices->isEmpty()) {
+        // Ajout d'une condition pour ne pas essayer d'accéder aux propriétés d'un tableau vide
+        $message = 'Aucun prix trouvé pour la catégorie sélectionnée';
+        if (!empty($articleId)) {
+            $message .= ' et l\'article sélectionné.';
+        } else {
+            $message .= '.';
+        }
+        return back()->with('error', $message);
+    }
+
+    // 3. Récupération des informations pour le titre du PDF
+    // Nous utilisons la première entrée car la catégorie est la même pour tout le résultat.
+    $categoryName = $prices->first()->client->name; 
+    
+    // Si un article spécifique a été filtré, récupérer son nom pour l'affichage
+    $filterArticleName = null;
+    if (!empty($articleId)) {
+        // Puisque nous avons filtré, tous les prix concernent cet article.
+        // On peut récupérer le nom via la relation Article du premier prix.
+        $article = $prices->first()->article;
+        if ($article->type == 'accessoire') {
+            $filterArticleName = $article->title;
+        } else {
+            $filterArticleName = $article->type . ' ' . $article->weight . ' KG';
+        }
+    }
+
+    // 4. Génération du HTML de la vue PDF
+    $data = [
+        'prices' => $prices,
+        'categoryName' => $categoryName,
+        'filterArticle' => $filterArticleName, // <-- Passe le nom de l'article pour le titre
+    ];
+    
+    $html = View::make('controller.price_list', $data)->render();
+
+    // 5. Configuration et génération du PDF via Dompdf
+    $options = new Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isRemoteEnabled', true);
+    
+    $dompdf = new Dompdf($options);
+    $dompdf->loadHtml($html);
+    
+    // Optionnel : Définir la taille et l'orientation
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Rendu du PDF
+    $dompdf->render();
+
+    // 6. Téléchargement du fichier
+    $filename = 'Liste_Prix_' . str_replace(' ', '_', $categoryName);
+    
+    if ($filterArticleName) {
+        $filename .= '_' . str_replace([' ', '/'], '_', $filterArticleName);
+    }
+    $filename .= '.pdf';
+    
+    return $dompdf->stream($filename);
+}
 }

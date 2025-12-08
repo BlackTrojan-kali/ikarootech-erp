@@ -93,7 +93,7 @@
     </div>
     <center>
         <h3>{{ strtoupper(Auth::user()->role) }} :{{ strtoupper(Auth::user()->region) }} </h3 <h4> FICHE DE VERSEMENTS
-            GLOBAL</h4>
+                GLOBAL</h4>
 
     </center>
     <center><u>
@@ -120,7 +120,7 @@
         <?php $total1 = 0;
         $total_gpl1 = 0;
         $total_consigne1 = 0;
-        $total_com1 = 0; 
+        $total_com1 = 0;
         
         $total_ecart1 = 0;
         $total_invoices1 = 0;
@@ -159,8 +159,7 @@
                     $total_com1 += $data->montantcom;
                     
                     // NOUVEAU CALCUL DE L'ÉCART
-                    $versements_complets = $versement_total + $data->montantcom;
-                    $ecart = $versements_complets - $total_factures;
+                    $ecart = $total_factures - $versement_total - $data->montantcom; // MODIFIÉ SELON VOTRE DEMANDE
                     
                     $total_ecart1 += $ecart;
                     $total_invoices1 +=$total_factures;
@@ -257,8 +256,7 @@
                     $total_com2 += $data->montantcom;
                     
                     // NOUVEAU CALCUL DE L'ÉCART
-                    $versements_complets = $versement_total + $data->montantcom;
-                    $ecart = $versements_complets - $total_factures;
+                    $ecart = $total_factures - $versement_total - $data->montantcom; // MODIFIÉ SELON VOTRE DEMANDE
                     
                     $total_ecart2 += $ecart;
                     $total_invoices2 +=$total_factures;
@@ -351,8 +349,7 @@
                     $total_com3 += $data->montantcom;
                     
                     // NOUVEAU CALCUL DE L'ÉCART
-                    $versements_complets = $versement_total + $data->montantcom;
-                    $ecart = $versements_complets - $total_factures;
+                    $ecart = $total_factures - $versement_total - $data->montantcom; // MODIFIÉ SELON VOTRE DEMANDE
                     
                     $total_ecart3 += $ecart;
                     $total_invoices3 +=$total_factures;
