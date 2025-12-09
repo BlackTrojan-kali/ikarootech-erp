@@ -65,7 +65,7 @@
                     <label for="client_category_pdf" class="block text-gray-700 font-bold mb-2">Catégorie Client :</label>
                     <select id="client_category_pdf" name="id_cat" required
                             class="shadow border rounded  text-gray-700">
-                        <option value="">-- Sélectionner une Catégorie --</option>
+                        <option value="all">*****   Tous   ******</option>
                         @foreach ($clientCats as $category) 
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach

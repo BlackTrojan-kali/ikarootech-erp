@@ -387,19 +387,23 @@ class ClientController extends Controller
     if (empty($categoryId)) {
         return back()->withErrors(['id_cat' => 'Veuillez sélectionner une catégorie client.']);
     }
-
     // 2. Récupération et filtrage des données
     // J'utilise 'clientCategory' ici, veuillez le remplacer par 'client' si vous n'avez pas renommé la relation.
-    $query = ClientPrice::with(['client', 'article'])
+   if($categoryId == "all"){
+    
+$query = ClientPrice::with(['client', 'article'])->where("region",Auth::user()->region);
+  }else{
+    
+  $query = ClientPrice::with(['client', 'article'])
                        ->where('id_cat', $categoryId)->where("region",Auth::user()->region);
+}
 
     // Filtrage par ID d'article (si un article est sélectionné)
     if (!empty($articleId)) {
         $query->where('id_article', $articleId);
     }
 
-    $prices = $query->get();
-    
+    $prices = $query->get();    
     // Si aucune donnée n'est trouvée
     if ($prices->isEmpty()) {
         // Ajout d'une condition pour ne pas essayer d'accéder aux propriétés d'un tableau vide
@@ -414,7 +418,6 @@ class ClientController extends Controller
 
     // 3. Récupération des informations pour le titre du PDF
     // Nous utilisons la première entrée car la catégorie est la même pour tout le résultat.
-    $categoryName = $prices->first()->client->name; 
     
     // Si un article spécifique a été filtré, récupérer son nom pour l'affichage
     $filterArticleName = null;
@@ -432,7 +435,6 @@ class ClientController extends Controller
     // 4. Génération du HTML de la vue PDF
     $data = [
         'prices' => $prices,
-        'categoryName' => $categoryName,
         'filterArticle' => $filterArticleName, // <-- Passe le nom de l'article pour le titre
     ];
     
@@ -453,7 +455,7 @@ class ClientController extends Controller
     $dompdf->render();
 
     // 6. Téléchargement du fichier
-    $filename = 'Liste_Prix_' . str_replace(' ', '_', $categoryName);
+    $filename = 'Liste_Prix_' ;
     
     if ($filterArticleName) {
         $filename .= '_' . str_replace([' ', '/'], '_', $filterArticleName);

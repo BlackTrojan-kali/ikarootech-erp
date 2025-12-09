@@ -59,7 +59,6 @@
     <h1>LISTE DES PRIX SPÉCIFIQUES</h1>
 
     <div class="filter-info">
-        <h2>Catégorie Client : {{ $categoryName }}</h2>
 
         @if ($filterArticle)
             <p>Article Filtré : {{ $filterArticle }}</p>
@@ -73,6 +72,7 @@
             <tr>
                 <th>Article (Type)</th>
                 <th>Poids</th>
+                <th>category</th>
                 <th>Région</th>
                 <th>Prix GPL (Unité)</th>
                 <th>Prix Consigne</th>
@@ -97,6 +97,7 @@
                             N/A
                         @endif
                     </td>
+                    <td>{{$price->client->name}}</td>
                     <td>{{ $price->region }}</td>
                     
                     {{-- Formatage des prix en XAF --}}
