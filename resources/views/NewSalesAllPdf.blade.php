@@ -126,16 +126,16 @@
                 <td class="text-left">{{ $line['client'] }}</td>
                 
                 {{-- 6kg (PU & QTE) --}}
-                <td>{{ $line['articles']['6kg']['pu'] ?? '-' }}</td> 
-                <td>{{ $line['articles']['6kg']['qty'] > 0 ? $line['articles']['6kg']['qty'] : '-' }}</td>
+                <td>{{ $line['articles']['6kg']['pu'] ?? '0' }}</td> 
+                <td>{{ $line['articles']['6kg']['qty'] > 0 ? $line['articles']['6kg']['qty'] : '0' }}</td>
 
                 {{-- 12kg (PU & QTE) --}}
-                <td>{{ $line['articles']['12kg']['pu'] ?? '-' }}</td>
-                <td>{{ $line['articles']['12kg']['qty'] > 0 ? $line['articles']['12kg']['qty'] : '-' }}</td>
+                <td>{{ $line['articles']['12kg']['pu'] ?? '0' }}</td>
+                <td>{{ $line['articles']['12kg']['qty'] > 0 ? $line['articles']['12kg']['qty'] : '0' }}</td>
 
                 {{-- 50kg (PU & QTE) --}}
-                <td>{{ $line['articles']['50kg']['pu'] ?? '-' }}</td>
-                <td>{{ $line['articles']['50kg']['qty'] > 0 ? $line['articles']['50kg']['qty'] : '-' }}</td>
+                <td>{{ $line['articles']['50kg']['pu'] ?? '0' }}</td>
+                <td>{{ $line['articles']['50kg']['qty'] > 0 ? $line['articles']['50kg']['qty'] : '0' }}</td>
                 
                 {{-- Totaux Facture --}}
                 <td>{{ $line['total_price'] }}</td>
