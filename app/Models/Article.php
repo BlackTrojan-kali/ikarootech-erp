@@ -9,6 +9,15 @@ use Illuminate\Support\Facades\Auth;
 class Article extends Model
 {
     use HasFactory;
+
+    protected $fillable= [
+        
+            'title',
+            "weight",
+            "origin",
+            "state",
+            "type",
+    ];
     public function hasStock()
     {
         return $this->hasMany(Stock::class, "article_id", "id")->where("region", Auth::user()->region)->where("category", Auth::user()->role);

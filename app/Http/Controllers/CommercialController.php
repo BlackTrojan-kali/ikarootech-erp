@@ -369,64 +369,83 @@ class CommercialController extends Controller
         return $pdf->download(Auth::user()->role . "" . Auth::user()->region . $fromDate . $toDate . ".pdf");
     }
 
-        public function generate_new_sale_state(Request $request)
-    {
-        // 1. Validation (simplifiée pour la convention)
-        $request->validate([
-            "depart" => "required|date",
-            "fin" => "required|date",
-            "name" => "nullable|string",
-            "sale" => "required|string",
-            "client" => "required|string", // Gardé string car peut être "all"
-            "article" => "required|string",
-        ]);
+     public function generate_new_sale_state(Request $request)
+{
+    // 1. Validation (inchangée)
+    $request->validate([
+        "depart" => "required|date",
+        "fin" => "required|date",
+        "name" => "nullable|string",
+        "sale" => "required|string",
+        "client" => "required|string", 
+        "article" => "required|string",
+    ]);
 
-        // 2. Préparation des dates et des IDs
-        $fromDate = Carbon::parse($request->depart)->startOfDay();
-        $toDate = Carbon::parse($request->fin)->endOfDay();
-        $articleId = intval($request->article);
-        $region = Auth::user()->region;
+    // 2. Préparation des dates et des filtres de base
+    $fromDate = Carbon::parse($request->depart)->startOfDay();
+    $toDate = Carbon::parse($request->fin)->endOfDay();
+    $region = Auth::user()->region;
+    
+    // Convertir les IDs de filtre en entier (0 si "all" ou vide, car intval("all") = 0)
+    $articleId = intval($request->article);
+    $clientId = intval($request->client);
 
-        // 3. Construction de la requête (utilisation d'Eloquent)
-        $salesQuery = Invoicetrace::query()
-            // Filtres directs sur Invoicetrace
-            ->whereBetween("created_at", [$fromDate, $toDate])
-            ->where("type", $request->sale)
-            ->where("region", $region)
-            ->where("id_article", $articleId)
-            
-            // Eager loading pour éviter N+1 queries dans le PDF
-            ->with("article","invoice.client");
+    // 3. Construction de la requête de base (DRY)
+    // On initialise la requête avec les filtres communs à tous les cas
+    $salesQuery = Invoicetrace::query()
+        ->whereBetween("created_at", [$fromDate, $toDate])
+        ->where("type", $request->sale)
+        ->where("region", $region)
+        // Eager loading pour les relations Client et Article
+        ->with("article", "invoice.client"); // Utilise invoice.client (relation imbriquée)
 
-        // 4. Filtre conditionnel sur le client (via la relation 'invoice')
-        if ($request->client != "all") {
-            $clientId = intval($request->client);
-            
-            // whereHas filtre les Invoicetraces dont la facture associée correspond au client.
-            $salesQuery->whereHas('invoice', function ($query) use ($clientId) {
-                $query->where('id_client', $clientId);
-            });
-        }
-        
-        // 5. Exécution de la requête
-        $sales = $salesQuery->get();
-        // 6. Génération du PDF
-        $pdf = Pdf::loadview("NewSalesPdf", [
-            "fromDate" => $fromDate, 
-            "toDate" => $toDate, 
-            "sales" => $sales, 
-            "type" => $request->sale
-        ]);
-        
-        // Configuration du pied de page
-        $dom_pdf = $pdf->getDomPDF();
-        $canvas = $dom_pdf->get_canvas();
-        $canvas->page_text(510, 800, "[{PAGE_NUM} sur {PAGE_COUNT}]", null, 15, array(0, 0, 0));
-        
-        // 7. Téléchargement du PDF
-       return $pdf->download(Auth::user()->role . "-" . Auth::user()->region . "-" . $fromDate->format('Ymd') . "-" . $toDate->format('Ymd') . ".pdf");
+    // 4. Filtre conditionnel sur l'Article
+    if ($request->article !== "all") {
+        $salesQuery->where("id_article", $articleId);
+    }
+    
+    // 5. Filtre conditionnel sur le Client (via la relation 'invoice')
+    if ($request->client !== "all") {
+        $salesQuery->whereHas('invoice', function ($query) use ($clientId) {
+            $query->where('id_client', $clientId);
+        });
+    }
+    
+    // 6. Exécution de la requête
+    $sales = $salesQuery->get();
+
+    // 7. Préparation et chargement du PDF (Logique unifiée)
+    
+    // Déterminer la vue à charger
+    $viewName = ($request->article !== "all") ? "NewSalesPdf" : "NewSalesAllPdf";
+
+    $pdf = Pdf::loadview($viewName, [
+        "fromDate" => $fromDate, 
+        "toDate" => $toDate, 
+        "sales" => $sales, 
+        "type" => $request->sale
+    ]);
+    
+    // 7.1 Configuration conditionnelle du papier (pour le cas "all article")
+    if ($request->article === "all") {
+        $pdf->setPaper('A4', 'landscape');
     }
 
+    // 8. Configuration du pied de page
+    $dom_pdf = $pdf->getDomPDF();
+    $canvas = $dom_pdf->get_canvas();
+    // Le code pour la pagination reste le même
+    $canvas->page_text(510, 800, "[{PAGE_NUM} sur {PAGE_COUNT}]", null, 15, array(0, 0, 0));
+    
+    // 9. Téléchargement du PDF
+    return $pdf->download(
+        Auth::user()->role . "-" . 
+        Auth::user()->region . "-" . 
+        $fromDate->format('Ymd') . "-" . 
+        $toDate->format('Ymd') . 
+        ".pdf"
+    );
+}
     public function generate_versements_state(Request $request)
     {
         $request->validate(

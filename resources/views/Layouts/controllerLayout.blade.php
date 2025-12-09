@@ -192,6 +192,7 @@
                     <div class="modal-champs">
                         <label for="">Article:</label>
                         <select name="article" class="clients2" style="width: 100%" id="">
+                            <option value="all">Tous</option>
                             @foreach ($articlesList as $article)
                                 <option value="{{ $article->id }}">
                                     {{ $article->type == 'accessoire' ? $article->title : $article->weight . ' kg' }}
