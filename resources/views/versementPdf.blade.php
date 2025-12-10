@@ -118,8 +118,8 @@
 
                     $versement_total = $data->montant_gpl + $data->montant_consigne;
 
-                    // Formule corrigée selon votre demande : Total Factures - Total Versement - Total Commentaire
-                    $ecart = $total_factures - $versement_total - $data->montantcom; // MODIFIÉ
+                    // Formule CORRIGÉE selon votre demande : (Total Versement + Total Commentaire) - Total Factures
+                    $ecart = ($versement_total + $data->montantcom) - $total_factures; // CORRIGÉ
                     
                     // Mise à jour des totaux globaux
                     $total1 += $versement_total;

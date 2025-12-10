@@ -92,13 +92,13 @@
         </p>
     </div>
     <center>
-        <h3>{{ strtoupper(Auth::user()->role) }} :{{ strtoupper(Auth::user()->region) }} </h3 <h4> FICHE DE VERSEMENTS
-                GLOBAL</h4>
+        <h3>{{ strtoupper(Auth::user()->role) }} :{{ strtoupper(Auth::user()->region) }} </h3> <h4> FICHE DE VERSEMENTS
+                 GLOBAL</h4>
 
     </center>
     <center><u>
-            <h1>AFB BANK</h1>
-        </u></center>
+             <h1>AFB BANK</h1>
+         </u></center>
     <table class="table-1">
         <thead>
             <th colspan="3">VENTES Associees</th>
@@ -158,8 +158,8 @@
                     $total_consigne1 += $data->montant_consigne;
                     $total_com1 += $data->montantcom;
                     
-                    // NOUVEAU CALCUL DE L'ÉCART
-                    $ecart = $total_factures - $versement_total - $data->montantcom; // MODIFIÉ SELON VOTRE DEMANDE
+                    // NOUVEAU CALCUL DE L'ÉCART : (Total Versement + Total Commentaire) - Total Factures
+                    $ecart = ($versement_total + $data->montantcom) - $total_factures; // CORRIGÉ
                     
                     $total_ecart1 += $ecart;
                     $total_invoices1 +=$total_factures;
@@ -193,8 +193,8 @@
     
     <center>
         <u>
-            <h1>CCA BANK</h1>
-        </u>
+             <h1>CCA BANK</h1>
+         </u>
     </center>
 
     <table class="table-2">
@@ -221,7 +221,7 @@
 
         $total_ecart2 = 0;
         $total_invoices2 = 0;
-          ?>
+            ?>
         
         <tbody>
             @foreach ($cca as $data)
@@ -255,8 +255,8 @@
                     $total_consigne2 += $data->montant_consigne;
                     $total_com2 += $data->montantcom;
                     
-                    // NOUVEAU CALCUL DE L'ÉCART
-                    $ecart = $total_factures - $versement_total - $data->montantcom; // MODIFIÉ SELON VOTRE DEMANDE
+                    // NOUVEAU CALCUL DE L'ÉCART : (Total Versement + Total Commentaire) - Total Factures
+                    $ecart = ($versement_total + $data->montantcom) - $total_factures; // CORRIGÉ
                     
                     $total_ecart2 += $ecart;
                     $total_invoices2 +=$total_factures;
@@ -288,8 +288,8 @@
 
     <center>
         <u>
-            <h1>CAISSE</h1>
-        </u>
+             <h1>CAISSE</h1>
+         </u>
     </center>
     <table class="table-3">
         <thead>
@@ -315,7 +315,7 @@
         
         $total_ecart3 = 0;
         $total_invoices3 = 0;
-          ?>
+            ?>
         <tbody>
             @foreach ($caisse as $data)
                 <tr class="hover:bg-blue-400 hover:text-white hover:cursor-pointer">
@@ -348,8 +348,8 @@
                     $total_consigne3 += $data->montant_consigne;
                     $total_com3 += $data->montantcom;
                     
-                    // NOUVEAU CALCUL DE L'ÉCART
-                    $ecart = $total_factures - $versement_total - $data->montantcom; // MODIFIÉ SELON VOTRE DEMANDE
+                    // NOUVEAU CALCUL DE L'ÉCART : (Total Versement + Total Commentaire) - Total Factures
+                    $ecart = ($versement_total + $data->montantcom) - $total_factures; // CORRIGÉ
                     
                     $total_ecart3 += $ecart;
                     $total_invoices3 +=$total_factures;
