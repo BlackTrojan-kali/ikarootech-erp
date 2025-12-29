@@ -19,6 +19,8 @@ use App\Models\Client;
 use App\Models\Invoices;
 use App\Models\Region;
 
+use App\Exports\SalesExport;
+use Maatwebsite\Excel\Facades\Excel;
 class CommercialController extends Controller
 {
     //
@@ -445,6 +447,59 @@ class CommercialController extends Controller
         $toDate->format('Ymd') . 
         ".pdf"
     );
+}
+
+
+public function generate_new_sale_excel(Request $request)
+{
+    // 1. Validation
+    $request->validate([
+        "depart" => "required|date",
+        "fin" => "required|date",
+        "sale" => "required|string",
+        "client" => "required|string", 
+        "article" => "required|string",
+    ]);
+
+    // 2. Préparation des dates et données
+    $fromDate = Carbon::parse($request->depart)->startOfDay();
+    $toDate = Carbon::parse($request->fin)->endOfDay();
+    $region = Auth::user()->region;
+    
+    $salesQuery = Invoicetrace::query()
+        ->whereBetween("created_at", [$fromDate, $toDate])
+        ->where("type", $request->sale)
+        ->where("region", $region)
+        ->with("article", "invoice.client");
+
+    if ($request->article !== "all") {
+        $salesQuery->where("id_article", intval($request->article));
+    }
+    
+    if ($request->client !== "all") {
+        $salesQuery->whereHas('invoice', function ($query) use ($request) {
+            $query->where('id_client', intval($request->client));
+        });
+    }
+    
+    $sales = $salesQuery->get();
+
+    // 3. Choix de la vue (exactement comme pour votre PDF)
+    $viewName = ($request->article !== "all") 
+            ? "sales_history_excel" 
+            : "sales_all_excel";
+
+    // 4. Préparation du téléchargement
+    $fileName = Auth::user()->role . "-" . $region . "-" . $fromDate->format('Ymd') . ".xlsx";
+
+    $data = [
+        "fromDate" => $fromDate, 
+        "toDate" => $toDate, 
+        "sales" => $sales, 
+        "type" => $request->sale
+    ];
+
+    return Excel::download(new SalesExport($viewName, $data), $fileName);
 }
     public function generate_versements_state(Request $request)
     {

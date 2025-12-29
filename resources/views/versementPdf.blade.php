@@ -82,7 +82,9 @@
         <table>
             <thead>
                 <th colspan="3">VENTES Associees</th>
-                <th colspan="7">VERSEMENTS AFB</th>
+                <th colspan="4">VERSEMENTS AFB</th>
+                <th colspan="2">PRELEVEMENT/RECETTE</th>
+                <th></th>
                 <tr>
                     <th><b>DATES</b></th>
                     <th><b>Factures Associées</b></th>

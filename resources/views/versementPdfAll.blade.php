@@ -102,7 +102,9 @@
     <table class="table-1">
         <thead>
             <th colspan="3">VENTES Associees</th>
-            <th colspan="7">VERSEMENTS AFB</th>
+            <th colspan="4">VERSEMENTS AFB</th>
+               <th colspan="2">PRELEVEMENT /RECETTE</th>
+                <th></th>
             <tr>
                 <th><b>DATES</b></th>
                 <th><b>Factures Associées</b></th>
@@ -200,7 +202,9 @@
     <table class="table-2">
         <thead>
             <th colspan="3">VENTES Associees</th>
-            <th colspan="7">VERSEMENTS CCA</th>
+            <th colspan="4">VERSEMENTS CCA</th>
+               <th colspan="2">PRELEVEMENT /RECETTE</th>
+                <th></th>
             <tr>
                 <th><b>DATES</b></th>
                 <th><b>Factures Associées</b></th>
@@ -294,7 +298,9 @@
     <table class="table-3">
         <thead>
             <th colspan="3">VENTES Associees</th>
-            <th colspan="7">VERSEMENTS CAISSE</th>
+            <th colspan="4">VERSEMENTS CAISSE</th> 
+            <th colspan="2">PRELEVEMENT /RECETTE</th>
+                <th></th>
             <tr>
                 <th><b>DATES</b></th>
                 <th><b>Factures Associées</b></th>

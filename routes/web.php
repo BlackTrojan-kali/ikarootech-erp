@@ -208,6 +208,7 @@ Route::group(["middleware" => "auth"], function () {
       Route::post("/recieves-pdf", [Controllers\CiternController::class, "generate_receive_pdf"])->name("receives_pdf");
       Route::post("/releves-pdf", [Controllers\CiternController::class, "generate_rel_pdf"])->name("releves_pdf");
       Route::post("/sales-new-pdf", [Controllers\CommercialController::class, "generate_new_sale_state"])->name("new-sales-pdf");
+      Route::post("/sales-new-excel", [Controllers\CommercialController::class, "generate_new_sale_excel"])->name("new-sales-excel");
       //manage roles and regions
       Route::get("/roles", [Controllers\RoleController::class, "index"])->name("roles");
       Route::get("/create-role", [Controllers\RoleController::class, "create"])->name("create-role");
