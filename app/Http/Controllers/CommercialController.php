@@ -651,6 +651,8 @@ public function generate_new_sale_excel(Request $request)
         $invoice = Invoices::findOrFail($id_vente);
         $versement = Versement::findOrFail($id_verse);
         $invoice->versement()->attach($id_verse) ;
+        $versement->is_associated = true;
+        $versement->save();
         $invoice->save();
         return back()->withSuccess("versement associe avec succes");
     }
